@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#00070D">
+<meta name="robots" content="noindex,nofollow">
+<title>SUNLINK OS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600&display=swap">
+<style>
+/* Page publique de SUNLINK OS : connexion seulement. Aucune donnée ici.
+   Après connexion, l'application complète est téléchargée depuis Supabase Storage (bucket privé « app »),
+   lisible uniquement par les rôles admin et owner (règles slos_app_read), puis affichée à la place de cette page. */
+:root{--bg:#00070D;--card:#141C2B;--line:#253046;--fg:#C9D0DC;--muted:#97A1B4;--white:#fff;--yellow:#FEC61E;--blue:#0183FF;--ok:#7BE3A5;--err:#FF8A8A;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--fg);font:15px/1.5 Lexend,"Segoe UI",system-ui,sans-serif;display:grid;place-items:center;padding:16px}
+.box{width:100%;max-width:420px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:26px 24px;display:grid;gap:14px}
+.brand{display:flex;align-items:center;gap:12px}
+.sun{width:34px;height:34px;border-radius:50%;background:var(--yellow);flex:none;box-shadow:0 0 24px rgba(254,198,30,.35)}
+h1{margin:0;font-size:20px;line-height:1.2;color:var(--white);font-weight:600;text-wrap:balance}
+h1 small{display:block;font-size:12px;color:var(--yellow);font-weight:500;margin-top:3px;letter-spacing:.02em}
+p{margin:0;font-size:13px;color:var(--muted)}
+label{display:grid;gap:6px;font-size:12px;color:var(--muted)}
+input{min-height:42px;padding:0 12px;border-radius:9px;border:1px solid var(--line);background:#0A0F17;color:var(--white);font:inherit;font-size:15px;min-width:0}
+input:focus{outline:2px solid var(--blue);outline-offset:1px}
+button{min-height:42px;padding:0 16px;border-radius:9px;border:0;background:var(--blue);color:var(--white);font:inherit;font-weight:600;cursor:pointer}
+button[disabled]{opacity:.55;cursor:default}
+button.link{background:none;color:var(--muted);font-weight:400;text-decoration:underline;min-height:0;padding:0;justify-self:start}
+.msg{font-size:13px;min-height:20px;color:#FFD866}
+.msg.ok{color:var(--ok)}.msg.err{color:var(--err)}
+.code{display:grid;gap:10px}
+.foot{font-size:11px;color:#5E6B82;text-align:center}
+.spin{width:18px;height:18px;border-radius:50%;border:2px solid var(--line);border-top-color:var(--yellow);animation:t 0.9s linear infinite;display:inline-block;vertical-align:-4px;margin-right:8px}
+@keyframes t{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.spin{animation:none}}
+</style>
+</head>
+<body>
+<main class="box" aria-live="polite">
+  <div class="brand"><div class="sun" aria-hidden="true"></div><h1>SUNLINK OS<small>Groupe SUNLINK · espace de direction</small></h1></div>
+  <div id="view"><p><span class="spin" aria-hidden="true"></span>Vérification de la connexion…</p></div>
+  <div class="foot">Connexion par lien ou code envoyé par e-mail · aucun mot de passe</div>
+</main>
+<script src="env.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" crossorigin="anonymous"></script>
+<script>
+(function () {
+  'use strict';
+  var ENV = window.SLOS_ENV || {};
+  var BUCKET = 'app', FICHIER = 'direction.html';
+  var view = document.getElementById('view');
+  var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+  var show = function (html) { view.innerHTML = html; };
+  var wait = function (t) { show('<p><span class="spin" aria-hidden="true"></span>' + esc(t) + '</p>'); };
+
+  if (!window.supabase || !ENV.SUPABASE_URL || !ENV.SUPABASE_ANON_KEY) {
+    show('<p class="msg err">Configuration absente (env.js ou bibliothèque Supabase non chargée). Recharge la page ; si le problème persiste, préviens Julien.</p>');
+    return;
+  }
+  var client = window.supabase.createClient(ENV.SUPABASE_URL, ENV.SUPABASE_ANON_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
+  var ouvert = false, sub = null;
+
+  function nettoyerUrl() {
+    try {
+      var h = location.hash || '';
+      if (/access_token=|refresh_token=|error_description=|type=magiclink|type=invite|type=signup/.test(h)) history.replaceState(null, '', location.pathname + location.search);
+    } catch (e) { /* ignoré */ }
+  }
+
+  function deconnexion() { client.auth.signOut().then(function () { location.reload(); }, function () { location.reload(); }); }
+
+  function formulaire() {
+    show('<form class="box-form" style="display:grid;gap:12px">' +
+      '<p>Entre ton adresse e-mail : tu reçois un lien de connexion (et un code si le message en contient un).</p>' +
+      '<label>Adresse e-mail<input type="email" name="email" autocomplete="email" required placeholder="prenom@sunlink-energies.fr"></label>' +
+      '<button type="submit">Recevoir mon lien de connexion</button>' +
+      '<div class="msg" role="status"></div>' +
+      '<div class="code" hidden><label>Code reçu par e-mail<input name="code" inputmode="numeric" autocomplete="one-time-code" placeholder="123456"></label><button type="button" class="verify">Valider le code</button></div>' +
+      '</form>');
+    var form = view.querySelector('form'), msg = view.querySelector('.msg'), code = view.querySelector('.code'), btn = form.querySelector('button[type=submit]');
+    var say = function (t, cls) { msg.textContent = t; msg.className = 'msg ' + (cls || ''); };
+    var dernier = '';
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var v = String(form.elements.email.value || '').trim().toLowerCase(); if (!v) return;
+      btn.disabled = true; say('Envoi du lien…');
+      client.auth.signInWithOtp({ email: v, options: { emailRedirectTo: location.origin + location.pathname, shouldCreateUser: true } }).then(function (r) {
+        btn.disabled = false;
+        if (r.error) { say('Envoi impossible : ' + r.error.message, 'err'); return; }
+        dernier = v; code.hidden = false;
+        say('Lien envoyé à ' + v + '. Ouvre-le sur cet appareil, ou saisis le code ci-dessous. Pense aux indésirables.', 'ok');
+      }, function (err) { btn.disabled = false; say('Réseau indisponible : ' + (err && err.message || err), 'err'); });
+    });
+    view.querySelector('.verify').addEventListener('click', function () {
+      var t = String(form.elements.code.value || '').replace(/\s/g, '');
+      if (!t || !dernier) { say('Demande d\'abord le lien, puis saisis le code.', 'err'); return; }
+      say('Vérification…');
+      client.auth.verifyOtp({ email: dernier, token: t, type: 'email' }).then(function (r) {
+        if (r.error || !r.data || !r.data.session) { say('Code refusé : ' + (r.error ? r.error.message : 'réessaie'), 'err'); return; }
+        ouvrir(r.data.session);
+      }, function (err) { say('Réseau indisponible : ' + (err && err.message || err), 'err'); });
+    });
+    setTimeout(function () { try { form.elements.email.focus(); } catch (e) { /* ignoré */ } }, 50);
+  }
+
+  function refus(session, texte) {
+    show('<p class="msg err">' + esc(texte) + '</p><p>Connecté·e : ' + esc(session.user && session.user.email) + '</p><button type="button" class="link" id="out">Se déconnecter</button>');
+    document.getElementById('out').addEventListener('click', deconnexion);
+  }
+
+  /* Propriétaire seulement : déposer (ou remplacer) l'application dans l'espace sécurisé, puis l'ouvrir. */
+  function depot(session) {
+    show('<p>Connecté·e en propriétaire : ' + esc(session.user && session.user.email) + '.</p>' +
+      '<p>L\'application n\'est pas encore déposée dans l\'espace sécurisé. Choisis le fichier <b>direction.html</b> reçu de Claude.</p>' +
+      '<label>Fichier de l\'application<input type="file" id="f" accept=".html,text/html"></label>' +
+      '<div class="msg" role="status"></div><button type="button" class="link" id="out">Se déconnecter</button>');
+    var msg = view.querySelector('.msg');
+    document.getElementById('out').addEventListener('click', deconnexion);
+    document.getElementById('f').addEventListener('change', function (e) {
+      var f = e.target.files && e.target.files[0]; if (!f) return;
+      if (!/\.html?$/i.test(f.name) || f.size < 100000) { msg.textContent = 'Ce fichier ne ressemble pas à l\'application (direction.html, environ 1,7 Mo).'; msg.className = 'msg err'; return; }
+      msg.textContent = 'Dépôt en cours (' + Math.round(f.size / 1024) + ' Ko)…'; msg.className = 'msg';
+      client.storage.from(BUCKET).upload(FICHIER, f, { upsert: true, contentType: 'text/html; charset=utf-8', cacheControl: '60' }).then(function (r) {
+        if (r.error) { msg.textContent = 'Dépôt refusé : ' + r.error.message; msg.className = 'msg err'; return; }
+        msg.textContent = 'Application déposée. Ouverture…'; msg.className = 'msg ok';
+        setTimeout(function () { ouvrir(session); }, 400);
+      }, function (err) { msg.textContent = 'Réseau indisponible : ' + (err && err.message || err); msg.className = 'msg err'; });
+    });
+  }
+
+  function ouvrir(session) {
+    if (ouvert || !session) return;
+    ouvert = true; nettoyerUrl();
+    wait('Connexion réussie. Vérification de ton accès…');
+    client.rpc('slos_my_level').then(function (r) {
+      var niveau = (r && typeof r.data === 'number') ? r.data : 0;
+      if (r && r.error) { ouvert = false; refus(session, 'Lecture de ton rôle impossible : ' + r.error.message); return; }
+      if (niveau < 3) { ouvert = false; refus(session, 'Ton compte est bien connecté, mais l\'espace de direction est réservé aux rôles Éditeur et Propriétaire. Demande une invitation à Julien.'); return; }
+      wait('Chargement de SUNLINK OS…');
+      return client.storage.from(BUCKET).download(FICHIER).then(function (d) {
+        if (d.error || !d.data) { ouvert = false; if (niveau >= 4) depot(session); else refus(session, 'Application introuvable dans l\'espace sécurisé (' + (d.error ? d.error.message : 'fichier absent') + ').'); return; }
+        return d.data.text().then(function (html) {
+          try { client.auth.stopAutoRefresh(); } catch (e) { /* ignoré */ }
+          try { if (sub) sub.data.subscription.unsubscribe(); } catch (e) { /* ignoré */ }
+          document.open(); document.write(html); document.close();
+        });
+      });
+    }).catch(function (err) { ouvert = false; refus(session, 'Erreur : ' + (err && err.message || err)); });
+  }
+
+  sub = client.auth.onAuthStateChange(function (ev, session) { if ((ev === 'SIGNED_IN' || ev === 'INITIAL_SESSION') && session) ouvrir(session); });
+  client.auth.getSession().then(function (r) {
+    var s = r && r.data && r.data.session;
+    if (s) ouvrir(s); else if (!ouvert) formulaire();
+  }, function () { formulaire(); });
+})();
+</script>
+</body>
+</html>

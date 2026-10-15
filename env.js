@@ -1,0 +1,2 @@
+/* Adresse et clé publique (anon) du projet Supabase : publiques par conception. La sécurité est assurée par les règles d'accès (RLS) côté base. */
+window.SLOS_ENV = {"SUPABASE_URL": "https://hzbpydzxigcmwbkzkbgd.supabase.co", "SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh6YnB5ZHp4aWdjbXdia3prYmdkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIwMTE3NzgsImV4cCI6MjEwNzU4Nzc3OH0.FDlWjbmVjqpbmAPpzX7H5Dbxisd4fgNAc56NaE670YM"};
