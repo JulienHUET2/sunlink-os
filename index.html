@@ -5,160 +5,1165 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#00070D">
 <meta name="robots" content="noindex,nofollow">
+<meta name="description" content="SUNLINK OS · Groupe SUNLINK · pilotage. Connexion par lien ou code reçu par e-mail.">
 <title>SUNLINK OS</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600&display=swap">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&display=swap">
 <style>
-/* Page publique de SUNLINK OS : connexion seulement. Aucune donnée ici.
-   Après connexion, l'application complète est téléchargée depuis Supabase Storage (bucket privé « app »),
-   lisible uniquement par les rôles admin et owner (règles slos_app_read), puis affichée à la place de cette page. */
-:root{--bg:#00070D;--card:#141C2B;--line:#253046;--fg:#C9D0DC;--muted:#97A1B4;--white:#fff;--yellow:#FEC61E;--blue:#0183FF;--ok:#7BE3A5;--err:#FF8A8A;color-scheme:dark}
-*{box-sizing:border-box}
-html,body{margin:0;height:100%}
-body{background:var(--bg);color:var(--fg);font:15px/1.5 Lexend,"Segoe UI",system-ui,sans-serif;display:grid;place-items:center;padding:16px}
-.box{width:100%;max-width:420px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:26px 24px;display:grid;gap:14px}
-.brand{display:flex;align-items:center;gap:12px}
-.sun{width:34px;height:34px;border-radius:50%;background:var(--yellow);flex:none;box-shadow:0 0 24px rgba(254,198,30,.35)}
-h1{margin:0;font-size:20px;line-height:1.2;color:var(--white);font-weight:600;text-wrap:balance}
-h1 small{display:block;font-size:12px;color:var(--yellow);font-weight:500;margin-top:3px;letter-spacing:.02em}
-p{margin:0;font-size:13px;color:var(--muted)}
-label{display:grid;gap:6px;font-size:12px;color:var(--muted)}
-input{min-height:42px;padding:0 12px;border-radius:9px;border:1px solid var(--line);background:#0A0F17;color:var(--white);font:inherit;font-size:15px;min-width:0}
-input:focus{outline:2px solid var(--blue);outline-offset:1px}
-button{min-height:42px;padding:0 16px;border-radius:9px;border:0;background:var(--blue);color:var(--white);font:inherit;font-weight:600;cursor:pointer}
-button[disabled]{opacity:.55;cursor:default}
-button.link{background:none;color:var(--muted);font-weight:400;text-decoration:underline;min-height:0;padding:0;justify-self:start}
-.msg{font-size:13px;min-height:20px;color:#FFD866}
-.msg.ok{color:var(--ok)}.msg.err{color:var(--err)}
-.code{display:grid;gap:10px}
-.foot{font-size:11px;color:#5E6B82;text-align:center}
-.spin{width:18px;height:18px;border-radius:50%;border:2px solid var(--line);border-top-color:var(--yellow);animation:t 0.9s linear infinite;display:inline-block;vertical-align:-4px;margin-right:8px}
-@keyframes t{to{transform:rotate(360deg)}}
-@media (prefers-reduced-motion:reduce){.spin{animation:none}}
+/* =====================================================================================
+   SUNLINK OS · page d'entrée publique (GitHub Pages). AUCUNE donnée métier ici.
+   1. Connexion par lien ou code e-mail (Supabase Auth, sans mot de passe).
+   2. Un seul appel après connexion : rpc('slos_accueil') → niveau, sociétés, demande d'accès.
+   3. Membres : sélecteur de société (première page de l'application) ; nouveaux inscrits : demande d'accès.
+   4. Direction (niveau ≥ 3) : relecture des données du serveur (rien ne se perd), puis téléchargement de
+      l'application depuis Supabase Storage (bucket privé « app », direction.html) et document.write.
+   ===================================================================================== */
+:root{
+  --jaune:#FEC61E;--jaune-f:#F2B705;--bleu:#0183FF;--bleu-f:#0060BF;--bleu-c:#E3F0FF;--bleu-sombre:#2A324B;
+  --encre:#00070D;--fond:#F4F5F6;--surface:#FFFFFF;--surface-2:#F9FCFF;--neutre:#EAEBED;--trait:#DADEE4;--doux:#5E6678;--doux-2:#8A93A6;
+  --ok:#114E0B;--ok-bg:#CEF5CA;--att:#5E5515;--att-bg:#FCF8D8;--err:#3B0B0B;--err-bg:#F8E4E4;
+  --nuit:#00070D;--nuit-2:#141C2B;--nuit-3:#1B2436;--nuit-trait:#253046;--nuit-txt:#C9D0DC;--nuit-doux:#8FA3C7;
+  --r1:9px;--r2:14px;--r3:999px;
+  --ombre:0 1px 2px rgba(0,7,13,.05),0 12px 32px rgba(0,7,13,.07);
+  --police:Lexend,"Segoe UI",system-ui,-apple-system,Roboto,"Helvetica Neue",Arial,sans-serif;
+  color-scheme:light;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{margin:0;min-height:100vh;background:var(--fond);color:var(--encre);font:15px/1.5 var(--police);-webkit-font-smoothing:antialiased;overflow-wrap:break-word}
+button,input,textarea,select{font:inherit;color:inherit}
+h1,h2,h3,p,ul,dl,dd{margin:0}
+p,li,dd{text-wrap:pretty}
+[hidden]{display:none!important}
+.nowrap{white-space:nowrap}
+.sr{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+:focus-visible{outline:3px solid var(--bleu);outline-offset:2px}
+[tabindex="-1"]:focus{outline:none}
+.ico{display:inline-flex;width:16px;height:16px;flex:none}
+.ico svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.soleil{display:inline-flex;flex:none;width:32px;height:32px}
+.soleil svg{width:100%;height:100%}
+
+/* ---------- boutons ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:8px 18px;border-radius:var(--r1);border:1px solid transparent;font-weight:600;font-size:15px;line-height:1.25;cursor:pointer;text-align:center;transition:background-color .15s,border-color .15s,box-shadow .15s,color .15s}
+.btn[disabled]{opacity:.55;cursor:default}
+.btn-jaune{background:var(--jaune);color:var(--encre)}
+.btn-jaune:hover:not([disabled]){background:var(--jaune-f)}
+.btn-bleu{background:var(--bleu);color:#fff}
+.btn-bleu:hover:not([disabled]){background:var(--bleu-f)}
+.btn-sec{background:var(--surface);color:var(--encre);border-color:var(--trait)}
+.btn-sec:hover:not([disabled]){border-color:#B9C0CC;background:var(--surface-2)}
+.btn-rouge{background:var(--surface);color:var(--err);border-color:#E9C9C9}
+.btn-rouge:hover:not([disabled]){background:var(--err-bg)}
+.btn-lien{display:inline-flex;align-items:center;gap:6px;background:none;border:0;padding:4px 0;min-height:36px;color:var(--bleu-f);font-weight:500;font-size:14px;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.btn-lien:hover{color:var(--encre)}
+.btn-plein{width:100%}
+.btn-nuit{background:transparent;color:var(--nuit-txt);border-color:var(--nuit-trait);min-height:40px;padding:6px 12px;font-weight:500;font-size:14px;white-space:nowrap}
+.btn-nuit:hover{background:var(--nuit-2);color:#fff}
+.actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+
+/* ---------- champs et messages ---------- */
+.champ{display:grid;gap:6px;min-width:0}
+.champ>label,.lbl{font-size:13.5px;font-weight:500;color:var(--encre)}
+.champ .aide,.aide{font-size:12.5px;color:var(--doux)}
+.input{display:block;width:100%;min-width:0;min-height:46px;padding:10px 14px;border:1px solid var(--trait);border-radius:var(--r1);background:var(--surface);font-size:16px;color:var(--encre);transition:border-color .15s,box-shadow .15s}
+.input:hover{border-color:#B9C0CC}
+.input:focus{outline:none;border-color:var(--bleu);box-shadow:0 0 0 3px rgba(1,131,255,.22)}
+.input::placeholder{color:#9AA1AE}
+textarea.input{min-height:112px;resize:vertical;line-height:1.45}
+.input-code{font-size:22px;letter-spacing:.28em;font-variant-numeric:tabular-nums;text-align:center;font-weight:600}
+.input-code::placeholder{letter-spacing:.28em;font-weight:400}
+.msg{font-size:14px;line-height:1.45;border-radius:var(--r1)}
+.msg:empty{display:none}
+.msg.ok,.msg.att,.msg.err,.msg.info{padding:10px 12px}
+.msg.ok{background:var(--ok-bg);color:var(--ok)}
+.msg.att{background:var(--att-bg);color:var(--att)}
+.msg.err{background:var(--err-bg);color:var(--err)}
+.msg.info{background:var(--surface-2);color:var(--doux);border:1px solid var(--neutre)}
+.compteur-car{font-size:12px;color:var(--doux);text-align:right;font-variant-numeric:tabular-nums}
+.voyant{flex:none;display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;line-height:1;padding:5px 10px;border-radius:var(--r3);white-space:nowrap}
+.voyant::before{content:"";width:7px;height:7px;border-radius:var(--r3);background:currentColor;opacity:.75}
+.voyant.ok{background:var(--ok-bg);color:var(--ok)}
+.voyant.att{background:var(--att-bg);color:var(--att)}
+.voyant.alarme{background:var(--err-bg);color:var(--err)}
+.voyant.inconnu{background:var(--neutre);color:var(--doux)}
+.etiquette{display:inline-flex;align-items:center;font-size:11.5px;font-weight:500;line-height:1.3;padding:3px 9px;border-radius:var(--r3);background:var(--bleu-c);color:var(--bleu-f);white-space:nowrap}
+.etiquette.neutre{background:var(--neutre);color:var(--doux)}
+.carte{width:100%;background:var(--surface);border:1px solid var(--neutre);border-radius:var(--r2);box-shadow:var(--ombre)}
+.surtitre{font-size:11.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--doux)}
+
+/* ---------- marque ---------- */
+.marque{display:flex;align-items:center;gap:12px;min-width:0}
+.marque b{display:block;font-size:18px;font-weight:700;color:#fff;letter-spacing:.01em;line-height:1.1}
+.marque small{display:block;font-size:12px;color:var(--jaune);font-weight:500;margin-top:3px;white-space:nowrap}
+
+/* ---------- connexion ---------- */
+.cx{min-height:100vh;min-height:100dvh;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto 1fr}
+.cx-marque{position:relative;overflow:hidden;background:radial-gradient(520px 320px at 100% 100%,rgba(254,198,30,.16),transparent 70%),radial-gradient(420px 300px at 0% 0%,rgba(1,131,255,.12),transparent 70%),var(--nuit);color:var(--nuit-txt);padding:22px 20px 26px;display:flex;flex-direction:column;gap:18px}
+.cx-marque .soleil{width:36px;height:36px}
+.cx-accroche{display:grid;gap:10px}
+.cx-accroche h2{font-size:21px;line-height:1.25;font-weight:600;color:#fff;letter-spacing:-.01em;max-width:24ch;text-wrap:balance}
+.cx-points,.cx-schema,.cx-sign{display:none}
+.cx-schema-boite{display:block;line-height:0}
+.cx-form{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:16px;padding:24px 16px 36px}
+.cx-carte{max-width:440px;padding:26px 22px;display:grid;gap:18px}
+.cx-carte h1{font-size:25px;line-height:1.2;font-weight:600;letter-spacing:-.01em}
+.cx-carte .intro{color:var(--doux);font-size:14.5px}
+.cx-etape{display:grid;gap:14px}
+.cx-envoye{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border-radius:var(--r1);background:var(--ok-bg);color:var(--ok);font-size:14px;line-height:1.45}
+.cx-envoye .ico{width:20px;height:20px;margin-top:1px}
+.cx-envoye b{font-weight:600;overflow-wrap:anywhere}
+.cx-liens{display:flex;flex-wrap:wrap;gap:4px 18px}
+.cx-pied{display:flex;align-items:center;justify-content:center;gap:8px;font-size:12.5px;color:var(--doux);text-align:center}
+@media (min-width:900px){
+  .cx{grid-template-columns:minmax(420px,5fr) minmax(0,7fr);grid-template-rows:none}
+  .cx-marque{padding:44px 56px;justify-content:space-between;gap:28px}
+  .cx-marque .soleil{width:40px;height:40px}
+  .cx-marque .marque b{font-size:21px}
+  .cx-marque .marque small{font-size:13px}
+  .cx-accroche{gap:24px}
+  .cx-accroche h2{font-size:36px;line-height:1.14;max-width:470px}
+  .cx-points{display:grid;gap:14px;list-style:none;padding:0;font-size:15.5px;color:var(--nuit-txt);max-width:440px}
+  .cx-points li{display:flex;gap:14px;align-items:flex-start;text-wrap:pretty}
+  .cx-points li::before{content:"";flex:none;width:8px;height:8px;margin-top:8px;border-radius:var(--r3);background:var(--jaune);box-shadow:0 0 0 4px rgba(254,198,30,.16)}
+  .cx-schema{display:block;width:100%;max-width:400px;height:auto}
+  .cx-sign{display:block;font-size:12.5px;color:#6F7A8F}
+  .cx-form{justify-content:center;padding:48px 32px}
+  .cx-carte{padding:38px 38px 34px;gap:20px}
+  .cx-carte h1{font-size:28px}
+}
+
+/* ---------- pages connectées ---------- */
+.page{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
+.barre{background:var(--nuit);color:var(--nuit-txt)}
+.barre-in{max-width:1180px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.barre .soleil{width:30px;height:30px}
+.barre .marque b{font-size:16.5px}
+.barre .marque small{font-size:11.5px}
+.barre-droite{display:flex;align-items:center;gap:14px;min-width:0}
+.qui{display:none;font-size:13px;color:var(--nuit-doux);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:300px}
+.contenu{flex:1;width:100%;max-width:1180px;margin:0 auto;padding:24px 16px 48px;display:flex;flex-direction:column;gap:22px}
+.pied-page{font-size:12.5px;color:var(--doux);display:flex;flex-wrap:wrap;gap:4px 14px;justify-content:space-between;border-top:1px solid var(--neutre);padding-top:16px;margin-top:6px}
+@media (max-width:479px){.barre .marque small{display:none}}
+@media (min-width:640px){.qui{display:block}}
+@media (min-width:900px){.barre-in{padding:14px 32px}.contenu{padding:36px 32px 64px;gap:26px}}
+
+/* ---------- sélecteur ---------- */
+.tete{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px}
+.tete-txt{min-width:0}
+.tete .date{font-size:13px;color:var(--doux)}
+.tete h1{font-size:28px;line-height:1.15;font-weight:600;letter-spacing:-.01em;margin-top:2px}
+.tete .sous{color:var(--doux);margin-top:6px;font-size:14.5px}
+.reprendre{max-width:100%}
+.reprendre span{overflow:hidden;text-overflow:ellipsis}
+.outils{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.recherche{flex:1 1 260px;min-width:0;display:flex;align-items:center;gap:10px;min-height:46px;padding:0 14px;border:1px solid var(--trait);border-radius:var(--r1);background:var(--surface);color:var(--doux)}
+.recherche:hover{border-color:#B9C0CC}
+.recherche:focus-within{border-color:var(--bleu);box-shadow:0 0 0 3px rgba(1,131,255,.22)}
+.recherche input{flex:1;min-width:0;border:0;background:none;outline:none;font-size:16px;color:var(--encre);min-height:44px;padding:0}
+.recherche input::placeholder{color:#9AA1AE}
+.liste{display:flex;flex-direction:column;gap:24px}
+.grp{display:grid;gap:12px}
+.grp-titre{display:flex;align-items:center;gap:12px;font-size:11.5px;font-weight:600;letter-spacing:.12em;color:var(--doux);text-transform:uppercase}
+.grp-titre::after{content:"";flex:1;height:1px;background:var(--trait)}
+.grp-titre .n{order:2;font-weight:500;letter-spacing:0}
+.grille{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,244px),1fr));gap:14px}
+.soc{position:relative;display:flex;flex-direction:column;gap:12px;width:100%;min-width:0;text-align:left;padding:16px 16px 14px;background:var(--surface);border:1px solid var(--neutre);border-radius:var(--r2);cursor:pointer;color:var(--encre);font-size:14px;line-height:1.4;transition:border-color .15s,box-shadow .15s,transform .15s}
+.soc:hover{border-color:#C6CFDB;box-shadow:var(--ombre);transform:translateY(-1px)}
+.soc-haut{display:flex;align-items:flex-start;gap:10px;min-width:0}
+.pastille{flex:none;display:inline-block;width:12px;height:12px;border-radius:var(--r3);margin-top:5px;background:var(--doux-2);box-shadow:0 0 0 3px rgba(0,7,13,.06)}
+.soc-id{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.soc-nom{font-size:16px;font-weight:600;line-height:1.3;overflow-wrap:anywhere}
+.soc-role{font-size:13px;color:var(--doux);line-height:1.35}
+.cpts{display:flex;flex-direction:column;gap:5px;min-width:0;padding:10px 12px;background:var(--surface-2);border:1px solid #EDF0F4;border-radius:var(--r1)}
+.cpts-titre{font-size:10.5px;font-weight:600;letter-spacing:.12em;color:var(--doux);text-transform:uppercase}
+.cpt{display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-size:13.5px}
+.cpt-l{color:var(--doux);min-width:0}
+.cpt-v{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.cpt-v.zero,.cpt-v.inconnu{color:var(--doux-2);font-weight:500}
+.cpt-v.chaud{background:var(--err-bg);color:var(--err);padding:0 7px;border-radius:var(--r3)}
+.rien{display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--ok);font-weight:500;padding:10px 12px;background:#F1FBF0;border:1px solid #D9F2D5;border-radius:var(--r1)}
+.soc-etat{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding-left:22px}
+.soc-pied{display:flex;margin-top:auto;font-size:12px;color:var(--doux)}
+.soc.dernier{border:2px solid var(--bleu);padding:15px 15px 13px}
+.soc.vue-groupe{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;padding:20px;background:radial-gradient(520px 240px at 100% 0%,rgba(254,198,30,.14),transparent 70%),var(--nuit);border-color:var(--nuit);color:#fff}
+.soc.vue-groupe:hover{border-color:var(--nuit-trait)}
+.soc.vue-groupe.dernier{border:2px solid var(--jaune);padding:19px}
+.vg-g,.vg-d{display:flex;flex-direction:column;gap:12px;min-width:0}
+.vg-tete{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px}
+.vg-sur{font-size:11px;font-weight:600;letter-spacing:.14em;color:var(--jaune);text-transform:uppercase}
+.vue-groupe .soc-nom{font-size:20px;color:#fff}
+.vue-groupe .soc-role{color:var(--nuit-doux)}
+.vue-groupe .cpts{background:var(--nuit-2);border-color:var(--nuit-trait)}
+.vue-groupe .cpt-l,.vue-groupe .cpts-titre{color:var(--nuit-doux)}
+.vue-groupe .cpt-v{color:#fff}
+.vue-groupe .cpt-v.zero,.vue-groupe .cpt-v.inconnu{color:#6F7A8F}
+.vue-groupe .rien{background:rgba(206,245,202,.08);border-color:rgba(206,245,202,.22);color:var(--ok-bg)}
+.vue-groupe .etiquette{background:rgba(254,198,30,.16);color:var(--jaune)}
+.puces{display:flex;flex-wrap:wrap;gap:6px 8px}
+.puce{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:var(--nuit-txt);background:var(--nuit-2);border:1px solid var(--nuit-trait);border-radius:var(--r3);padding:3px 10px 3px 8px}
+.puce i{width:8px;height:8px;border-radius:var(--r3);background:var(--doux-2);box-shadow:0 0 0 1.5px rgba(255,255,255,.28)}
+@media (min-width:760px){.soc.vue-groupe{grid-template-columns:minmax(0,1.35fr) minmax(250px,1fr);align-items:center;gap:28px;padding:22px 24px}.soc.vue-groupe.dernier{padding:21px 23px}}
+.vide{display:grid;gap:10px;justify-items:start;padding:18px;border:1px dashed var(--trait);border-radius:var(--r2);color:var(--doux);background:var(--surface)}
+.bandeau{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 16px;padding:14px 16px;border-radius:var(--r2);background:var(--att-bg);border:1px solid #EEE4A3;color:var(--att)}
+.bandeau-txt{display:flex;gap:12px;align-items:flex-start;min-width:0}
+.bandeau-txt .ico{width:20px;height:20px;margin-top:2px}
+.bandeau h2{font-size:16px;font-weight:600;color:var(--encre)}
+.bandeau p{font-size:13.5px}
+.bloc-dem{display:grid;gap:14px}
+.dems{display:grid;gap:14px}
+.dem{padding:18px;display:grid;gap:16px}
+.dem-tete{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:4px 12px}
+.dem-nom{font-size:17px;font-weight:600}
+.dem-mail{font-size:13.5px;color:var(--doux);overflow-wrap:anywhere}
+.dem-date{font-size:12.5px;color:var(--doux)}
+.dem-infos{display:grid;grid-template-columns:minmax(0,auto) minmax(0,1fr);gap:4px 14px;font-size:14px}
+.dem-infos dt{color:var(--doux)}
+.dem-infos dd{overflow-wrap:anywhere;white-space:pre-wrap}
+fieldset{border:0;padding:0;margin:0;min-width:0}
+legend{font-size:13.5px;font-weight:600;margin-bottom:8px;padding:0}
+.opts{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,190px),1fr));gap:8px}
+.opts-soc{grid-template-columns:repeat(auto-fill,minmax(min(100%,150px),1fr))}
+.opt{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border:1px solid var(--trait);border-radius:var(--r1);cursor:pointer;font-size:14px;line-height:1.35;background:var(--surface);min-width:0}
+.opt:hover{border-color:#B9C0CC}
+.opt:has(input:checked){border-color:var(--bleu);background:var(--bleu-c)}
+.opt:has(input:focus-visible){outline:3px solid var(--bleu);outline-offset:2px}
+.opt input{margin:1px 0 0;accent-color:var(--bleu);width:17px;height:17px;flex:none}
+.opt small{display:block;font-size:12px;color:var(--doux);margin-top:2px}
+.opt .pastille{margin-top:4px;width:10px;height:10px}
+.confirm{display:grid;gap:12px;padding:14px;border-radius:var(--r1);background:var(--att-bg);color:var(--att);border:1px solid #EEE4A3}
+.confirm p{font-size:14.5px;color:var(--encre)}
+
+/* ---------- bienvenue, attente, erreurs ---------- */
+.centre{width:100%;max-width:640px;margin:0 auto;display:grid;gap:18px}
+.bv{padding:24px 20px;display:grid;gap:18px}
+.bv h1{font-size:26px;line-height:1.2;font-weight:600;letter-spacing:-.01em}
+.bv .intro{color:var(--doux);font-size:14.5px}
+.bv form{display:grid;gap:16px}
+.deux{display:grid;grid-template-columns:minmax(0,1fr);gap:16px}
+.statut-ligne{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px}
+.recap{display:grid;grid-template-columns:minmax(0,auto) minmax(0,1fr);gap:6px 16px;font-size:14px;padding:14px 16px;background:var(--surface-2);border:1px solid var(--neutre);border-radius:var(--r1)}
+.recap dt{color:var(--doux)}
+.recap dd{overflow-wrap:anywhere;white-space:pre-wrap}
+@media (min-width:640px){.bv{padding:32px}.deux{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+.attente{flex:1;display:grid;place-items:center;padding:56px 16px}
+.attente-boite{display:grid;justify-items:center;gap:12px;text-align:center;max-width:440px}
+.attente-boite .soleil{width:58px;height:58px;margin-bottom:6px;animation:souffle 2.4s ease-in-out infinite}
+.attente-txt{font-size:18px;font-weight:600}
+.attente-sous{font-size:14px;color:var(--doux)}
+.prog{width:220px;max-width:100%;height:4px;border-radius:var(--r3);background:var(--neutre);overflow:hidden;position:relative;margin-top:6px}
+.prog::after{content:"";position:absolute;top:0;bottom:0;left:0;width:38%;background:var(--jaune);border-radius:var(--r3);animation:glisse 1.3s ease-in-out infinite}
+.seul{min-height:100vh;display:grid;place-items:center;padding:24px 16px;background:var(--nuit);color:var(--nuit-txt)}
+.seul .attente-txt{color:#fff;font-weight:500;font-size:15px}
+.seul .prog{background:var(--nuit-3)}
+.boite-err{padding:24px 20px;display:grid;gap:16px}
+.boite-err h1{font-size:22px;line-height:1.25;font-weight:600}
+.boite-err .msg{white-space:pre-wrap}
+.bientot-soc{display:flex;align-items:center;gap:10px;font-weight:600}
+.bt h1{font-size:22px}
+@media (min-width:640px){.bt h1{font-size:26px}}
+@keyframes glisse{0%{transform:translateX(-110%)}100%{transform:translateX(280%)}}
+@keyframes souffle{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+.noscript{margin:24px 16px;padding:14px;border-radius:9px;background:#F8E4E4;color:#3B0B0B;font:15px/1.5 system-ui,sans-serif}
 </style>
 </head>
 <body>
-<main class="box" aria-live="polite">
-  <div class="brand"><div class="sun" aria-hidden="true"></div><h1>SUNLINK OS<small>Groupe SUNLINK · espace de direction</small></h1></div>
-  <div id="view"><p><span class="spin" aria-hidden="true"></span>Vérification de la connexion…</p></div>
-  <div class="foot">Connexion par lien ou code envoyé par e-mail · aucun mot de passe</div>
-</main>
+<div id="app" data-ecran="chargement">
+  <div class="seul"><div class="attente-boite" role="status"><span class="attente-txt">Vérification de la connexion…</span></div></div>
+</div>
+<div id="annonce" class="sr" aria-live="polite"></div>
+<noscript><p class="noscript">SUNLINK OS a besoin de JavaScript pour la connexion.</p></noscript>
 <script src="env.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js" crossorigin="anonymous"></script>
 <script>
-(function () {
+(() => {
   'use strict';
-  var ENV = window.SLOS_ENV || {};
-  var BUCKET = 'app', FICHIER = 'direction.html';
-  var view = document.getElementById('view');
-  var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
-  var show = function (html) { view.innerHTML = html; };
-  var wait = function (t) { show('<p><span class="spin" aria-hidden="true"></span>' + esc(t) + '</p>'); };
+  const ENV = window.SLOS_ENV || {};
+  const BUCKET = 'app', FICHIER = 'direction.html';
+  const DELAI_SYNC = 8000;   // relecture des données : jamais plus de 8 s d'attente avant d'ouvrir l'app
+  const PAGE = 1000;         // lignes lues par requête (limite habituelle de Supabase)
+  const CLE = { choix: 'slos.choix', apousser: 'slos.apousser', alerte: 'slos.sync.alerte', groupe: 'slos.selecteur.groupe', dernier: 'slos.selecteur.dernier', uid: 'slos.__uid' };
+  const ROLE_LIB = { view: 'Lecteur', interact: 'Contributeur', admin: 'Éditeur', owner: 'Propriétaire' };
+  const MSG_RESEAU = 'Réseau indisponible : vérifie ta connexion, puis réessaie.';
+  const racine = document.getElementById('app');
+  const annonce = document.getElementById('annonce');
 
-  if (!window.supabase || !ENV.SUPABASE_URL || !ENV.SUPABASE_ANON_KEY) {
-    show('<p class="msg err">Configuration absente (env.js ou bibliothèque Supabase non chargée). Recharge la page ; si le problème persiste, préviens Julien.</p>');
-    return;
+  /* ---------- stockage du navigateur : jamais d'exception (navigation privée, quota) ---------- */
+  const zone = (nom) => ({
+    get: (k) => { try { return window[nom].getItem(k); } catch (e) { return null; } },
+    set: (k, v) => { try { window[nom].setItem(k, v); return true; } catch (e) { return false; } },
+    del: (k) => { try { window[nom].removeItem(k); } catch (e) { /* ignoré */ } },
+    cles: () => { const out = []; try { const s = window[nom]; for (let i = 0; i < s.length; i++) out.push(s.key(i)); } catch (e) { /* ignoré */ } return out; }
+  });
+  const LS = zone('localStorage'), SS = zone('sessionStorage');
+
+  /* ---------- construction du DOM : les textes passent toujours par textContent ---------- */
+  /* typographie : espace insécable avant « : ; ! ? » et dans les guillemets, noms jamais coupés */
+  const typo = (t) => String(t).replace(/ ([:;!?»])/g, '\u00a0$1').replace(/« /g, '«\u00a0').replace(/\bJulien HUET\b/g, 'Julien\u00a0HUET').replace(/\bSUNLINK OS\b/g, 'SUNLINK\u00a0OS');
+  function h(tag, props, ...enfants) {
+    const el = document.createElement(tag);
+    if (props) Object.keys(props).forEach((k) => {
+      const v = props[k];
+      if (v == null || v === false) return;
+      if (k === 'class') el.className = v;
+      else if (k === 'text') el.textContent = typo(v);
+      else if (k.slice(0, 2) === 'on' && typeof v === 'function') el.addEventListener(k.slice(2), v);
+      else if (k === 'value' || k === 'checked' || k === 'hidden' || k === 'disabled') el[k] = v;
+      else el.setAttribute(k, v === true ? '' : String(v));
+    });
+    const ajoute = (c) => { if (c == null || c === false) return; if (Array.isArray(c)) c.forEach(ajoute); else el.appendChild(typeof c === 'string' || typeof c === 'number' ? document.createTextNode(typo(c)) : c); };
+    enfants.forEach(ajoute);
+    return el;
   }
-  var client = window.supabase.createClient(ENV.SUPABASE_URL, ENV.SUPABASE_ANON_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
-  var ouvert = false, sub = null;
+  /* icônes : chaînes constantes, jamais de donnée */
+  const SVG = {
+    soleil: '<svg viewBox="0 0 30 30" aria-hidden="true" focusable="false"><circle cx="15" cy="17" r="7" fill="#FEC61E"/><path d="M3 17h24" stroke="#FEC61E" stroke-width="2" stroke-linecap="round"/><path d="M15 4v4M6 8l2.5 2.5M24 8l-2.5 2.5" stroke="#FEC61E" stroke-width="2" stroke-linecap="round"/></svg>',
+    sortir: '<svg viewBox="0 0 16 16"><path d="M6.5 2.5h-3a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h3"/><path d="M10.5 11l3-3-3-3M13.5 8h-7"/></svg>',
+    loupe: '<svg viewBox="0 0 16 16"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5L14 14"/></svg>',
+    oeil: '<svg viewBox="0 0 16 16"><path d="M1.5 8S3.9 3.5 8 3.5 14.5 8 14.5 8 12.1 12.5 8 12.5 1.5 8 1.5 8z"/><circle cx="8" cy="8" r="2"/></svg>',
+    oeilBarre: '<svg viewBox="0 0 16 16"><path d="M2.5 2.5l11 11"/><path d="M6.7 3.7A6.2 6.2 0 0 1 8 3.5c4.1 0 6.5 4.5 6.5 4.5a11 11 0 0 1-1.8 2.4M4.3 4.9C2.5 6.2 1.5 8 1.5 8s2.4 4.5 6.5 4.5c1.1 0 2.1-.3 3-.8"/></svg>',
+    fleche: '<svg viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4"/></svg>',
+    retour: '<svg viewBox="0 0 16 16"><path d="M13 8H3M7 4L3 8l4 4"/></svg>',
+    coche: '<svg viewBox="0 0 16 16"><path d="M3 8.5l3 3 7-7"/></svg>',
+    cadenas: '<svg viewBox="0 0 16 16"><rect x="3" y="7" width="10" height="7" rx="1.5"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2"/></svg>',
+    lettre: '<svg viewBox="0 0 16 16"><rect x="2" y="3.5" width="12" height="9" rx="1.5"/><path d="M2.5 4.5L8 9l5.5-4.5"/></svg>',
+    personnes: '<svg viewBox="0 0 16 16"><circle cx="6" cy="5.5" r="2.3"/><path d="M1.8 13.5c0-2.6 1.9-4 4.2-4s4.2 1.4 4.2 4"/><path d="M10.5 3.4a2.2 2.2 0 0 1 0 4.3M12 9.7c1.3.5 2.2 1.7 2.2 3.8"/></svg>',
+    groupe: '<svg viewBox="0 0 16 16"><rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="2" width="5" height="5" rx="1"/><rect x="2" y="9" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1"/></svg>',
+    schema: '<svg class="cx-schema" viewBox="0 0 400 150" aria-hidden="true" focusable="false"><g fill="none" stroke-linecap="round"><path d="M200 8v26" stroke="#FEC61E" stroke-width="2.5"/><path d="M24 34h352" stroke="#2A324B" stroke-width="4"/><g stroke="#2A324B" stroke-width="2"><path d="M44 34v40M110 34v40M176 34v40M290 34v40M356 34v40"/></g><path d="M224 34v40" stroke="#3A4559" stroke-width="2" stroke-dasharray="4 4"/></g><g fill="#141C2B" stroke="#253046"><rect x="22" y="74" width="44" height="44" rx="9"/><rect x="88" y="74" width="44" height="44" rx="9"/><rect x="154" y="74" width="44" height="44" rx="9"/><rect x="202" y="74" width="44" height="44" rx="9" stroke-dasharray="4 3"/><rect x="268" y="74" width="44" height="44" rx="9"/><rect x="334" y="74" width="44" height="44" rx="9"/></g><g><circle cx="44" cy="96" r="6" fill="#CEF5CA"/><circle cx="110" cy="96" r="6" fill="#FCF8D8"/><circle cx="176" cy="96" r="6" fill="#CEF5CA"/><circle cx="224" cy="96" r="6" fill="#F8E4E4"/><circle cx="290" cy="96" r="6" fill="#FCF8D8"/><circle cx="356" cy="96" r="6" fill="#CEF5CA"/></g><circle cx="200" cy="8" r="5" fill="#FEC61E"/><text x="24" y="142" fill="#6F7A8F" font-size="11" font-family="Lexend,Segoe UI,system-ui,sans-serif" letter-spacing="1.4">GROUPE SUNLINK</text><text x="270" y="142" fill="#6F7A8F" font-size="11" font-family="Lexend,Segoe UI,system-ui,sans-serif" letter-spacing="1.4">GROUPE PRIME</text></svg>'
+  };
+  const ico = (nom, cls) => { const s = h('span', { class: (cls || 'ico'), 'aria-hidden': 'true' }); s.innerHTML = SVG[nom]; return s; };
+  const soleil = () => ico('soleil', 'soleil');
+  const marque = () => h('div', { class: 'marque' }, soleil(), h('span', null, h('b', { text: 'SUNLINK OS' }), h('small', { text: 'Groupe SUNLINK · pilotage' })));
+  const dire = (el, texte, cls) => { el.textContent = texte ? typo(texte) : ''; el.className = 'msg' + (texte && cls ? ' ' + cls : ''); };
+  const annoncer = (t) => { annonce.textContent = ''; setTimeout(() => { annonce.textContent = typo(t); }, 30); };
+  const sansAccent = (s) => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+  const num = (v) => (v == null || v === '' || !isFinite(Number(v))) ? null : Number(v);
+  const fmt = (v) => v == null ? '?' : v.toLocaleString('fr-FR');
+  const dateFr = (x) => { const d = new Date(x); return isNaN(d) ? '' : d.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' }); };
+  const pluriel = (n, un, plusieurs) => n + ' ' + (n > 1 ? plusieurs : un);
 
+  /* ---------- état ---------- */
+  let client = null, abonnement = null, session = null, accueil = null, demarre = null;
+  let ouverture = false, ferme = false, generation = 0;
+  const sel = { q: '', demandes: false, flash: null };
+
+  function monter(ecran, titre, contenu) {
+    racine.setAttribute('data-ecran', ecran);
+    racine.textContent = '';
+    racine.appendChild(contenu);
+    document.title = titre ? titre + ' · SUNLINK OS' : 'SUNLINK OS';
+    try { window.scrollTo(0, 0); } catch (e) { /* ignoré */ }
+  }
+  const focaliser = (el) => { if (el) setTimeout(() => { try { el.focus({ preventScroll: true }); } catch (e) { /* ignoré */ } }, 40); };
+
+  /* gabarit des pages connectées : barre sombre (marque, adresse, « Se déconnecter ») */
+  function coquille(...enfants) {
+    const email = (accueil && accueil.email) || (session && session.user && session.user.email) || '';
+    return h('div', { class: 'page' },
+      h('header', { class: 'barre' }, h('div', { class: 'barre-in' }, marque(),
+        h('div', { class: 'barre-droite' },
+          email ? h('span', { class: 'qui', title: email, text: email }) : null,
+          h('button', { type: 'button', class: 'btn btn-nuit', 'data-action': 'deconnexion', onclick: deconnexion }, ico('sortir'), 'Se déconnecter')))),
+      h('main', { id: 'contenu', class: 'contenu', tabindex: '-1' }, ...enfants));
+  }
+
+  function ecranAttente(texte, sous, ecran) {
+    const boite = h('div', { class: 'attente' }, h('div', { class: 'attente-boite', role: 'status' }, soleil(),
+      h('p', { class: 'attente-txt', id: 'attente-txt', text: texte }), sous ? h('p', { class: 'attente-sous', text: sous }) : null, h('div', { class: 'prog', 'aria-hidden': 'true' })));
+    monter(ecran || 'attente', null, session ? coquille(boite) : h('div', { class: 'page' }, boite));
+  }
+  const majAttente = (t) => { const el = document.getElementById('attente-txt'); if (el) el.textContent = t; };
+
+  function ecranErreur(titre, detail, reessayer, retourSelecteur) {
+    const carte = h('section', { class: 'carte boite-err', 'aria-labelledby': 'err-titre' },
+      h('h1', { id: 'err-titre', tabindex: '-1', text: titre }),
+      h('p', { class: 'msg err', role: 'alert', text: detail }),
+      h('div', { class: 'actions' },
+        reessayer ? h('button', { type: 'button', class: 'btn btn-jaune', onclick: reessayer }, 'Réessayer') : null,
+        retourSelecteur && accueil && accueil.niveau >= 1 ? h('button', { type: 'button', class: 'btn btn-sec', onclick: () => { SS.del(CLE.choix); ecranSelecteur(); } }, ico('retour'), 'Revenir aux sociétés') : null,
+        !session ? h('button', { type: 'button', class: 'btn btn-sec', onclick: () => location.reload() }, 'Recharger la page') : null));
+    monter('erreur', 'Erreur', session ? coquille(h('div', { class: 'centre' }, carte)) : h('div', { class: 'page' }, h('main', { class: 'contenu' }, h('div', { class: 'centre' }, carte))));
+    focaliser(carte.querySelector('h1'));
+  }
+
+  /* ---------- erreurs lisibles ---------- */
+  function estReseau(err) {
+    if (!err) return false;
+    const m = String(err.message || err);
+    return err.name === 'TypeError' || err.name === 'AuthRetryableFetchError' || err.status === 0 || /failed to fetch|networkerror|load failed|network request failed|fetch failed/i.test(m);
+  }
+  const texteServeur = (err) => estReseau(err) ? MSG_RESEAU : String((err && (err.message || err.error_description || err.details)) || err || 'erreur inconnue');
+  const fonctionAbsente = (err) => !!err && (err.code === 'PGRST202' || err.code === '42883' || /could not find the function|function .* does not exist/i.test(String(err.message || '')));
+  const sessionExpiree = (err) => !!err && (err.code === 'PGRST301' || err.status === 401 || /jwt expired|invalid jwt|jwt.*(malformed|invalid)/i.test(String(err.message || '')));
+  function texteEnvoi(err) {
+    if (estReseau(err)) return MSG_RESEAU;
+    const m = String((err && err.message) || '');
+    const s = /(\d+)\s*seconds?/i.exec(m);
+    if ((err && err.status === 429) || /rate limit|security purposes|too many/i.test(m)) return 'Trop de demandes rapprochées : attends ' + (s ? s[1] + ' secondes' : 'une minute') + ' avant de redemander un lien.';
+    if (/invalid.*email|email.*invalid|validate email/i.test(m)) return 'Cette adresse e-mail n\'est pas valide.';
+    if (/not allowed|signups/i.test(m)) return 'Cette adresse ne peut pas se connecter. Demande une invitation à Julien HUET.';
+    return 'Envoi impossible : ' + (m || 'erreur inconnue') + '. Réessaie dans un instant.';
+  }
+
+  /* ---------- adresse : jetons et erreurs du lien magique retirés ---------- */
+  function lireErreurLien() {
+    try {
+      const p = new URLSearchParams((location.hash || '').replace(/^#/, '') + '&' + (location.search || '').replace(/^\?/, ''));
+      const code = p.get('error_code') || '', desc = p.get('error_description') || p.get('error') || '';
+      if (!code && !desc) return '';
+      if (/otp_expired|expired|invalid/i.test(code + ' ' + desc)) return 'Ce lien de connexion a expiré ou a déjà servi. Demande un nouveau lien ci-dessous.';
+      return 'Le lien de connexion n\'a pas fonctionné (' + desc + '). Demande un nouveau lien ci-dessous.';
+    } catch (e) { return ''; }
+  }
   function nettoyerUrl() {
     try {
-      var h = location.hash || '';
-      if (/access_token=|refresh_token=|error_description=|type=magiclink|type=invite|type=signup/.test(h)) history.replaceState(null, '', location.pathname + location.search);
+      const hash = location.hash || '', q = location.search || '';
+      const hashAuth = /access_token=|refresh_token=|error_description=|error_code=|error=|type=(magiclink|invite|signup|recovery|email)/.test(hash);
+      const qAuth = /[?&](code|error|error_code|error_description|token_hash|type)=/.test(q);
+      if (hashAuth || qAuth) history.replaceState(null, '', location.pathname + (qAuth ? '' : q));
     } catch (e) { /* ignoré */ }
   }
 
-  function deconnexion() { client.auth.signOut().then(function () { location.reload(); }, function () { location.reload(); }); }
+  /* =====================================================================================
+     A. Connexion : e-mail → lien + code (6 à 10 chiffres)
+     ===================================================================================== */
+  function ecranConnexion(info) {
+    let adresse = '';
+    const msg = h('div', { class: 'msg', id: 'cx-msg', 'aria-live': 'polite' });
+    const email = h('input', { class: 'input', id: 'cx-email', type: 'email', name: 'email', autocomplete: 'email', inputmode: 'email', autocapitalize: 'off', spellcheck: 'false', required: true, placeholder: 'prenom@sunlink-energies.fr', 'aria-describedby': 'cx-msg' });
+    const envoyer = h('button', { type: 'submit', class: 'btn btn-jaune btn-plein', id: 'cx-envoyer' }, ico('lettre'), 'Recevoir mon lien de connexion');
+    const etapeEmail = h('form', { class: 'cx-etape', id: 'cx-form-email', novalidate: true },
+      h('div', { class: 'champ' }, h('label', { for: 'cx-email', text: 'Adresse e-mail' }), email), envoyer);
+    const envoyeA = h('b');
+    const code = h('input', { class: 'input input-code', id: 'cx-code', name: 'code', inputmode: 'numeric', autocomplete: 'one-time-code', maxlength: '14', placeholder: '123456', 'aria-describedby': 'cx-code-aide cx-msg' });
+    const valider = h('button', { type: 'submit', class: 'btn btn-bleu btn-plein', id: 'cx-valider' }, 'Valider le code');
+    const renvoyer = h('button', { type: 'button', class: 'btn-lien', id: 'cx-renvoyer' }, 'Renvoyer le lien');
+    const changer = h('button', { type: 'button', class: 'btn-lien', id: 'cx-changer' }, 'Changer d\'adresse');
+    const etapeCode = h('form', { class: 'cx-etape', id: 'cx-form-code', novalidate: true, hidden: true },
+      h('div', { class: 'cx-envoye' }, ico('lettre'), h('span', null, 'Lien envoyé à ', envoyeA, '. Ouvre-le sur cet appareil, ou saisis le code reçu dans le même e-mail.')),
+      h('div', { class: 'champ' }, h('label', { for: 'cx-code', text: 'Code reçu par e-mail' }), code, h('span', { class: 'aide', id: 'cx-code-aide', text: '6 à 10 chiffres. Pas d\'e-mail ? Pense à regarder dans les indésirables.' })),
+      valider, h('div', { class: 'cx-liens' }, renvoyer, changer));
 
-  function formulaire() {
-    show('<form class="box-form" style="display:grid;gap:12px">' +
-      '<p>Entre ton adresse e-mail : tu reçois un lien de connexion (et un code si le message en contient un).</p>' +
-      '<label>Adresse e-mail<input type="email" name="email" autocomplete="email" required placeholder="prenom@sunlink-energies.fr"></label>' +
-      '<button type="submit">Recevoir mon lien de connexion</button>' +
-      '<div class="msg" role="status"></div>' +
-      '<div class="code" hidden><label>Code reçu par e-mail<input name="code" inputmode="numeric" autocomplete="one-time-code" placeholder="123456"></label><button type="button" class="verify">Valider le code</button></div>' +
-      '</form>');
-    var form = view.querySelector('form'), msg = view.querySelector('.msg'), code = view.querySelector('.code'), btn = form.querySelector('button[type=submit]');
-    var say = function (t, cls) { msg.textContent = t; msg.className = 'msg ' + (cls || ''); };
-    var dernier = '';
-    form.addEventListener('submit', function (e) {
+    async function demanderLien(v, renvoi) {
+      envoyer.disabled = true; renvoyer.disabled = true;
+      dire(msg, 'Envoi du lien…', 'info');
+      let r;
+      try { r = await client.auth.signInWithOtp({ email: v, options: { emailRedirectTo: location.origin + location.pathname, shouldCreateUser: true } }); }
+      catch (err) { r = { error: err }; }
+      envoyer.disabled = false; renvoyer.disabled = false;
+      if (!r || r.error) { dire(msg, texteEnvoi(r && r.error), /trop de demandes/i.test(texteEnvoi(r && r.error)) ? 'att' : 'err'); return false; }
+      adresse = v; envoyeA.textContent = v;
+      etapeEmail.hidden = true; etapeCode.hidden = false;
+      dire(msg, renvoi ? 'Nouveau lien envoyé à ' + v + '.' : '', 'ok');
+      annoncer('Lien envoyé à ' + v + '. Saisis le code reçu par e-mail, ou ouvre le lien. Pense aux indésirables.');
+      focaliser(code);
+      return true;
+    }
+    etapeEmail.addEventListener('submit', (e) => {
       e.preventDefault();
-      var v = String(form.elements.email.value || '').trim().toLowerCase(); if (!v) return;
-      btn.disabled = true; say('Envoi du lien…');
-      client.auth.signInWithOtp({ email: v, options: { emailRedirectTo: location.origin + location.pathname, shouldCreateUser: true } }).then(function (r) {
-        btn.disabled = false;
-        if (r.error) { say('Envoi impossible : ' + r.error.message, 'err'); return; }
-        dernier = v; code.hidden = false;
-        say('Lien envoyé à ' + v + '. Ouvre-le sur cet appareil, ou saisis le code ci-dessous. Pense aux indésirables.', 'ok');
-      }, function (err) { btn.disabled = false; say('Réseau indisponible : ' + (err && err.message || err), 'err'); });
+      const v = String(email.value || '').trim().toLowerCase();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) { dire(msg, 'Entre une adresse e-mail valide, par exemple prenom@sunlink-energies.fr.', 'err'); email.focus(); return; }
+      demanderLien(v);
     });
-    view.querySelector('.verify').addEventListener('click', function () {
-      var t = String(form.elements.code.value || '').replace(/\s/g, '');
-      if (!t || !dernier) { say('Demande d\'abord le lien, puis saisis le code.', 'err'); return; }
-      say('Vérification…');
-      client.auth.verifyOtp({ email: dernier, token: t, type: 'email' }).then(function (r) {
-        if (r.error || !r.data || !r.data.session) { say('Code refusé : ' + (r.error ? r.error.message : 'réessaie'), 'err'); return; }
-        ouvrir(r.data.session);
-      }, function (err) { say('Réseau indisponible : ' + (err && err.message || err), 'err'); });
+    renvoyer.addEventListener('click', () => { if (adresse) demanderLien(adresse, true); });
+    changer.addEventListener('click', () => { etapeCode.hidden = true; etapeEmail.hidden = false; code.value = ''; dire(msg, ''); email.value = adresse; focaliser(email); });
+    etapeCode.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const brut = String(code.value || '').replace(/[\s.-]/g, '');
+      if (!/^\d{6,10}$/.test(brut)) { dire(msg, 'Le code reçu par e-mail compte 6 à 10 chiffres.', 'err'); code.focus(); return; }
+      valider.disabled = true; dire(msg, 'Vérification du code…', 'info');
+      let r;
+      try { r = await client.auth.verifyOtp({ email: adresse, token: brut, type: 'email' }); } catch (err) { r = { error: err }; }
+      valider.disabled = false;
+      if (!r || r.error || !r.data || !r.data.session) {
+        dire(msg, r && r.error && estReseau(r.error) ? MSG_RESEAU : 'Code refusé : il est faux ou a expiré. Saisis le code du dernier e-mail reçu, ou demande un nouveau lien.', 'err');
+        try { code.select(); } catch (x) { /* ignoré */ }
+        return;
+      }
+      dire(msg, 'Code accepté. Ouverture…', 'ok');
+      demarrer(r.data.session);
     });
-    setTimeout(function () { try { form.elements.email.focus(); } catch (e) { /* ignoré */ } }, 50);
+    if (info) dire(msg, info, 'att');
+
+    const marquePanneau = h('section', { class: 'cx-marque', 'aria-label': 'SUNLINK OS' },
+      marque(),
+      h('div', { class: 'cx-accroche' },
+        h('h2', { text: 'Le Groupe SUNLINK, piloté depuis un seul écran.' }),
+        h('ul', { class: 'cx-points' },
+          h('li', { text: 'Chaque société, ce qui reste à traiter et son voyant, d\'un coup d\'œil.' }),
+          h('li', { text: 'Tes données sont enregistrées en continu : rien ne se perd.' }),
+          h('li', { text: 'Connexion par e-mail, sans mot de passe.' }))),
+      ico('schema', 'cx-schema-boite'),
+      h('p', { class: 'cx-sign', text: 'Groupe SUNLINK · Julien HUET, Président' }));
+    const carte = h('section', { class: 'carte cx-carte', 'aria-labelledby': 'cx-titre' },
+      h('div', null, h('h1', { id: 'cx-titre', text: 'Connexion' }),
+        h('p', { class: 'intro', text: 'Entre ton adresse e-mail : tu reçois un lien de connexion, et un code à saisir ici si tu préfères.' })),
+      etapeEmail, etapeCode, msg);
+    const page = h('div', { class: 'cx' }, marquePanneau,
+      h('main', { class: 'cx-form', id: 'contenu' }, carte, h('p', { class: 'cx-pied' }, ico('cadenas'), 'Données hébergées à Paris · aucun mot de passe')));
+    monter('connexion', 'Connexion', page);
+    focaliser(email);
   }
 
-  function refus(session, texte) {
-    show('<p class="msg err">' + esc(texte) + '</p><p>Connecté·e : ' + esc(session.user && session.user.email) + '</p><button type="button" class="link" id="out">Se déconnecter</button>');
-    document.getElementById('out').addEventListener('click', deconnexion);
+  /* =====================================================================================
+     B. Après connexion : un seul appel, rpc('slos_accueil')
+     ===================================================================================== */
+  function demarrer(s) {
+    if (!s || !s.user || ferme) return;
+    session = s;
+    if (demarre === s.user.id) return;
+    demarre = s.user.id;
+    nettoyerUrl();
+    chargerAccueil();
   }
 
-  /* Propriétaire seulement : déposer (ou remplacer) l'application dans l'espace sécurisé, puis l'ouvrir. */
-  function depot(session) {
-    show('<p>Connecté·e en propriétaire : ' + esc(session.user && session.user.email) + '.</p>' +
-      '<p>L\'application n\'est pas encore déposée dans l\'espace sécurisé. Choisis le fichier <b>direction.html</b> reçu de Claude.</p>' +
-      '<label>Fichier de l\'application<input type="file" id="f" accept=".html,text/html"></label>' +
-      '<div class="msg" role="status"></div><button type="button" class="link" id="out">Se déconnecter</button>');
-    var msg = view.querySelector('.msg');
-    document.getElementById('out').addEventListener('click', deconnexion);
-    document.getElementById('f').addEventListener('change', function (e) {
-      var f = e.target.files && e.target.files[0]; if (!f) return;
-      if (!/\.html?$/i.test(f.name) || f.size < 100000) { msg.textContent = 'Ce fichier ne ressemble pas à l\'application (direction.html, environ 1,7 Mo).'; msg.className = 'msg err'; return; }
-      msg.textContent = 'Dépôt en cours (' + Math.round(f.size / 1024) + ' Ko)…'; msg.className = 'msg';
-      client.storage.from(BUCKET).upload(FICHIER, f, { upsert: true, contentType: 'text/html; charset=utf-8', cacheControl: '60' }).then(function (r) {
-        if (r.error) { msg.textContent = 'Dépôt refusé : ' + r.error.message; msg.className = 'msg err'; return; }
-        msg.textContent = 'Application déposée. Ouverture…'; msg.className = 'msg ok';
-        setTimeout(function () { ouvrir(session); }, 400);
-      }, function (err) { msg.textContent = 'Réseau indisponible : ' + (err && err.message || err); msg.className = 'msg err'; });
-    });
+  async function chargerAccueil(ensuite) {
+    if (!ensuite) ecranAttente('Vérification de ton accès…');
+    const jeton = generation;
+    let r;
+    try { r = await client.rpc('slos_accueil'); } catch (err) { r = { error: err }; }
+    if (r && r.error && fonctionAbsente(r.error)) r = await accueilDeSecours();
+    if (jeton !== generation || ferme) return;
+    if (r && r.error && sessionExpiree(r.error)) { await sortir(); ecranConnexion('Ta session a expiré : reconnecte-toi.'); return; }
+    if (!r || r.error || !r.data) {
+      ecranErreur('Lecture de ton accès impossible', r && r.error ? texteServeur(r.error) : 'Réponse vide du serveur.', () => chargerAccueil());
+      return;
+    }
+    accueil = normaliserAccueil(r.data);
+    if (ensuite) ensuite(); else aiguiller();
+  }
+  /* si la fonction slos_accueil n'est pas encore installée : niveau seul (ancienne méthode), pour ne jamais bloquer */
+  async function accueilDeSecours() {
+    let r;
+    try { r = await client.rpc('slos_my_level'); } catch (err) { return { error: err }; }
+    if (r.error) return r;
+    return { data: { niveau: typeof r.data === 'number' ? r.data : 0, email: session.user.email, societes: [], demande: null, en_attente: null, secours: true } };
+  }
+  function normaliserAccueil(d) {
+    d = d && typeof d === 'object' ? d : {};
+    const n = Number(d.niveau);
+    return {
+      niveau: isFinite(n) ? n : 0,
+      role: d.role || null,
+      nom: d.nom ? String(d.nom) : '',
+      email: d.email ? String(d.email) : ((session && session.user && session.user.email) || ''),
+      societes: (Array.isArray(d.societes) ? d.societes : []).filter((s) => s && s.id && s.actif !== false).map((s) => ({
+        id: String(s.id), nom: String(s.nom || s.id), forme: s.forme ? String(s.forme) : '', role: s.role ? String(s.role) : '', rcs: s.rcs ? String(s.rcs) : '',
+        couleur: /^#[0-9a-f]{3,8}$/i.test(String(s.couleur || '')) ? String(s.couleur) : '',
+        groupe: s.groupe ? String(s.groupe).toUpperCase() : '', consolide: s.consolide === true, ordre: Number(s.ordre) || 0,
+        compteurs: s.compteurs && typeof s.compteurs === 'object' ? s.compteurs : {}, acces: s.acces ? String(s.acces) : ''
+      })),
+      demande: d.demande && typeof d.demande === 'object' ? d.demande : null,
+      en_attente: d.en_attente == null ? null : (Number(d.en_attente) || 0),
+      secours: d.secours === true
+    };
+  }
+  function lireChoix() {
+    try { const c = JSON.parse(SS.get(CLE.choix) || 'null'); return c && typeof c.id === 'string' && c.id ? c : null; } catch (e) { return null; }
+  }
+  function choixValide(c) {
+    if (c.id === 'groupe') return accueil.niveau >= 3;
+    return accueil.secours || accueil.societes.some((s) => s.id === c.id);
+  }
+  function aiguiller() {
+    if (accueil.niveau >= 1) {
+      const c = lireChoix();
+      if (accueil.niveau >= 3 && c && choixValide(c)) { ouvrirApp(c); return; }
+      ecranSelecteur();
+      return;
+    }
+    ecranBienvenue();
   }
 
-  function ouvrir(session) {
-    if (ouvert || !session) return;
-    ouvert = true; nettoyerUrl();
-    wait('Connexion réussie. Vérification de ton accès…');
-    client.rpc('slos_my_level').then(function (r) {
-      var niveau = (r && typeof r.data === 'number') ? r.data : 0;
-      if (r && r.error) { ouvert = false; refus(session, 'Lecture de ton rôle impossible : ' + r.error.message); return; }
-      if (niveau < 3) { ouvert = false; refus(session, 'Ton compte est bien connecté, mais l\'espace de direction est réservé aux rôles Éditeur et Propriétaire. Demande une invitation à Julien.'); return; }
-      wait('Chargement de SUNLINK OS…');
-      /* téléchargement direct, sans cache du navigateur : une nouvelle version déposée est visible au rechargement suivant */
-      return client.auth.getSession().then(function (r2) {
-        var tok = (r2 && r2.data && r2.data.session && r2.data.session.access_token) || session.access_token;
-        return fetch(String(ENV.SUPABASE_URL).replace(/\/$/, '') + '/storage/v1/object/authenticated/' + BUCKET + '/' + FICHIER, { headers: { Authorization: 'Bearer ' + tok, apikey: ENV.SUPABASE_ANON_KEY }, cache: 'no-store' });
-      }).then(function (res) {
-        if (!res.ok) { ouvert = false; if (niveau >= 4 && (res.status === 400 || res.status === 404)) depot(session); else refus(session, 'Application introuvable dans l\'espace sécurisé (erreur ' + res.status + ').'); return; }
-        return res.text().then(function (html) {
-          try { client.auth.stopAutoRefresh(); } catch (e) { /* ignoré */ }
-          try { if (sub) sub.data.subscription.unsubscribe(); } catch (e) { /* ignoré */ }
-          document.open(); document.write(html); document.close();
-        });
+  /* =====================================================================================
+     C. Sélecteur de société : première page de l'application
+     ===================================================================================== */
+  function prenom() {
+    const cap = (m) => m.split('-').map((x) => x.charAt(0).toUpperCase() + x.slice(1)).join('-');
+    const nom = String(accueil.nom || '').trim();
+    if (nom) { const mots = nom.split(/\s+/); const w = mots.find((m) => m !== m.toUpperCase()); return w ? w.charAt(0).toUpperCase() + w.slice(1) : cap(mots[0].toLowerCase()); }
+    const loc = String(accueil.email || '').split('@')[0].split(/[._+]/)[0];
+    return loc ? cap(loc.toLowerCase()) : '';
+  }
+  function voyant(c) {
+    const v = ['notif', 'tr1', 'tr2', 'ff', 'fc'].map((k) => num(c[k])).filter((x) => x != null);
+    if (!v.length) return { cls: 'inconnu', lib: 'Inconnu', rang: 0 };
+    if (num(c.ff) != null && num(c.ff) >= 100) return { cls: 'alarme', lib: 'Alarme', rang: 3 };
+    if (v.some((x) => x > 0)) return { cls: 'att', lib: 'À traiter', rang: 2 };
+    return { cls: 'ok', lib: 'OK', rang: 1 };
+  }
+  function blocCompteurs(c, id) {
+    const tr1 = num(c.tr1), tr2 = num(c.tr2), ff = num(c.ff), fc = num(c.fc), notif = num(c.notif);
+    if ([tr1, tr2, ff, fc, notif].every((x) => x == null)) return h('span', { class: 'cpts', id }, h('span', { class: 'cpt-l', text: 'Compteurs pas encore relevés' }));
+    if (tr1 === 0 && tr2 === 0 && ff === 0 && fc === 0 && !(notif > 0)) return h('span', { class: 'rien', id }, ico('coche'), 'Rien à traiter');
+    const ligne = (lib, valeur, cls) => h('span', { class: 'cpt' }, h('span', { class: 'cpt-l', text: lib }), h('span', { class: 'cpt-v' + (cls ? ' ' + cls : ''), text: valeur }));
+    const classe = (x, chaud) => x == null ? 'inconnu' : x === 0 ? 'zero' : chaud ? 'chaud' : '';
+    return h('span', { class: 'cpts', id },
+      h('span', { class: 'cpts-titre', text: 'À traiter' }),
+      ligne('Transactions', fmt(tr1) + ' · ' + fmt(tr2), (tr1 == null && tr2 == null) ? 'inconnu' : ((tr1 || 0) + (tr2 || 0) === 0 ? 'zero' : '')),
+      ligne('Factures fournisseurs', fmt(ff), classe(ff, ff != null && ff >= 100)),
+      ligne('Factures clients', fmt(fc), classe(fc)),
+      notif > 0 ? ligne('Notifications', fmt(notif), '') : null);
+  }
+  const pastille = (couleur) => { const p = h('span', { class: 'pastille', 'aria-hidden': 'true' }); if (couleur) p.style.background = couleur; return p; };
+
+  function carteSociete(s, estDernier) {
+    const etat = voyant(s.compteurs);
+    const idc = 'cpt-' + s.id;
+    const sous = [s.forme, s.role].filter(Boolean).join(' · ');
+    return h('button', { type: 'button', class: 'soc' + (estDernier ? ' dernier' : ''), 'data-choix': s.id, 'aria-label': 'Ouvrir ' + s.nom + ' · ' + etat.lib, 'aria-describedby': idc, onclick: () => choisir(s.id, s.nom) },
+      h('span', { class: 'soc-haut' }, pastille(s.couleur),
+        h('span', { class: 'soc-id' }, h('span', { class: 'soc-nom', text: s.nom }), sous ? h('span', { class: 'soc-role', text: sous }) : null)),
+      h('span', { class: 'soc-etat' },
+        h('span', { class: 'voyant ' + etat.cls, 'data-voyant': etat.cls, text: etat.lib }),
+        estDernier ? h('span', { class: 'etiquette', text: 'Dernière ouverte' }) : null,
+        accueil.niveau >= 3 && !s.consolide ? h('span', { class: 'etiquette neutre', text: 'Hors consolidation' }) : null,
+        accueil.niveau < 3 && ROLE_LIB[s.acces] ? h('span', { class: 'etiquette neutre', text: 'Ton accès : ' + ROLE_LIB[s.acces] }) : null),
+      blocCompteurs(s.compteurs, idc),
+      h('span', { class: 'soc-pied' }, h('span', { class: 'soc-src', text: s.compteurs.source ? String(s.compteurs.source) : 'Source des compteurs non précisée' })));
+  }
+
+  function carteGroupe(conso, estDernier) {
+    const somme = (k) => conso.reduce((acc, s) => (acc == null || num(s.compteurs[k]) == null) ? null : acc + num(s.compteurs[k]), 0);
+    const tot = { notif: somme('notif'), tr1: somme('tr1'), tr2: somme('tr2'), ff: somme('ff'), fc: somme('fc') };
+    const rang = conso.reduce((m, s) => Math.max(m, voyant(s.compteurs).rang), 0);
+    const etat = [{ cls: 'inconnu', lib: 'Inconnu' }, { cls: 'ok', lib: 'OK' }, { cls: 'att', lib: 'À traiter' }, { cls: 'alarme', lib: 'Alarme' }][rang];
+    const titre = 'Vue Groupe · ' + pluriel(conso.length, 'structure consolidée', 'structures consolidées');
+    const sources = Array.from(new Set(conso.map((s) => s.compteurs.source).filter(Boolean)));
+    return h('button', { type: 'button', class: 'soc vue-groupe' + (estDernier ? ' dernier' : ''), 'data-choix': 'groupe', 'aria-label': 'Ouvrir la ' + titre + ' · ' + etat.lib, 'aria-describedby': 'cpt-groupe', onclick: () => choisir('groupe', 'Vue Groupe') },
+      h('span', { class: 'vg-g' },
+        h('span', { class: 'vg-tete' }, h('span', { class: 'vg-sur' }, 'Vue consolidée'), h('span', { class: 'voyant ' + etat.cls, 'data-voyant': etat.cls, text: etat.lib }),
+          estDernier ? h('span', { class: 'etiquette', text: 'Dernière ouverte' }) : null),
+        h('span', { class: 'soc-nom', text: titre }),
+        h('span', { class: 'puces' }, conso.map((s) => { const i = h('i'); if (s.couleur) i.style.background = s.couleur; return h('span', { class: 'puce' }, i, s.nom); })),
+        h('span', { class: 'soc-role', text: sources.length ? sources.join(' · ') : 'Toutes les sociétés consolidées, sur un seul écran.' })),
+      h('span', { class: 'vg-d' }, blocCompteurs(tot, 'cpt-groupe')));
+  }
+
+  function groupeVisible() { return LS.get(CLE.groupe) !== '0'; }
+  function lireDernier() { const v = LS.get(CLE.dernier); if (!v) return ''; try { const j = JSON.parse(v); return typeof j === 'string' ? j : v; } catch (e) { return v; } }
+
+  function ecranSelecteur() {
+    ouverture = false;
+    const a = accueil, direction = a.niveau >= 3;
+    const socs = a.societes.slice();
+    const conso = socs.filter((s) => s.consolide);
+    const offreGroupe = direction && (conso.length > 0 || socs.length === 0);
+    const dernier = lireDernier();
+    const p = prenom();
+    let jour = '';
+    try { jour = new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }); jour = jour.charAt(0).toUpperCase() + jour.slice(1); } catch (e) { /* ignoré */ }
+    const aTraiter = socs.filter((s) => voyant(s.compteurs).rang >= 2).length;
+    const resume = socs.length ? pluriel(socs.length, 'société', 'sociétés') + (aTraiter ? ' · ' + aTraiter + ' à traiter' : ' · rien à traiter') : '';
+
+    /* en-tête : bonjour, reprise de la dernière société */
+    let reprise = null;
+    const derniereSoc = socs.find((s) => s.id === dernier);
+    if (derniereSoc) reprise = { id: derniereSoc.id, nom: derniereSoc.nom };
+    else if (dernier === 'groupe' && offreGroupe && groupeVisible()) reprise = { id: 'groupe', nom: 'Vue Groupe' };
+    const h1 = h('h1', { id: 'sel-titre', tabindex: '-1', text: p ? 'Bonjour ' + p : 'Bonjour' });
+    const tete = h('div', { class: 'tete' },
+      h('div', { class: 'tete-txt' }, jour ? h('p', { class: 'date', text: jour }) : null, h1,
+        h('p', { class: 'sous' }, direction ? 'Choisis une société, ou la vue Groupe.' : 'Choisis la société à ouvrir.', resume ? [' ', h('span', { class: 'nowrap', text: resume + '.' })] : null)),
+      reprise ? h('button', { type: 'button', class: 'btn btn-jaune reprendre', id: 'sel-reprendre', onclick: () => choisir(reprise.id, reprise.nom) }, h('span', { text: 'Reprendre ' + reprise.nom }), ico('fleche')) : null);
+
+    const flash = h('p', { class: 'msg', 'aria-live': 'polite' });
+    if (sel.flash) { dire(flash, sel.flash.texte, sel.flash.cls); annoncer(sel.flash.texte); sel.flash = null; }
+
+    /* outils : recherche, vue Groupe affichée ou masquée */
+    const champ = h('input', { type: 'search', id: 'sel-q', placeholder: 'Rechercher une société', autocomplete: 'off', enterkeyhint: 'go', value: sel.q });
+    const recherche = h('label', { class: 'recherche' }, ico('loupe'), h('span', { class: 'sr', text: 'Rechercher une société' }), champ);
+    let bascule = null;
+    if (offreGroupe && socs.length) {
+      bascule = h('button', { type: 'button', class: 'btn btn-sec', id: 'sel-groupe' });
+      const maj = () => { bascule.textContent = ''; const vis = groupeVisible(); bascule.appendChild(ico(vis ? 'oeilBarre' : 'oeil')); bascule.appendChild(document.createTextNode(vis ? 'Masquer la vue Groupe' : 'Afficher la vue Groupe')); };
+      maj();
+      bascule.addEventListener('click', () => { const vis = groupeVisible(); LS.set(CLE.groupe, vis ? '0' : '1'); maj(); rendre(); annoncer(vis ? 'Vue Groupe masquée' : 'Vue Groupe affichée'); });
+    }
+    const outils = socs.length > 1 || bascule ? h('div', { class: 'outils' }, socs.length > 1 ? recherche : null, bascule) : null;
+    const liste = h('div', { class: 'liste', id: 'sel-liste' });
+
+    function rendre() {
+      liste.textContent = '';
+      const q = sansAccent(sel.q).trim();
+      const correspond = (s) => !q || sansAccent([s.nom, s.forme, s.role, s.rcs, String(s.rcs).replace(/\s/g, ''), 'groupe ' + s.groupe].join(' ')).indexOf(q) >= 0;
+      const visibles = socs.filter(correspond);
+      const groupeIci = offreGroupe && (socs.length === 0 || (groupeVisible() && (!q || (q.length >= 3 && 'vue groupe consolidee structures'.indexOf(q) >= 0))));
+      if (groupeIci) {
+        if (socs.length) liste.appendChild(carteGroupe(conso, dernier === 'groupe'));
+        else liste.appendChild(h('button', { type: 'button', class: 'soc vue-groupe', 'data-choix': 'groupe', onclick: () => choisir('groupe', 'Vue Groupe') },
+          h('span', { class: 'vg-g' }, h('span', { class: 'vg-sur' }, 'Application complète'), h('span', { class: 'soc-nom', text: 'Ouvrir SUNLINK OS' }), h('span', { class: 'soc-role', text: 'La liste des sociétés n\'est pas encore disponible : l\'application s\'ouvre sur la vue Groupe.' }))));
+      }
+      const ordreGroupes = [];
+      visibles.forEach((s) => { const g = s.groupe || 'AUTRES'; if (ordreGroupes.indexOf(g) < 0) ordreGroupes.push(g); });
+      const rang = (g) => g === 'SUNLINK' ? 0 : g === 'PRIME' ? 1 : g === 'AUTRES' ? 3 : 2;
+      ordreGroupes.sort((x, y) => rang(x) - rang(y));
+      ordreGroupes.forEach((g) => {
+        const membres = visibles.filter((s) => (s.groupe || 'AUTRES') === g);
+        const idt = 'grp-' + sansAccent(g).replace(/[^a-z0-9]+/g, '-');
+        liste.appendChild(h('section', { class: 'grp', 'aria-labelledby': idt, 'data-groupe': g },
+          h('h2', { class: 'grp-titre', id: idt }, g === 'AUTRES' ? 'Autres sociétés' : 'Groupe ' + g, h('span', { class: 'n', text: String(membres.length) })),
+          h('div', { class: 'grille' }, membres.map((s) => carteSociete(s, s.id === dernier)))));
       });
-    }).catch(function (err) { ouvert = false; refus(session, 'Erreur : ' + (err && err.message || err)); });
+      if (!visibles.length && !groupeIci) {
+        if (q) liste.appendChild(h('div', { class: 'vide', role: 'status' }, h('p', { text: 'Aucune société ne correspond à « ' + sel.q.trim() + ' ».' }),
+          h('button', { type: 'button', class: 'btn-lien', onclick: () => { sel.q = ''; champ.value = ''; rendre(); champ.focus(); } }, 'Effacer la recherche')));
+        else if (!direction) liste.appendChild(h('div', { class: 'vide', role: 'status' }, h('p', { text: 'Aucune société n\'est encore ouverte pour ton compte. Julien HUET t\'en donnera l\'accès.' })));
+        else liste.appendChild(h('div', { class: 'vide', role: 'status' }, h('p', { text: 'Vue Groupe masquée. Affiche-la pour ouvrir SUNLINK OS.' })));
+      }
+    }
+    champ.addEventListener('input', () => { sel.q = champ.value; rendre(); });
+    champ.addEventListener('keydown', (e) => {
+      if (e.key !== 'Enter') return;
+      const cartes = liste.querySelectorAll('[data-choix]');
+      if (cartes.length === 1) { e.preventDefault(); cartes[0].click(); }
+    });
+
+    const roleLib = ROLE_LIB[a.role] || (a.niveau >= 4 ? 'Propriétaire' : a.niveau >= 3 ? 'Éditeur' : '');
+    const pied = h('p', { class: 'pied-page' }, h('span', { text: 'Connecté·e : ' + (a.email || '') + (roleLib ? ' · ' + roleLib : '') }), h('span', { text: 'Données hébergées à Paris' }));
+    monter('selecteur', 'Choisir une société', coquille(tete, flash, blocDemandes(), outils, liste, pied));
+    rendre();
+    focaliser(h1);
   }
 
-  sub = client.auth.onAuthStateChange(function (ev, session) { if ((ev === 'SIGNED_IN' || ev === 'INITIAL_SESSION') && session) ouvrir(session); });
-  client.auth.getSession().then(function (r) {
-    var s = r && r.data && r.data.session;
-    if (s) ouvrir(s); else if (!ouvert) formulaire();
-  }, function () { formulaire(); });
+  function choisir(id, nom) {
+    const choix = { id, nom, at: new Date().toISOString() };
+    SS.set(CLE.choix, JSON.stringify(choix));
+    LS.set(CLE.dernier, id);
+    if (accueil.niveau >= 3) ouvrirApp(choix);
+    else ecranBientot(id, nom);
+  }
+
+  function ecranBientot(id, nom) {
+    const s = accueil.societes.find((x) => x.id === id);
+    const h1 = h('h1', { id: 'bt-titre', tabindex: '-1', text: 'Votre espace ' + nom + ' sera ouvert prochainement par Julien HUET' });
+    const carte = h('section', { class: 'carte bv bt', 'aria-labelledby': 'bt-titre' },
+      h('p', { class: 'bientot-soc' }, pastille(s && s.couleur), nom),
+      h1,
+      h('p', { class: 'intro', text: 'Ton accès est bien enregistré. Cette page ouvrira l\'espace dès qu\'il sera prêt : rien à faire d\'ici là.' }),
+      h('div', { class: 'actions' }, h('button', { type: 'button', class: 'btn btn-sec', id: 'bt-retour', onclick: () => { SS.del(CLE.choix); ecranSelecteur(); } }, ico('retour'), 'Revenir aux sociétés')));
+    monter('bientot', nom, coquille(h('div', { class: 'centre' }, carte)));
+    focaliser(h1);
+  }
+
+  /* =====================================================================================
+     E. Propriétaire : demandes d'accès (bandeau sur le sélecteur)
+     ===================================================================================== */
+  function blocDemandes() {
+    const n = accueil.en_attente;
+    if (!(accueil.niveau >= 4 && n > 0)) return null;
+    const zone = h('div', { id: 'dem-liste', class: 'dems', hidden: !sel.demandes });
+    const bouton = h('button', { type: 'button', class: 'btn btn-sec', id: 'dem-voir', 'aria-expanded': String(sel.demandes), 'aria-controls': 'dem-liste' }, sel.demandes ? 'Masquer les demandes' : 'Voir les demandes');
+    bouton.addEventListener('click', () => {
+      sel.demandes = !sel.demandes;
+      zone.hidden = !sel.demandes;
+      bouton.setAttribute('aria-expanded', String(sel.demandes));
+      bouton.textContent = sel.demandes ? 'Masquer les demandes' : 'Voir les demandes';
+      if (sel.demandes) chargerDemandes(zone);
+    });
+    if (sel.demandes) chargerDemandes(zone);
+    return h('div', { class: 'bloc-dem' },
+      h('section', { class: 'bandeau', 'aria-labelledby': 'dem-titre' },
+        h('div', { class: 'bandeau-txt' }, ico('personnes'), h('div', null, h('h2', { id: 'dem-titre', text: 'Demandes d\'accès (' + n + ')' }),
+          h('p', { text: n > 1 ? n + ' personnes attendent ta validation.' : 'Une personne attend ta validation.' }))),
+        bouton),
+      zone);
+  }
+
+  async function chargerDemandes(zoneEl) {
+    zoneEl.textContent = '';
+    zoneEl.appendChild(h('p', { class: 'msg info', role: 'status', text: 'Chargement des demandes…' }));
+    let r;
+    try { r = await client.from('demandes').select('id,email,nom,societe,fonction,message,created_at').eq('statut', 'en_attente').order('created_at'); } catch (err) { r = { error: err }; }
+    zoneEl.textContent = '';
+    if (!r || r.error) { zoneEl.appendChild(h('p', { class: 'msg err', role: 'alert', text: 'Lecture des demandes impossible : ' + texteServeur(r && r.error) })); return; }
+    const liste = Array.isArray(r.data) ? r.data : [];
+    if (!liste.length) { zoneEl.appendChild(h('p', { class: 'msg info', text: 'Aucune demande en attente.' })); return; }
+    liste.forEach((d) => zoneEl.appendChild(carteDemande(d)));
+  }
+
+  function carteDemande(d) {
+    const base = 'dem-' + String(d.id).replace(/[^0-9a-z]/gi, '');
+    const qui = d.nom ? String(d.nom) : String(d.email || 'cette personne');
+    const msg = h('p', { class: 'msg', 'aria-live': 'polite' });
+    const ROLES = [['view', 'Lecteur', 'Consulte ses sociétés'], ['interact', 'Contributeur', 'Consulte et saisit'], ['admin', 'Éditeur', 'Toute l\'application, toutes les sociétés']];
+    const roles = h('fieldset', null, h('legend', { text: 'Rôle' }), h('div', { class: 'opts' }, ROLES.map(([v, lib, aide]) =>
+      h('label', { class: 'opt' }, h('input', { type: 'radio', name: base + '-role', value: v, checked: v === 'interact' }), h('span', null, lib, h('small', { text: aide }))))));
+    const cases = h('fieldset', null, h('legend', { text: 'Sociétés autorisées' }), accueil.societes.length
+      ? h('div', { class: 'opts opts-soc' }, accueil.societes.map((s) => h('label', { class: 'opt' }, h('input', { type: 'checkbox', name: base + '-soc', value: s.id }), pastille(s.couleur), h('span', { text: s.nom }))))
+      : h('p', { class: 'aide', text: 'Liste des sociétés indisponible.' }));
+    const accepter = h('button', { type: 'button', class: 'btn btn-jaune', 'data-action': 'accepter' }, 'Accepter');
+    const refuser = h('button', { type: 'button', class: 'btn btn-rouge', 'data-action': 'refuser' }, 'Refuser');
+    const actions = h('div', { class: 'actions' }, accepter, refuser);
+    const confirm = h('div', { class: 'confirm', hidden: true });
+    const infos = [['Société déclarée', d.societe], ['Fonction', d.fonction], ['Message', d.message]].filter((x) => x[1]);
+    const art = h('article', { class: 'carte dem', 'data-demande': String(d.id), 'aria-labelledby': base + '-nom' },
+      h('div', { class: 'dem-tete' }, h('div', null, h('p', { class: 'dem-nom', id: base + '-nom', text: qui }), d.nom && d.email ? h('p', { class: 'dem-mail', text: String(d.email) }) : null),
+        d.created_at ? h('p', { class: 'dem-date', text: 'Reçue le ' + dateFr(d.created_at) }) : null),
+      infos.length ? h('dl', { class: 'dem-infos' }, infos.map((x) => [h('dt', { text: x[0] }), h('dd', { text: String(x[1]) })])) : null,
+      roles, cases, actions, confirm, msg);
+
+    const lireRole = () => { const r = art.querySelector('input[name="' + base + '-role"]:checked'); return r ? r.value : 'interact'; };
+    const lireSocs = () => Array.from(art.querySelectorAll('input[name="' + base + '-soc"]:checked')).map((x) => x.value);
+    function demanderConfirmation(texte, libelle, action) {
+      dire(msg, '');
+      confirm.textContent = '';
+      const oui = h('button', { type: 'button', class: 'btn btn-jaune', 'data-action': 'confirmer' }, libelle);
+      const non = h('button', { type: 'button', class: 'btn btn-sec', 'data-action': 'annuler' }, 'Annuler');
+      confirm.appendChild(h('p', { text: texte }));
+      confirm.appendChild(h('div', { class: 'actions' }, oui, non));
+      confirm.hidden = false; actions.hidden = true;
+      non.addEventListener('click', () => { confirm.hidden = true; actions.hidden = false; focaliser(accepter); });
+      oui.addEventListener('click', () => { oui.disabled = true; non.disabled = true; action(); });
+      focaliser(oui);
+    }
+    async function traiter(ok, role, socs) {
+      dire(msg, ok ? 'Enregistrement de l\'accès…' : 'Enregistrement du refus…', 'info');
+      let r;
+      try { r = await client.rpc('slos_traiter_demande', { p_id: d.id, p_accepter: ok, p_role: role, p_societes: socs }); } catch (err) { r = { error: err }; }
+      if (!r || r.error) {
+        confirm.hidden = true; actions.hidden = false;
+        dire(msg, 'Le serveur a refusé : ' + texteServeur(r && r.error), 'err');
+        return;
+      }
+      sel.flash = { cls: 'ok', texte: ok ? 'Accès accordé à ' + qui + ' (' + ROLE_LIB[role] + ').' : 'Demande de ' + qui + ' refusée.' };
+      sel.demandes = true;
+      chargerAccueil(() => ecranSelecteur());
+    }
+    accepter.addEventListener('click', () => {
+      const role = lireRole(), socs = lireSocs();
+      if (role !== 'admin' && !socs.length) { dire(msg, 'Coche au moins une société pour un Lecteur ou un Contributeur.', 'err'); return; }
+      const noms = socs.map((id) => (accueil.societes.find((s) => s.id === id) || { nom: id }).nom);
+      const texte = role === 'admin'
+        ? 'Donner à ' + qui + ' le rôle Éditeur : toute l\'application SUNLINK OS et toutes les sociétés ?'
+        : 'Donner à ' + qui + ' le rôle ' + ROLE_LIB[role] + ' pour ' + noms.join(', ') + ' ?';
+      demanderConfirmation(texte, 'Confirmer l\'accès', () => traiter(true, role, socs));
+    });
+    refuser.addEventListener('click', () => {
+      demanderConfirmation('Refuser la demande de ' + qui + ' ? La personne pourra en refaire une dans 24 h.', 'Confirmer le refus', () => traiter(false, 'interact', []));
+    });
+    return art;
+  }
+
+  /* =====================================================================================
+     D. Nouveaux inscrits (connectés, niveau 0) : demande d'accès
+     ===================================================================================== */
+  function ecranBienvenue(mode, flash) {
+    const a = accueil, d = a.demande;
+    const statut = d && d.statut;
+    if (!mode) mode = (statut === 'en_attente' || statut === 'refusee' || statut === 'acceptee') ? 'statut' : 'formulaire';
+    const h1 = h('h1', { id: 'bv-titre', tabindex: '-1', text: 'Bienvenue sur SUNLINK OS' });
+    const carte = h('section', { class: 'carte bv', 'aria-labelledby': 'bv-titre' }, h('p', { class: 'surtitre', text: 'Nouveau compte' }), h1);
+    const msg = h('p', { class: 'msg', id: 'bv-msg', 'aria-live': 'polite' });
+    if (flash) dire(msg, flash.texte, flash.cls);
+
+    if (mode === 'statut') {
+      const le = dateFr(d.le);
+      if (statut === 'en_attente') {
+        carte.appendChild(h('div', { class: 'statut-ligne' }, h('span', { class: 'voyant att', 'data-statut': 'en_attente', text: 'En attente' }), h('span', { class: 'aide', text: 'Demande d\'accès' })));
+        carte.appendChild(h('p', { class: 'intro', id: 'bv-statut', text: 'Ta demande est en attente depuis le ' + le + '. Julien HUET valide lui-même chaque accès : tu pourras entrer dès qu\'elle sera acceptée.' }));
+      } else if (statut === 'refusee') {
+        carte.appendChild(h('div', { class: 'statut-ligne' }, h('span', { class: 'voyant alarme', 'data-statut': 'refusee', text: 'Non retenue' }), h('span', { class: 'aide', text: 'Demande d\'accès' })));
+        carte.appendChild(h('p', { class: 'intro', id: 'bv-statut', text: 'Ta demande du ' + le + ' n\'a pas été retenue. Si c\'est une erreur, tu peux en faire une nouvelle (24 h après le refus) ou contacter Julien HUET.' }));
+      } else {
+        carte.appendChild(h('div', { class: 'statut-ligne' }, h('span', { class: 'voyant ok', 'data-statut': 'acceptee', text: 'Acceptée' })));
+        carte.appendChild(h('p', { class: 'intro', id: 'bv-statut', text: 'Ta demande a été acceptée. Si tes espaces n\'apparaissent pas, vérifie à nouveau dans un instant ou reconnecte-toi.' }));
+      }
+      const recap = [['Nom', d.nom], ['Société', d.societe], ['Fonction', d.fonction], ['Message', d.message]].filter((x) => x[1]);
+      if (recap.length) carte.appendChild(h('dl', { class: 'recap' }, recap.map((x) => [h('dt', { text: x[0] }), h('dd', { text: String(x[1]) })])));
+      carte.appendChild(msg);
+      carte.appendChild(h('div', { class: 'actions' },
+        statut === 'en_attente' ? h('button', { type: 'button', class: 'btn btn-jaune', id: 'bv-modifier', onclick: () => ecranBienvenue('formulaire') }, 'Modifier ma demande') : null,
+        statut === 'refusee' ? h('button', { type: 'button', class: 'btn btn-jaune', id: 'bv-nouvelle', onclick: () => ecranBienvenue('formulaire') }, 'Faire une nouvelle demande') : null,
+        h('button', { type: 'button', class: 'btn btn-sec', id: 'bv-verifier', onclick: () => chargerAccueil() }, 'Vérifier à nouveau'),
+        h('button', { type: 'button', class: 'btn btn-sec', 'data-action': 'deconnexion', onclick: deconnexion }, 'Se déconnecter')));
+    } else {
+      const modif = statut === 'en_attente';
+      const pre = (statut === 'en_attente' || statut === 'refusee') ? d : {};
+      const champ = (id, lib, el, aide) => h('div', { class: 'champ' }, h('label', { for: id, text: lib }), el, aide || null);
+      const nom = h('input', { class: 'input', id: 'bv-nom', name: 'nom', autocomplete: 'name', maxlength: '120', required: true, value: pre.nom || a.nom || '' });
+      const soc = h('input', { class: 'input', id: 'bv-societe', name: 'societe', autocomplete: 'organization', maxlength: '120', required: true, value: pre.societe || '' });
+      const fon = h('input', { class: 'input', id: 'bv-fonction', name: 'fonction', autocomplete: 'organization-title', maxlength: '120', value: pre.fonction || '' });
+      const mes = h('textarea', { class: 'input', id: 'bv-message', name: 'message', maxlength: '600', rows: '4', 'aria-describedby': 'bv-compte', value: pre.message || '' });
+      const compte = h('span', { class: 'compteur-car', id: 'bv-compte' });
+      const majCompte = () => { compte.textContent = mes.value.length + ' / 600 caractères'; };
+      mes.addEventListener('input', majCompte); majCompte();
+      const envoyer = h('button', { type: 'submit', class: 'btn btn-jaune' }, modif ? 'Enregistrer ma demande' : 'Envoyer ma demande');
+      const form = h('form', { novalidate: true, id: 'bv-form' },
+        h('div', { class: 'deux' }, champ('bv-nom', 'Nom et prénom', nom), champ('bv-societe', 'Société', soc)),
+        champ('bv-fonction', 'Fonction', fon, h('span', { class: 'aide', text: 'Facultatif. Par exemple : assistante de direction, prospecteur, expert-comptable.' })),
+        champ('bv-message', 'Message pour Julien HUET', mes, compte),
+        msg,
+        h('div', { class: 'actions' }, envoyer, modif ? h('button', { type: 'button', class: 'btn btn-sec', onclick: () => ecranBienvenue('statut') }, 'Annuler') : null));
+      carte.appendChild(h('p', { class: 'intro', text: modif
+        ? 'Modifie ta demande : elle reste en attente, à la date d\'aujourd\'hui.'
+        : 'Ton compte est créé (' + (a.email || '') + '). Présente-toi en quelques mots : Julien HUET valide chaque accès aux espaces du Groupe.' }));
+      carte.appendChild(form);
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const v = { p_nom: nom.value.trim(), p_societe: soc.value.trim(), p_fonction: fon.value.trim() || null, p_message: mes.value.trim() || null };
+        if (v.p_nom.length < 2) { dire(msg, 'Indique ton nom et ton prénom.', 'err'); nom.focus(); return; }
+        if (!v.p_societe) { dire(msg, 'Indique ta société.', 'err'); soc.focus(); return; }
+        if (v.p_message && v.p_message.length > 600) { dire(msg, 'Le message est limité à 600 caractères.', 'err'); mes.focus(); return; }
+        envoyer.disabled = true; dire(msg, 'Envoi de ta demande…', 'info');
+        let r;
+        try { r = await client.rpc('slos_demander_acces', v); } catch (err) { r = { error: err }; }
+        if (!r || r.error) { envoyer.disabled = false; dire(msg, texteDemande(r && r.error), 'err'); return; }
+        if (r.data === 'deja membre') { chargerAccueil(); return; }
+        chargerAccueil(() => { if (accueil.niveau >= 1) aiguiller(); else ecranBienvenue('statut', { cls: 'ok', texte: modif ? 'Demande mise à jour.' : 'Demande envoyée. Julien HUET la traitera dès que possible.' }); });
+      });
+    }
+    monter('bienvenue', 'Bienvenue', coquille(h('div', { class: 'centre' }, carte)));
+    focaliser(mode === 'formulaire' && !(d && d.nom) ? carte.querySelector('#bv-nom') : h1);
+  }
+  function texteDemande(err) {
+    if (estReseau(err)) return MSG_RESEAU;
+    const m = String((err && err.message) || '');
+    if (/moins de 24/.test(m)) return 'Ta dernière demande a été refusée il y a moins de 24 h : tu pourras en refaire une demain.';
+    if (/connexion requise/i.test(m) || sessionExpiree(err)) return 'Ta session a expiré : déconnecte-toi puis reconnecte-toi.';
+    if ((err && err.code === '23514') || /check constraint|too long|trop long/i.test(m)) return 'Un des champs est trop long.';
+    if (fonctionAbsente(err)) return 'Les demandes d\'accès ne sont pas encore ouvertes. Contacte Julien HUET.';
+    return 'Le serveur a refusé la demande : ' + (m || 'erreur inconnue') + '.';
+  }
+
+  /* =====================================================================================
+     F. Rien ne se perd : relecture des données du serveur avant d'ouvrir l'app (≤ 8 s)
+     Lignes de la table docs (format écrit par l'app, src/runtime/app-gate.js) :
+       direction/store-<k> et data/users/<uid>/store-<k> : {k, t, v}
+       valeur découpée : en-tête {k, t, parts:n} + lignes <path>--i {k, t, i, s} (morceaux du JSON)
+       pierre tombale : {k, t, del:true}
+     Fusion avec localStorage ('slos.<k>' en JSON, horodatage 'slos.__t.<k>') : la plus récente gagne.
+     ===================================================================================== */
+  async function lirePrefixe(prefixe) {
+    const out = [];
+    for (let tour = 0; tour < 1000; tour++) {
+      const de = out.length;
+      const r = await client.from('docs').select('path,data', { count: 'exact' }).like('path', prefixe + '%').order('path', { ascending: true }).range(de, de + PAGE - 1);
+      if (!r || r.error) throw (r && r.error) || new Error('réponse vide');
+      const lignes = Array.isArray(r.data) ? r.data : [];
+      for (const l of lignes) out.push(l);
+      if (!lignes.length) break;
+      if (typeof r.count === 'number' ? out.length >= r.count : lignes.length < PAGE) break;
+    }
+    return out;
+  }
+  const canon = (x) => Array.isArray(x) ? '[' + x.map(canon).join(',') + ']'
+    : (x && typeof x === 'object') ? '{' + Object.keys(x).sort().map((k) => JSON.stringify(k) + ':' + canon(x[k])).join(',') + '}'
+    : JSON.stringify(x);
+  const memeValeur = (a, b) => { if (a === b) return true; try { return canon(JSON.parse(a)) === canon(JSON.parse(b)); } catch (e) { return false; } };
+  const cleDuChemin = (p) => { const m = /^(?:direction|data\/users\/[^/]+)\/store-(.+)$/.exec(p); return m ? m[1] : ''; };
+
+  /* lignes du serveur → {k: {t, brut} | {t, del} | {t, incomplet}} (la plus récente par clé) */
+  function reconstituer(lignes) {
+    const parChemin = new Map();
+    lignes.forEach((l) => { if (l && typeof l.path === 'string' && l.data && typeof l.data === 'object') parChemin.set(l.path, l.data); });
+    const serveur = new Map();
+    parChemin.forEach((d, path) => {
+      const morceau = typeof d.s === 'string' && d.i != null && d.parts == null && d.del !== true && !('v' in d);
+      if (morceau && /--\d+$/.test(path)) return;           // lu avec son en-tête
+      const k = (typeof d.k === 'string' && d.k) ? d.k : cleDuChemin(path);
+      if (!k) return;
+      const t = Number(d.t) || 0;
+      let e = null;
+      if (d.del === true) e = { t, del: true };
+      else if (d.parts != null) {
+        const n = Number(d.parts);
+        let txt = '', complet = Number.isInteger(n) && n > 0;
+        for (let i = 0; complet && i < n; i++) {
+          const p = parChemin.get(path + '--' + i);
+          if (!p || typeof p.s !== 'string' || Number(p.t) !== t || (p.k != null && p.k !== k) || (p.i != null && Number(p.i) !== i)) complet = false;
+          else txt += p.s;
+        }
+        if (complet) { try { JSON.parse(txt); } catch (x) { complet = false; } }
+        e = complet ? { t, brut: txt } : { t, incomplet: true };
+      } else if ('v' in d) {
+        const brut = JSON.stringify(d.v);
+        if (typeof brut === 'string') e = { t, brut };
+      }
+      if (!e) return;
+      const prec = serveur.get(k);
+      if (!prec || e.t > prec.t || (e.t === prec.t && prec.incomplet && !e.incomplet)) serveur.set(k, e);
+    });
+    return serveur;
+  }
+
+  function fusionner(serveur, uid) {
+    const bilan = { ecrites: 0, supprimees: 0, sauvegardes: 0, echecs: 0, apousser: [] };
+    serveur.forEach((e, k) => {
+      if (e.incomplet) return;                                   // morceau manquant ou horodatages différents : on n'y touche pas
+      const cle = 'slos.' + k, cleT = 'slos.__t.' + k, cleB = 'slos.__bak.' + k;
+      const local = LS.get(cle);
+      const tBrut = LS.get(cleT), tLocal = Number(tBrut) || 0, horodatee = tBrut != null && tLocal > 0;
+      if (e.t <= tLocal) return;                                 // la copie locale est aussi récente ou plus récente
+      if (e.del) {                                               // pierre tombale plus récente : suppression, copie gardée
+        if (local != null) {
+          if (!LS.set(cleB, local)) { bilan.echecs++; return; }
+          bilan.sauvegardes++; LS.del(cle); bilan.supprimees++;
+        }
+        LS.set(cleT, String(e.t));
+        return;
+      }
+      if (local != null && memeValeur(local, e.brut)) { LS.set(cleT, String(e.t)); return; }
+      if (local != null && !horodatee) {                         // jamais synchronisée et différente : copie de sécurité
+        if (!LS.set(cleB, local)) { bilan.echecs++; return; }
+        bilan.sauvegardes++;
+      }
+      if (!LS.set(cle, e.brut)) { bilan.echecs++; return; }
+      LS.set(cleT, String(e.t)); bilan.ecrites++;
+    });
+    /* clés locales absentes du serveur ou plus récentes que lui : l'app les enverra */
+    const ancien = LS.get(CLE.uid);
+    const autreCompte = !!ancien && ancien !== uid;
+    LS.cles().forEach((cle) => {
+      if (!cle || cle.indexOf('slos.') !== 0 || cle.indexOf('slos.__') === 0 || cle.indexOf('slos.selecteur.') === 0) return;
+      const k = cle.slice(5);
+      if (!k) return;
+      const e = serveur.get(k);
+      const tLocal = Number(LS.get('slos.__t.' + k)) || 0;
+      if (!e || tLocal > e.t) bilan.apousser.push(k);
+    });
+    bilan.apousser.sort();
+    if (autreCompte) bilan.retenues = bilan.apousser.splice(0);  // navigateur utilisé par un autre compte : rien n'est envoyé sous ce nom
+    return bilan;
+  }
+
+  function hydrater(uid) {
+    SS.del(CLE.apousser); SS.del(CLE.alerte);
+    const heure = () => { try { return new Date().toLocaleString('fr-FR'); } catch (e) { return ''; } };
+    return new Promise((resolve) => {
+      let fini = false;
+      const minuteur = setTimeout(() => {
+        if (fini) return; fini = true;
+        SS.set(CLE.alerte, 'Données du serveur non relues en 8 s : SUNLINK OS s\'est ouvert avec les données de ce navigateur (' + heure() + ').');
+        resolve({ etat: 'delai' });
+      }, DELAI_SYNC);
+      Promise.all([lirePrefixe('direction/store-'), lirePrefixe('data/users/' + uid + '/store-')]).then((res) => {
+        if (fini) return;                                        // trop tard : l'app est déjà ouverte, on n'écrit plus rien
+        fini = true; clearTimeout(minuteur);
+        let bilan;
+        try { bilan = fusionner(reconstituer(res[0].concat(res[1])), uid); }
+        catch (err) {
+          SS.set(CLE.alerte, 'Fusion des données impossible (' + String((err && err.message) || err) + ') : SUNLINK OS s\'est ouvert avec les données de ce navigateur (' + heure() + ').');
+          resolve({ etat: 'erreur' }); return;
+        }
+        SS.set(CLE.apousser, JSON.stringify(bilan.apousser));
+        LS.set(CLE.uid, uid);
+        const notes = [];
+        if (bilan.echecs) notes.push(bilan.echecs + ' valeur(s) du serveur non copiée(s) dans ce navigateur (mémoire pleine)');
+        if (bilan.retenues && bilan.retenues.length) notes.push('ce navigateur a servi à un autre compte : ' + bilan.retenues.length + ' donnée(s) locale(s) non envoyée(s) sous ton nom');
+        if (notes.length) SS.set(CLE.alerte, 'Synchronisation : ' + notes.join(' ; ') + ' (' + heure() + ').');
+        resolve(Object.assign({ etat: 'ok' }, bilan));
+      }, (err) => {
+        if (fini) return; fini = true; clearTimeout(minuteur);
+        SS.set(CLE.alerte, 'Lecture des données du serveur impossible (' + texteServeur(err) + ') : SUNLINK OS s\'est ouvert avec les données de ce navigateur (' + heure() + ').');
+        resolve({ etat: 'erreur' });
+      });
+    });
+  }
+
+  /* =====================================================================================
+     Ouverture de l'application (niveau ≥ 3) : données relues, puis direction.html sans cache
+     ===================================================================================== */
+  async function telecharger() {
+    let tok = session.access_token;
+    try { const r = await client.auth.getSession(); if (r && r.data && r.data.session) { session = r.data.session; tok = session.access_token; } } catch (e) { /* ignoré */ }
+    const res = await fetch(String(ENV.SUPABASE_URL).replace(/\/$/, '') + '/storage/v1/object/authenticated/' + BUCKET + '/' + FICHIER, { headers: { Authorization: 'Bearer ' + tok, apikey: ENV.SUPABASE_ANON_KEY }, cache: 'no-store' });
+    return { ok: res.ok, status: res.status, html: res.ok ? await res.text() : '' };
+  }
+
+  async function ouvrirApp(choix) {
+    if (ouverture || ferme) return;
+    ouverture = true;
+    const jeton = generation;
+    ecranAttente('Chargement de tes données…', choix.id === 'groupe' ? 'Vue Groupe' : (choix.nom || ''), 'ouverture');
+    const appli = telecharger();
+    appli.catch(() => { /* traité plus bas */ });
+    await hydrater(session.user.id);
+    if (jeton !== generation || ferme) return;
+    majAttente('Ouverture de SUNLINK OS…');
+    let res;
+    try { res = await appli; }
+    catch (err) {
+      if (jeton !== generation) return;
+      ouverture = false;
+      ecranErreur('Téléchargement de l\'application impossible', estReseau(err) ? MSG_RESEAU : texteServeur(err), () => ouvrirApp(choix), true);
+      return;
+    }
+    if (jeton !== generation || ferme) return;
+    if (!res.ok) {
+      ouverture = false;
+      if (accueil.niveau >= 4 && (res.status === 400 || res.status === 404)) { ecranDepot(choix); return; }
+      ecranErreur('Application introuvable dans l\'espace sécurisé', 'Erreur ' + res.status + '. Réessaie dans un instant ; si le problème persiste, préviens Julien HUET.', () => ouvrirApp(choix), true);
+      return;
+    }
+    ferme = true;
+    try { client.auth.stopAutoRefresh(); } catch (e) { /* ignoré */ }
+    try { if (abonnement) abonnement.data.subscription.unsubscribe(); } catch (e) { /* ignoré */ }
+    document.open(); document.write(res.html); document.close();
+  }
+
+  /* Propriétaire seulement : déposer l'application dans l'espace sécurisé si elle manque */
+  function ecranDepot(choix) {
+    const msg = h('p', { class: 'msg', 'aria-live': 'polite' });
+    const fichier = h('input', { type: 'file', id: 'dp-fichier', class: 'input', accept: '.html,text/html' });
+    const h1 = h('h1', { id: 'dp-titre', tabindex: '-1', text: 'Déposer l\'application' });
+    const carte = h('section', { class: 'carte bv', 'aria-labelledby': 'dp-titre' }, h('p', { class: 'surtitre', text: 'Propriétaire' }), h1,
+      h('p', { class: 'intro', text: 'L\'application n\'est pas encore déposée dans l\'espace sécurisé. Choisis le fichier direction.html reçu de Claude : il sera déposé, puis ouvert.' }),
+      h('div', { class: 'champ' }, h('label', { for: 'dp-fichier', text: 'Fichier de l\'application' }), fichier), msg,
+      h('div', { class: 'actions' }, h('button', { type: 'button', class: 'btn btn-sec', onclick: () => { SS.del(CLE.choix); ecranSelecteur(); } }, ico('retour'), 'Revenir aux sociétés')));
+    fichier.addEventListener('change', async () => {
+      const f = fichier.files && fichier.files[0]; if (!f) return;
+      if (!/\.html?$/i.test(f.name) || f.size < 100000) { dire(msg, 'Ce fichier ne ressemble pas à l\'application (direction.html, environ 1,7 Mo).', 'err'); return; }
+      dire(msg, 'Dépôt en cours (' + Math.round(f.size / 1024) + ' Ko)…', 'info');
+      let r;
+      try { r = await client.storage.from(BUCKET).upload(FICHIER, f, { upsert: true, contentType: 'text/html; charset=utf-8', cacheControl: '60' }); } catch (err) { r = { error: err }; }
+      if (!r || r.error) { dire(msg, 'Dépôt refusé : ' + texteServeur(r && r.error), 'err'); return; }
+      dire(msg, 'Application déposée. Ouverture…', 'ok');
+      setTimeout(() => ouvrirApp(choix), 400);
+    });
+    monter('depot', 'Déposer l\'application', coquille(h('div', { class: 'centre' }, carte)));
+    focaliser(h1);
+  }
+
+  /* ---------- déconnexion : la session de ce navigateur seulement ; les données locales restent ---------- */
+  async function sortir() {
+    generation++;
+    session = null; accueil = null; demarre = null; ouverture = false;   // avant signOut : l'événement SIGNED_OUT n'affiche rien
+    SS.del(CLE.choix); SS.del(CLE.apousser); SS.del(CLE.alerte);
+    let r = null;
+    try { r = await client.auth.signOut({ scope: 'local' }); } catch (e) { r = { error: e }; }
+    if (r && r.error) LS.cles().forEach((k) => { if (/^sb-.+-auth-token$/.test(k)) LS.del(k); });
+    session = null; accueil = null; demarre = null; ouverture = false;
+  }
+  async function deconnexion() {
+    ecranAttente('Déconnexion…');
+    await sortir();
+    location.reload();
+  }
+
+  /* =====================================================================================
+     Démarrage
+     ===================================================================================== */
+  if (!window.supabase || typeof window.supabase.createClient !== 'function' || !ENV.SUPABASE_URL || !ENV.SUPABASE_ANON_KEY) {
+    ecranErreur('Connexion indisponible', 'Configuration absente (env.js ou bibliothèque Supabase non chargée). Recharge la page ; si le problème persiste, préviens Julien HUET.', null, false);
+    return;
+  }
+  const erreurLien = lireErreurLien();
+  client = window.supabase.createClient(ENV.SUPABASE_URL, ENV.SUPABASE_ANON_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
+  abonnement = client.auth.onAuthStateChange((ev, s) => {
+    if (ferme) return;
+    if (ev === 'SIGNED_OUT') { if (session && !ouverture) { session = null; accueil = null; demarre = null; ecranConnexion('Tu as été déconnecté·e.'); } return; }
+    if (s) session = s;
+    /* différé : on n'appelle jamais Supabase depuis l'intérieur du rappel (verrou de supabase-js) */
+    if ((ev === 'SIGNED_IN' || ev === 'INITIAL_SESSION') && s) setTimeout(() => demarrer(s), 0);
+  });
+  client.auth.getSession().then((r) => {
+    const s = r && r.data && r.data.session;
+    if (s) demarrer(s);
+    else if (!demarre) { nettoyerUrl(); ecranConnexion(erreurLien); }
+  }, () => { if (!demarre) ecranConnexion(erreurLien); });
 })();
 </script>
 </body>
