@@ -139,9 +139,13 @@ button.link{background:none;color:var(--muted);font-weight:400;text-decoration:u
       if (r && r.error) { ouvert = false; refus(session, 'Lecture de ton rôle impossible : ' + r.error.message); return; }
       if (niveau < 3) { ouvert = false; refus(session, 'Ton compte est bien connecté, mais l\'espace de direction est réservé aux rôles Éditeur et Propriétaire. Demande une invitation à Julien.'); return; }
       wait('Chargement de SUNLINK OS…');
-      return client.storage.from(BUCKET).download(FICHIER).then(function (d) {
-        if (d.error || !d.data) { ouvert = false; if (niveau >= 4) depot(session); else refus(session, 'Application introuvable dans l\'espace sécurisé (' + (d.error ? d.error.message : 'fichier absent') + ').'); return; }
-        return d.data.text().then(function (html) {
+      /* téléchargement direct, sans cache du navigateur : une nouvelle version déposée est visible au rechargement suivant */
+      return client.auth.getSession().then(function (r2) {
+        var tok = (r2 && r2.data && r2.data.session && r2.data.session.access_token) || session.access_token;
+        return fetch(String(ENV.SUPABASE_URL).replace(/\/$/, '') + '/storage/v1/object/authenticated/' + BUCKET + '/' + FICHIER, { headers: { Authorization: 'Bearer ' + tok, apikey: ENV.SUPABASE_ANON_KEY }, cache: 'no-store' });
+      }).then(function (res) {
+        if (!res.ok) { ouvert = false; if (niveau >= 4 && (res.status === 400 || res.status === 404)) depot(session); else refus(session, 'Application introuvable dans l\'espace sécurisé (erreur ' + res.status + ').'); return; }
+        return res.text().then(function (html) {
           try { client.auth.stopAutoRefresh(); } catch (e) { /* ignoré */ }
           try { if (sub) sub.data.subscription.unsubscribe(); } catch (e) { /* ignoré */ }
           document.open(); document.write(html); document.close();
