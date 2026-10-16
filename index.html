@@ -18,6 +18,13 @@
    3. Membres : sélecteur de société (première page de l'application) ; nouveaux inscrits : demande d'accès.
    4. Direction (niveau ≥ 3) : relecture des données du serveur (rien ne se perd), puis téléchargement de
       l'application depuis Supabase Storage (bucket privé « app », direction.html) et document.write.
+   5. Partenaires (niveau 0, jamais membres) : rpc('co_acces_partenaire') ; accès actif →
+      partenaire.html (même bucket, même façon) ; en attente, pilote fermé, suspendu → écran explicatif.
+   6. v5.6 : animation d'entrée AVANT le formulaire de connexion (le soleil du logo officiel se lève, 2,8 s au plus) : moteur et
+      style recopiés tels quels de src/modules/entree.js et src/styles/entree.css (tests/t99-vision-entree.js compare les copies).
+      Une fois par onglet (sessionStorage 'slos.intro') : direction.html, écrite ensuite dans le même onglet, ne la rejoue pas ;
+      elle attend la fin de l'animation avant document.write. Coupée par la personne : localStorage 'slos.introUi' = {"coupee":true}.
+      Paramètre explicite pour les tests : window.SLOS_INTRO = false (aucune lecture). Aucune donnée, aucune image ici : le logo seul.
    ===================================================================================== */
 :root{
   --jaune:#FEC61E;--jaune-f:#F2B705;--bleu:#0183FF;--bleu-f:#0060BF;--bleu-c:#E3F0FF;--bleu-sombre:#2A324B;
@@ -267,9 +274,179 @@ legend{font-size:13.5px;font-weight:600;margin-bottom:8px;padding:0}
 @keyframes souffle{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 .noscript{margin:24px 16px;padding:14px;border-radius:9px;background:#F8E4E4;color:#3B0B0B;font:15px/1.5 system-ui,sans-serif}
+/* ==== style de l'entrée : début ==== */
+.sli{position:fixed;inset:0;z-index:2147483000;display:flex;align-items:center;justify-content:center;background:#00070D;color:#C9D0DC;font-family:Lexend,"Segoe UI",system-ui,sans-serif;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation;overscroll-behavior:contain;-webkit-user-select:none;user-select:none}
+.sli-c{display:flex;flex-direction:column;align-items:center;gap:clamp(18px,3.4vh,30px);width:min(560px,calc(100vw - 64px))}
+.sli-logo{display:block;width:100%;height:auto;overflow:visible}
+.sli-ligne{margin:0;font-size:clamp(13px,1.5vw,16px);line-height:1.4;font-weight:400;letter-spacing:.06em;color:#AEB6C4;text-align:center}
+.sli-passer{position:absolute;right:24px;bottom:calc(22px + env(safe-area-inset-bottom,0px));min-height:40px;padding:0 18px;border:1px solid rgba(201,208,220,.3);border-radius:999px;background:transparent;color:#C9D0DC;font:500 13.5px/1 Lexend,"Segoe UI",system-ui,sans-serif;letter-spacing:.02em;cursor:pointer}
+.sli-passer:hover{border-color:#FEC61F;color:#fff}
+.sli-passer:focus-visible{outline:2px solid #FEC61F;outline-offset:3px}
+.sli-r{transform-box:fill-box;transform-origin:50% 73.05%}
+.sli-soleil,.sli-halo{transform-box:fill-box;transform-origin:50% 50%}
+.sli-anim .sli-r,.sli-anim .sli-plein,.sli-anim .sli-arc,.sli-anim .sli-halo,.sli-anim .sli-l,.sli-anim .sli-en,.sli-anim .sli-ligne{opacity:0}
+.sli-anim .sli-soleil{transform:translate(498.3px,0) scale(1.1)}
+.sli-calme .sli-halo{display:none}
+@media (max-width:600px){.sli-passer{right:auto;left:50%;transform:translateX(-50%)}}
+/* ==== style de l'entrée : fin ==== */
 </style>
 </head>
 <body>
+<script>
+/* ==== moteur de l'entrée : début ==== */
+/* Logo officiel SUNLINK Energies et animation d'entrée. Moteur autonome, recopié tel quel dans deploy/gh-pages/index.html.
+   Chemins : ceux des fichiers fournis (logo_blanc-jaune.svg ; pour fond clair, mot « sunlink » en #040414 comme logo_noir-jaune.svg),
+   découpés en groupes pour l'animation sans changer ni forme ni couleur ; le halo jaune n'existe que pendant le lever du soleil.
+   window.SLOS_MARQUE :
+     logo({fond: 'sombre' | 'clair', titre, cls}), mono({titre, cls}) → balisage SVG (titre '' : décoratif, aria-hidden) ;
+     lancer({force}) → joue l'animation (2,8 s au plus ; en mouvement réduit : logo fixe 0,6 s puis fondu), sauf si elle a déjà
+       été vue dans cet onglet (sessionStorage 'slos.intro'), si elle est coupée (localStorage 'slos.introUi' = {"coupee":true})
+       ou si window.SLOS_INTRO === false (paramètre explicite, pour les tests) ; force : la rejoue malgré tout. Renvoie true si elle joue.
+     passer() → fondu court ; fin() → Promise résolue quand aucune animation ne joue ; joue(), vue(), coupee().
+   « Passer », un clic ou un toucher n'importe où, Échap, Entrée ou Espace l'arrêtent. Elle ne bloque rien (la page se charge dessous)
+   et ne déplace ni ne retient le focus. */
+(function () {
+  'use strict';
+  var MASQUE = 'M318.418 15.8379H0V288.326H318.418V15.8379Z';
+  var RAYONS = 'M0 152.564C3.55367 139.3 7.02801 126.321 10.6293 112.882C38.9158 121.271 66.9327 129.581 94.9337 137.875C95.0765 137.67 95.2193 137.448 95.3621 137.242C74.3097 117.267 53.2574 97.2753 31.8402 76.9515C41.7239 67.7077 51.5123 58.5588 61.6022 49.125C80.7984 69.2905 100.962 90.4532 121.11 111.616C121.364 111.505 121.618 111.394 121.872 111.268C113.765 83.1405 105.642 55.0132 97.4086 26.4903C110.782 22.9447 123.934 19.4466 137.356 15.8852C144.463 43.8858 151.475 71.5698 158.503 99.2539C158.9 99.3014 159.281 99.333 159.677 99.3805C166.737 71.6648 173.797 43.9649 180.967 15.8535C194.31 19.3991 207.445 22.8972 220.803 26.4586C212.554 55.124 204.431 83.3304 196.293 111.537C196.499 111.663 196.705 111.774 196.911 111.901C217.139 90.6748 237.382 69.433 257.086 48.7451C267.16 58.3689 276.837 67.6127 286.562 76.8882C265.272 97.1487 244.251 117.14 223.247 137.132C223.373 137.385 223.5 137.622 223.643 137.875C251.549 129.597 279.455 121.319 307.852 112.898C311.406 126.226 314.88 139.284 318.434 152.659C291.718 158.832 265.494 164.895 239.27 170.957C239.222 171.274 239.175 171.606 239.143 171.938C265.415 179.473 291.671 187.023 318.323 194.684C314.944 207.315 311.565 219.962 308.059 233.052C250.359 219.376 205.891 184.696 170.592 138.224C142.337 108.276 132.485 203.864 10.4706 232.941C7.04388 221.323 4.2993 209.895 1.01533 198.34C0.111052 195.38 0.602855 194.193 3.79164 193.291C29.4447 185.978 54.828 179.045 80.4018 171.289C53.1147 164.942 26.7953 158.817 0.0158646 152.58L0 152.564Z';
+  var ARC = 'M25.4936 288.278C22.4952 277.61 19.5127 267.1 16.5936 256.558C14.8326 250.227 14.8961 250.274 21.0515 248.327C76.2127 230.916 132.056 208.154 191.009 218.174C228.418 223.777 263.669 238.165 299.808 248.802C302.854 249.752 303.695 250.939 302.696 254.247C299.316 265.438 296.381 276.739 293.177 288.342C166.308 246.855 152.569 246.539 25.5095 288.294L25.4936 288.278Z';
+  var MOT = [
+    'M389.832 162.44H430.113C430.113 176.923 440.869 185.945 456.321 185.945C479.816 186.942 493.73 160.762 471.488 149.856C467.347 147.941 457.701 146.025 443.074 143.572C411.868 141.024 391.356 123.85 393.418 99.0147C387.881 36.967 522.397 25.7288 518.669 102.022H478.389C480.641 73.5467 434.856 73.2776 434.253 98.1916C434.253 104.476 437.014 109.129 445.295 112.406C476.77 123.739 522.381 115.809 523.365 165.716C528.394 231.974 385.121 237.942 389.832 162.44Z',
+    'M649.282 148.226V53.9199H688.452C685.644 116.743 710.52 216.843 614.238 216.843C518.003 216.906 542.815 116.601 540.023 53.9199H579.209V148.226C581.969 192.736 646.522 192.72 649.282 148.226Z',
+    'M749.767 124.515V217.459H710.598V59.1744H749.767V81.8567L751.148 82.4107C782.29 29.9234 860.931 56.4203 858.741 119.323V217.459H819.556V124.515C816.811 76.38 749.101 81.825 749.751 124.515H749.767Z',
+    'M880.873 3.71191H920.058V176.211C920.248 183.619 928.546 186.864 934.955 185.787V216.954C906.224 220.135 879.477 208.121 880.873 182.78V3.72774V3.71191Z',
+    'M945.663 217.634V59.3647H984.833V217.65H945.663V217.634ZM941.522 23.0067C940.888 -3.72768 985.864 -11.3728 988.973 23.0067C988.735 53.3816 941.744 53.3816 941.522 23.0067Z',
+    'M1045.88 125.576V218.521H1006.71V60.2516H1045.88V82.9338L1047.26 83.4878C1078.4 31.0005 1157.04 57.4974 1154.85 120.4V218.537H1115.67V125.592C1112.92 77.473 1045.21 82.9022 1045.86 125.592L1045.88 125.576Z',
+    'M1177 216.938V3.71191H1216.19V119.893H1227.77L1268.6 58.6527H1314.96L1261.99 137.653L1314.96 216.922H1268.87L1227.77 155.412H1216.19V216.922H1177V216.938Z'];
+  var ENERGIES = [
+    'M1093.62 273.329C1093.62 274.543 1093.44 275.879 1093.14 277.275H1064.37C1064.85 279.156 1066.07 280.734 1068.01 282.131C1069.89 283.527 1072.08 284.255 1074.44 284.255C1078.63 284.376 1082.27 282.07 1083 280.37H1092.11C1089.68 287.715 1082.76 291.964 1074.44 291.964C1063.58 291.964 1055.14 283.83 1055.14 273.329C1055.14 262.768 1063.64 254.756 1074.56 254.756C1084.76 254.574 1093.81 263.011 1093.62 273.329ZM1064.37 269.809H1084.76C1083.97 264.953 1077.84 262.282 1074.56 262.525C1071.35 262.222 1065.22 265.196 1064.37 269.809Z',
+    'M1105.27 270.294V290.932H1096.65V255.788H1105.27V260.826L1105.57 260.947C1107.51 256.88 1112.61 254.574 1116.19 254.756C1123.3 254.756 1129.24 260.461 1129.24 269.141V290.932H1120.63V270.294C1120.75 265.439 1115.77 262.343 1112.98 262.647C1110.85 262.647 1109.03 263.375 1107.51 264.832C1106 266.349 1105.27 268.17 1105.27 270.294Z',
+    'M1170.78 273.329C1170.78 274.543 1170.59 275.879 1170.29 277.275H1141.52C1142.01 279.156 1143.22 280.734 1145.16 282.131C1147.04 283.527 1149.23 284.255 1151.6 284.255C1155.78 284.376 1159.43 282.07 1160.15 280.37H1169.26C1166.83 287.715 1159.91 291.964 1151.6 291.964C1140.73 291.964 1132.29 283.83 1132.29 273.329C1132.29 262.768 1140.79 254.756 1151.72 254.756C1161.91 254.574 1170.96 263.011 1170.78 273.329ZM1141.52 269.809H1161.91C1161.12 264.953 1154.99 262.282 1151.72 262.525C1148.5 262.222 1142.37 265.196 1141.52 269.809Z',
+    'M1182.42 290.932H1173.8V255.788H1182.42V260.886L1182.66 261.068C1184.85 256.637 1187.58 254.756 1191.47 254.756H1192.8V263.496H1190.19C1187.46 263.193 1182.3 266.167 1182.42 270.78V290.932Z',
+    'M1210.59 304.164C1200.52 304.164 1193.96 299.126 1192.81 292.146H1201.73C1202.46 294.634 1206.04 296.759 1210.59 296.759C1216.91 296.759 1220.79 294.209 1220.79 288.686V284.741L1220.49 284.619C1217.69 288.382 1213.93 290.264 1209.14 290.264C1198.94 290.264 1192.02 282.738 1192.02 272.54C1192.02 262.222 1198.94 254.756 1209.14 254.756C1213.57 254.756 1217.39 256.88 1220.49 261.068L1220.79 260.947V255.788H1229.41V289.232C1229.41 292.813 1228.44 296.455 1225.1 299.612C1221.7 302.768 1216.12 304.164 1210.59 304.164ZM1220.79 272.54C1220.97 269.02 1217.82 262.768 1210.9 262.647C1207.13 262.404 1201.12 265.924 1201 272.54C1201 275.15 1201.97 277.396 1203.98 279.399C1205.92 281.402 1208.23 282.373 1210.9 282.373C1214.66 282.616 1220.67 279.096 1220.79 272.54Z',
+    'M1233.65 290.932V255.788H1242.27V290.932H1233.65ZM1232.74 247.715C1232.49 245.833 1234.74 242.434 1237.96 242.555C1239.84 242.313 1243.3 244.498 1243.18 247.715C1243.18 250.568 1240.81 252.874 1237.96 252.874C1235.1 252.874 1232.74 250.568 1232.74 247.715Z',
+    'M1283.77 273.329C1283.77 274.543 1283.58 275.879 1283.28 277.275H1254.51C1255 279.156 1256.21 280.734 1258.15 282.131C1260.03 283.527 1262.22 284.255 1264.59 284.255C1268.77 284.376 1272.42 282.07 1273.14 280.37H1282.25C1279.82 287.715 1272.9 291.964 1264.59 291.964C1253.72 291.964 1245.28 283.83 1245.28 273.329C1245.28 262.768 1253.78 254.756 1264.71 254.756C1274.9 254.574 1283.95 263.011 1283.77 273.329ZM1254.51 269.809H1274.9C1274.12 264.953 1267.98 262.282 1264.71 262.525C1261.49 262.222 1255.36 265.196 1254.51 269.809Z',
+    'M1285.58 279.885H1294.44C1294.44 283.102 1296.81 285.105 1300.21 285.105C1303.55 285.105 1305.97 283.102 1305.97 280.613C1305.97 279.156 1305.37 277.942 1303.55 277.093C1302.64 276.668 1300.51 276.243 1297.29 275.697C1294.08 275.211 1291.77 274.543 1290.5 273.754C1286.73 271.387 1286.37 268.291 1286.37 265.803C1286.37 260.947 1289.89 254.574 1300.21 254.574C1308.77 254.574 1313.93 258.701 1313.93 266.47H1305.06C1305.06 263.375 1303.18 261.554 1300.21 261.554C1297.35 261.554 1295.35 263.436 1295.35 265.621C1295.35 267.017 1295.96 268.049 1297.78 268.777C1298.69 269.202 1300.33 269.566 1302.7 269.991C1305.06 270.416 1306.76 270.78 1307.79 271.084C1311.56 272.358 1314.77 274.24 1314.96 280.613C1314.96 286.258 1310.83 292.085 1300.21 292.085C1290.07 291.721 1286 287.775 1285.58 279.885Z'];
+  var JAUNE = '#FEC61F', BLANC = '#FFFFFF', ENCRE = '#040414';
+  var CX = 159.2, CY = 174.5;   /* centre de l'éventail des rayons, en unités du logo */
+  var SECTEURS = [[180, 270], [150, 180], [120, 150], [90, 120], [60, 90], [30, 60], [0, 30], [-90, 0]];   /* un rayon par secteur, de gauche à droite */
+  var CLE_VUE = 'slos.intro', CLE_REGLAGE = 'slos.introUi';
+  var n = 0, etat = null;
+  function uid(p) { n += 1; return p + n + Math.random().toString(36).slice(2, 7); }
+  function attr(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function traces(L, couleur, cls) { return L.map(function (d) { return '<path' + (cls ? ' class="' + cls + '"' : '') + ' d="' + d + '" fill="' + couleur + '"/>'; }).join(''); }
+  function ouvrir(vb, o) {
+    var t = o.titre === '' ? '' : (o.titre || 'SUNLINK Energies');
+    return '<svg' + (o.cls ? ' class="' + attr(o.cls) + '"' : '') + ' viewBox="' + vb + '" fill="none" xmlns="http://www.w3.org/2000/svg"' +
+      (t ? ' role="img" aria-label="' + attr(t) + '"' : ' aria-hidden="true" focusable="false"') + '>';
+  }
+  function masque(id) { return '<mask id="' + id + '" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="0" y="15" width="319" height="274"><path d="' + MASQUE + '" fill="white"/></mask>'; }
+  function soleil() { var m = uid('slm'); return masque(m) + '<g mask="url(#' + m + ')"><path d="' + RAYONS + '" fill="' + JAUNE + '"/><path d="' + ARC + '" fill="' + JAUNE + '"/></g>'; }
+  function logo(o) { o = o || {}; return ouvrir('0 0 1315 305', o) + soleil() + traces(MOT, o.fond === 'clair' ? ENCRE : BLANC) + traces(ENERGIES, JAUNE) + '</svg>'; }
+  function mono(o) { o = o || {}; return ouvrir('0 0 319 305', o) + soleil() + '</svg>'; }
+
+  /* ---------- l'animation : l'arc d'horizon monte, les rayons s'ouvrent en éventail, le logo complet, puis la ligne ---------- */
+  function secteur(a0, a1) {
+    var R = 700, k = Math.max(2, Math.ceil((a1 - a0) / 30)), p = [];
+    for (var i = 0; i <= k; i++) { var t = (a0 + (a1 - a0) * i / k) * Math.PI / 180; p.push((CX + R * Math.cos(t)).toFixed(1) + ' ' + (CY - R * Math.sin(t)).toFixed(1)); }
+    return 'M' + CX + ' ' + CY + 'L' + p.join('L') + 'Z';
+  }
+  function scene() {
+    var m = uid('slm'), h = uid('slh'), defs = '', rayons = '';
+    SECTEURS.forEach(function (a) {
+      var c = uid('slc');
+      defs += '<clipPath id="' + c + '" clipPathUnits="userSpaceOnUse"><path d="' + secteur(a[0] - 0.6, a[1] + 0.6) + '"/></clipPath>';
+      rayons += '<path class="sli-r" clip-path="url(#' + c + ')" d="' + RAYONS + '" fill="' + JAUNE + '"/>';
+    });
+    return '<svg class="sli-logo" viewBox="0 0 1315 305" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="SUNLINK Energies">' +
+      '<defs><radialGradient id="' + h + '"><stop offset="0" stop-color="' + JAUNE + '" stop-opacity=".42"/><stop offset=".5" stop-color="' + JAUNE + '" stop-opacity=".12"/><stop offset="1" stop-color="' + JAUNE + '" stop-opacity="0"/></radialGradient>' + defs + masque(m) + '</defs>' +
+      '<g class="sli-soleil"><circle class="sli-halo" cx="' + CX + '" cy="' + CY + '" r="240" fill="url(#' + h + ')"/>' +
+      '<g mask="url(#' + m + ')"><g class="sli-rayons">' + rayons + '</g><path class="sli-plein" d="' + RAYONS + '" fill="' + JAUNE + '"/><path class="sli-arc" d="' + ARC + '" fill="' + JAUNE + '"/></g></g>' +
+      '<g class="sli-mot">' + traces(MOT, BLANC, 'sli-l') + '</g><g class="sli-en">' + traces(ENERGIES, JAUNE) + '</g></svg>';
+  }
+  function vue() { if (window.__slosIntroVue === true) return true; try { return window.sessionStorage.getItem(CLE_VUE) === '1'; } catch (e) { return false; } }
+  function marquer() { window.__slosIntroVue = true; try { window.sessionStorage.setItem(CLE_VUE, '1'); } catch (e) { /* stockage indisponible : la variable de la fenêtre suffit */ } }
+  function coupee() { try { var v = JSON.parse(window.localStorage.getItem(CLE_REGLAGE) || 'null'); return !!(v && v.coupee === true); } catch (e) { return false; } }
+  function calme() { try { return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); } catch (e) { return false; } }
+  function plus(fn, ms) { if (etat) etat.t.push(setTimeout(fn, ms)); }
+  function clavier(e) {
+    if (!etat || etat.sortie) return;
+    var k = e.key;
+    if (k === 'Escape' || k === 'Esc' || k === 'Enter' || k === ' ' || k === 'Spacebar') {
+      e.preventDefault(); e.stopPropagation(); if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+      passer();
+    }
+  }
+  function terminer() {
+    var e = etat; if (!e) return; etat = null;
+    e.t.forEach(clearTimeout);
+    window.removeEventListener('keydown', clavier, true);
+    try { if (e.el.parentNode) e.el.parentNode.removeChild(e.el); } catch (x) { /* document réécrit : rien à retirer */ }
+    e.resoudre();
+    try { window.dispatchEvent(new CustomEvent('slos:entree', { detail: { fin: true } })); } catch (x) { /* ignoré */ }
+  }
+  function sortir(ms) {
+    var e = etat; if (!e || e.sortie) return;
+    e.sortie = true; e.el.setAttribute('data-sli', 'fin'); e.el.style.pointerEvents = 'none';
+    var a = null;
+    try { if (e.el.animate) a = e.el.animate([{ opacity: 1 }, { opacity: 0 }], { duration: ms, easing: 'ease', fill: 'forwards' }); } catch (x) { a = null; }
+    if (a) a.onfinish = terminer; else e.el.style.opacity = '0';
+    plus(terminer, ms + 150);   /* filet : la fin arrive même si le fondu ne s'achève pas */
+  }
+  function passer() { sortir(180); }
+  function animer(el) {
+    var anims = [], q = function (s) { return Array.prototype.slice.call(el.querySelectorAll(s)); };
+    var A = function (x, k, o) { if (x) anims.push(x.animate(k, Object.assign({ fill: 'both', easing: 'cubic-bezier(.2,.8,.2,1)' }, o))); };
+    try {
+      /* 0 à 0,9 s : l'arc d'horizon monte, les huit rayons s'ouvrent un à un de gauche à droite, halo jaune */
+      A(el.querySelector('.sli-arc'), [{ opacity: 0, transform: 'translateY(56px)' }, { opacity: 1, transform: 'none' }], { delay: 0, duration: 520 });
+      A(el.querySelector('.sli-halo'), [{ opacity: 0, transform: 'scale(.55)' }, { opacity: 1, transform: 'scale(1)', offset: 0.45 }, { opacity: 0, transform: 'scale(1.1)' }], { delay: 160, duration: 1250, easing: 'ease-out' });
+      q('.sli-r').forEach(function (r, i) { A(r, [{ opacity: 0, transform: 'scale(.5)' }, { opacity: 1, transform: 'none' }], { delay: 200 + i * 50, duration: 340, easing: 'cubic-bezier(.2,.9,.25,1)' }); });
+      A(el.querySelector('.sli-plein'), [{ opacity: 0 }, { opacity: 1 }], { delay: 880, duration: 160, easing: 'linear' });   /* le chemin d'origine, entier, recouvre les secteurs */
+      /* 0,9 à 1,36 s : le soleil glisse à sa place ; puis « sunlink », « energies » et la ligne */
+      A(el.querySelector('.sli-soleil'), [{ transform: 'translate(498.3px, 0) scale(1.1)' }, { transform: 'none' }], { delay: 900, duration: 460, easing: 'cubic-bezier(.65,0,.35,1)' });
+      q('.sli-l').forEach(function (l, i) { A(l, [{ opacity: 0, transform: 'translateY(12px)' }, { opacity: 1, transform: 'none' }], { delay: 1280 + i * 40, duration: 340 }); });
+      A(el.querySelector('.sli-en'), [{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'none' }], { delay: 1560, duration: 340 });
+      A(el.querySelector('.sli-ligne'), [{ opacity: 0, transform: 'translateY(10px)' }, { opacity: 1, transform: 'none' }], { delay: 1680, duration: 360 });
+      plus(function () { sortir(400); }, 2380);   /* fondu de 2,38 à 2,78 s */
+    } catch (x) {   /* navigateur sans animation de SVG : logo fixe, puis fondu */
+      anims.forEach(function (a) { try { a.cancel(); } catch (y) { /* ignoré */ } });
+      el.className = 'sli sli-calme'; plus(function () { sortir(250); }, 600);
+    }
+  }
+  function jouer() {
+    if (etat) return true;
+    var corps = document.body; if (!corps) return false;
+    var anime = !calme() && typeof corps.animate === 'function';
+    var el = document.createElement('div');
+    el.className = 'sli ' + (anime ? 'sli-anim' : 'sli-calme');
+    el.setAttribute('data-sli', 'joue');
+    el.innerHTML = '<div class="sli-c">' + scene() + '<p class="sli-ligne">SUNLINK OS · Pilotage du Groupe</p></div><button type="button" class="sli-passer">Passer</button>';
+    var resoudre = null, p = new Promise(function (r) { resoudre = r; });
+    etat = { el: el, p: p, resoudre: resoudre, t: [], sortie: false };
+    corps.appendChild(el);
+    el.addEventListener('click', passer);
+    window.addEventListener('keydown', clavier, true);
+    if (anime) {
+      var depart = function () { if (etat && etat.el === el && !etat.sortie) animer(el); };
+      if (window.requestAnimationFrame) window.requestAnimationFrame(depart); else setTimeout(depart, 16);
+    } else plus(function () { sortir(250); }, 600);   /* mouvement réduit : logo fixe 0,6 s, puis fondu */
+    plus(terminer, 8000);   /* filet de sécurité : jamais d'écran figé */
+    return true;
+  }
+  function lancer(o) {
+    o = o || {};
+    if (!o.force && (window.SLOS_INTRO === false || vue() || coupee())) return false;
+    marquer();
+    return jouer();
+  }
+  window.SLOS_MARQUE = { version: 1, logo: logo, mono: mono, lancer: lancer, passer: passer, vue: vue, coupee: coupee,
+    joue: function () { return !!etat; }, fin: function () { return etat ? etat.p : Promise.resolve(); } };
+})();
+/* ==== moteur de l'entrée : fin ==== */
+/* animation d'entrée, avant le formulaire de connexion : une fois par onglet ; coupée par window.SLOS_INTRO = false (tests) */
+try { window.SLOS_MARQUE.lancer(); } catch (e) { /* la connexion reste utilisable sans l'animation */ }
+</script>
 <div id="app" data-ecran="chargement">
   <div class="seul"><div class="attente-boite" role="status"><span class="attente-txt">Vérification de la connexion…</span></div></div>
 </div>
@@ -282,6 +459,7 @@ legend{font-size:13.5px;font-weight:600;margin-bottom:8px;padding:0}
   'use strict';
   const ENV = window.SLOS_ENV || {};
   const BUCKET = 'app', FICHIER = 'direction.html';
+  const FICHIER_PARTENAIRE = 'partenaire.html';   // porte Partenaires, même bucket privé
   const DELAI_SYNC = 8000;   // relecture des données : jamais plus de 8 s d'attente avant d'ouvrir l'app
   const PAGE = 1000;         // lignes lues par requête (limite habituelle de Supabase)
   const CLE = { choix: 'slos.choix', apousser: 'slos.apousser', alerte: 'slos.sync.alerte', groupe: 'slos.selecteur.groupe', dernier: 'slos.selecteur.dernier', uid: 'slos.__uid' };
@@ -334,7 +512,8 @@ legend{font-size:13.5px;font-weight:600;margin-bottom:8px;padding:0}
     schema: '<svg class="cx-schema" viewBox="0 0 400 150" aria-hidden="true" focusable="false"><g fill="none" stroke-linecap="round"><path d="M200 8v26" stroke="#FEC61E" stroke-width="2.5"/><path d="M24 34h352" stroke="#2A324B" stroke-width="4"/><g stroke="#2A324B" stroke-width="2"><path d="M44 34v40M110 34v40M176 34v40M290 34v40M356 34v40"/></g><path d="M224 34v40" stroke="#3A4559" stroke-width="2" stroke-dasharray="4 4"/></g><g fill="#141C2B" stroke="#253046"><rect x="22" y="74" width="44" height="44" rx="9"/><rect x="88" y="74" width="44" height="44" rx="9"/><rect x="154" y="74" width="44" height="44" rx="9"/><rect x="202" y="74" width="44" height="44" rx="9" stroke-dasharray="4 3"/><rect x="268" y="74" width="44" height="44" rx="9"/><rect x="334" y="74" width="44" height="44" rx="9"/></g><g><circle cx="44" cy="96" r="6" fill="#CEF5CA"/><circle cx="110" cy="96" r="6" fill="#FCF8D8"/><circle cx="176" cy="96" r="6" fill="#CEF5CA"/><circle cx="224" cy="96" r="6" fill="#F8E4E4"/><circle cx="290" cy="96" r="6" fill="#FCF8D8"/><circle cx="356" cy="96" r="6" fill="#CEF5CA"/></g><circle cx="200" cy="8" r="5" fill="#FEC61E"/><text x="24" y="142" fill="#6F7A8F" font-size="11" font-family="Lexend,Segoe UI,system-ui,sans-serif" letter-spacing="1.4">GROUPE SUNLINK</text><text x="270" y="142" fill="#6F7A8F" font-size="11" font-family="Lexend,Segoe UI,system-ui,sans-serif" letter-spacing="1.4">GROUPE PRIME</text></svg>'
   };
   const ico = (nom, cls) => { const s = h('span', { class: (cls || 'ico'), 'aria-hidden': 'true' }); s.innerHTML = SVG[nom]; return s; };
-  const soleil = () => ico('soleil', 'soleil');
+  const soleil = () => { const s = h('span', { class: 'soleil', 'aria-hidden': 'true' }); s.innerHTML = window.SLOS_MARQUE ? window.SLOS_MARQUE.mono({ titre: '' }) : SVG.soleil; return s; };   /* v5.6 : monogramme officiel */
+  const finIntro = () => { try { return window.SLOS_MARQUE ? window.SLOS_MARQUE.fin() : Promise.resolve(); } catch (e) { return Promise.resolve(); } };
   const marque = () => h('div', { class: 'marque' }, soleil(), h('span', null, h('b', { text: 'SUNLINK OS' }), h('small', { text: 'Groupe SUNLINK · pilotage' })));
   const dire = (el, texte, cls) => { el.textContent = texte ? typo(texte) : ''; el.className = 'msg' + (texte && cls ? ' ' + cls : ''); };
   const annoncer = (t) => { annonce.textContent = ''; setTimeout(() => { annonce.textContent = typo(t); }, 30); };
@@ -574,7 +753,7 @@ legend{font-size:13.5px;font-weight:600;margin-bottom:8px;padding:0}
       ecranSelecteur();
       return;
     }
-    ecranBienvenue();
+    aiguillerPartenaire();
   }
 
   /* =====================================================================================
@@ -729,7 +908,7 @@ legend{font-size:13.5px;font-weight:600;margin-bottom:8px;padding:0}
   }
 
   function choisir(id, nom) {
-    const choix = { id, nom, at: new Date().toISOString() };
+    const choix = { id, nom, at: new Date().toISOString(), proprio: accueil.niveau >= 4 };   /* proprio : arrivée sur le Vision Board (v5.6) */
     SS.set(CLE.choix, JSON.stringify(choix));
     LS.set(CLE.dernier, id);
     if (accueil.niveau >= 3) ouvrirApp(choix);
@@ -1066,10 +1245,10 @@ legend{font-size:13.5px;font-weight:600;margin-bottom:8px;padding:0}
   /* =====================================================================================
      Ouverture de l'application (niveau ≥ 3) : données relues, puis direction.html sans cache
      ===================================================================================== */
-  async function telecharger() {
+  async function telecharger(fichier) {
     let tok = session.access_token;
     try { const r = await client.auth.getSession(); if (r && r.data && r.data.session) { session = r.data.session; tok = session.access_token; } } catch (e) { /* ignoré */ }
-    const res = await fetch(String(ENV.SUPABASE_URL).replace(/\/$/, '') + '/storage/v1/object/authenticated/' + BUCKET + '/' + FICHIER, { headers: { Authorization: 'Bearer ' + tok, apikey: ENV.SUPABASE_ANON_KEY }, cache: 'no-store' });
+    const res = await fetch(String(ENV.SUPABASE_URL).replace(/\/$/, '') + '/storage/v1/object/authenticated/' + BUCKET + '/' + (fichier || FICHIER), { headers: { Authorization: 'Bearer ' + tok, apikey: ENV.SUPABASE_ANON_KEY }, cache: 'no-store' });
     return { ok: res.ok, status: res.status, html: res.ok ? await res.text() : '' };
   }
 
@@ -1077,6 +1256,7 @@ legend{font-size:13.5px;font-weight:600;margin-bottom:8px;padding:0}
     if (ouverture || ferme) return;
     ouverture = true;
     const jeton = generation;
+    SS.set(CLE.choix, JSON.stringify(Object.assign({}, choix, { proprio: accueil.niveau >= 4 })));   /* lu par l'app : arrivée du propriétaire */
     ecranAttente('Chargement de tes données…', choix.id === 'groupe' ? 'Vue Groupe' : (choix.nom || ''), 'ouverture');
     const appli = telecharger();
     appli.catch(() => { /* traité plus bas */ });
@@ -1098,6 +1278,8 @@ legend{font-size:13.5px;font-weight:600;margin-bottom:8px;padding:0}
       ecranErreur('Application introuvable dans l\'espace sécurisé', 'Erreur ' + res.status + '. Réessaie dans un instant ; si le problème persiste, préviens Julien HUET.', () => ouvrirApp(choix), true);
       return;
     }
+    await finIntro();   /* l'animation d'entrée (2,8 s au plus) s'achève avant que l'application remplace la page */
+    if (jeton !== generation || ferme) return;
     ferme = true;
     try { client.auth.stopAutoRefresh(); } catch (e) { /* ignoré */ }
     try { if (abonnement) abonnement.data.subscription.unsubscribe(); } catch (e) { /* ignoré */ }
@@ -1115,7 +1297,7 @@ legend{font-size:13.5px;font-weight:600;margin-bottom:8px;padding:0}
       h('div', { class: 'actions' }, h('button', { type: 'button', class: 'btn btn-sec', onclick: () => { SS.del(CLE.choix); ecranSelecteur(); } }, ico('retour'), 'Revenir aux sociétés')));
     fichier.addEventListener('change', async () => {
       const f = fichier.files && fichier.files[0]; if (!f) return;
-      if (!/\.html?$/i.test(f.name) || f.size < 100000) { dire(msg, 'Ce fichier ne ressemble pas à l\'application (direction.html, environ 1,7 Mo).', 'err'); return; }
+      if (!/\.html?$/i.test(f.name) || f.size < 100000) { dire(msg, 'Ce fichier ne ressemble pas à l\'application (direction.html, environ 2,7 Mo).', 'err'); return; }
       dire(msg, 'Dépôt en cours (' + Math.round(f.size / 1024) + ' Ko)…', 'info');
       let r;
       try { r = await client.storage.from(BUCKET).upload(FICHIER, f, { upsert: true, contentType: 'text/html; charset=utf-8', cacheControl: '60' }); } catch (err) { r = { error: err }; }
@@ -1124,6 +1306,69 @@ legend{font-size:13.5px;font-weight:600;margin-bottom:8px;padding:0}
       setTimeout(() => ouvrirApp(choix), 400);
     });
     monter('depot', 'Déposer l\'application', coquille(h('div', { class: 'centre' }, carte)));
+    focaliser(h1);
+  }
+
+  /* =====================================================================================
+     G. Partenaires (jamais membres) : rpc('co_acces_partenaire')
+        actif → partenaire.html depuis le bucket « app » (comme direction.html, sans cache) puis document.write ;
+        en attente, pilote fermé, suspendu → écran explicatif (aucune donnée) ;
+        sinon (aucun, fonction absente, erreur) → écran de bienvenue habituel (demande d'accès).
+     ===================================================================================== */
+  async function aiguillerPartenaire() {
+    const jeton = generation;
+    let r;
+    try { r = await client.rpc('co_acces_partenaire'); } catch (err) { r = { error: err }; }
+    if (jeton !== generation || ferme) return;
+    const statut = r && !r.error && r.data && typeof r.data === 'object' ? String(r.data.statut || '') : '';
+    if (statut === 'actif') { ouvrirPartenaire(); return; }
+    if (statut === 'en_attente' || statut === 'ferme' || statut === 'suspendu') { ecranPartenaire(statut); return; }
+    ecranBienvenue();
+  }
+
+  async function ouvrirPartenaire() {
+    if (ouverture || ferme) return;
+    ouverture = true;
+    const jeton = generation;
+    ecranAttente('Ouverture de l\'espace partenaires…', 'SUNLINK · Espace partenaires', 'ouverture');
+    let res;
+    try { res = await telecharger(FICHIER_PARTENAIRE); }
+    catch (err) {
+      if (jeton !== generation) return;
+      ouverture = false;
+      ecranErreur('Téléchargement de l\'espace partenaires impossible', estReseau(err) ? MSG_RESEAU : texteServeur(err), () => ouvrirPartenaire());
+      return;
+    }
+    if (jeton !== generation || ferme) return;
+    if (!res.ok) {
+      ouverture = false;
+      ecranErreur('Espace partenaires introuvable', 'Erreur ' + res.status + '. Réessaie dans un instant ; si le problème persiste, préviens Julien HUET.', () => ouvrirPartenaire());
+      return;
+    }
+    await finIntro();
+    if (jeton !== generation || ferme) return;
+    ferme = true;
+    try { client.auth.stopAutoRefresh(); } catch (e) { /* ignoré */ }
+    try { if (abonnement) abonnement.data.subscription.unsubscribe(); } catch (e) { /* ignoré */ }
+    document.open(); document.write(res.html); document.close();
+  }
+
+  function ecranPartenaire(statut) {
+    const T = {
+      en_attente: ['att', 'En attente', 'Ton accès partenaire est en attente de validation', 'Ton invitation à l\'espace partenaires est enregistrée. Julien HUET valide lui-même chaque accès : tu pourras entrer dès qu\'il l\'aura validé.'],
+      ferme: ['att', 'Pilote pas encore ouvert', 'L\'espace partenaires n\'est pas encore ouvert', 'Ton accès est validé par Julien HUET. L\'espace partenaires s\'ouvrira au lancement du pilote : rien à faire d\'ici là.'],
+      suspendu: ['alarme', 'Accès suspendu', 'Ton accès partenaire est suspendu', 'Ton accès est arrivé à échéance, ou le pilote est fermé. Les accès sont nominatifs et revus tous les 3 mois : demande à Julien HUET de le renouveler.']
+    }[statut];
+    const h1 = h('h1', { id: 'pa-titre', tabindex: '-1', text: T[2] });
+    const carte = h('section', { class: 'carte bv', 'aria-labelledby': 'pa-titre' },
+      h('p', { class: 'surtitre', text: 'Espace partenaires' }),
+      h('div', { class: 'statut-ligne' }, h('span', { class: 'voyant ' + T[0], 'data-statut': statut, text: T[1] })),
+      h1,
+      h('p', { class: 'intro', id: 'pa-statut', text: T[3] }),
+      h('div', { class: 'actions' },
+        h('button', { type: 'button', class: 'btn btn-sec', id: 'pa-verifier', onclick: () => chargerAccueil() }, 'Vérifier à nouveau'),
+        h('button', { type: 'button', class: 'btn btn-sec', 'data-action': 'deconnexion', onclick: deconnexion }, 'Se déconnecter')));
+    monter('partenaire', 'Espace partenaires', coquille(h('div', { class: 'centre' }, carte)));
     focaliser(h1);
   }
 

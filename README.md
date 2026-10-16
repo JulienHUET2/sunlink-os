@@ -10,6 +10,9 @@ assurée par les règles d'accès côté base de données.
 
 ## Ce que fait la page
 
+0. **Animation d'entrée** (avant le formulaire) : le soleil du logo officiel SUNLINK Energies se lève, puis le logo complet
+   et « SUNLINK OS · Pilotage du Groupe » (2,8 s au plus ; fixe puis fondu si le système demande moins de mouvement).
+   « Passer », un clic, Échap, Entrée ou Espace l'arrêtent ; la page se charge dessous. Une fois par onglet.
 1. **Connexion** : adresse e-mail, puis lien ou code (6 à 10 chiffres) reçu par e-mail. Aucun mot de passe.
 2. **Un seul appel** après connexion : `rpc('slos_accueil')` (niveau, sociétés autorisées, demande d'accès).
 3. **Membres** : le sélecteur de société est la première page. La vue Groupe (sociétés consolidées) est proposée
@@ -24,7 +27,9 @@ assurée par les règles d'accès côté base de données.
 
 | Clé | Où | Contenu |
 | --- | --- | --- |
-| `slos.choix` | sessionStorage | `{id, nom, at}` : société choisie (`id` = `groupe` pour la vue Groupe). Présente au rechargement : l'application s'ouvre directement. Pour revenir au sélecteur : la retirer puis recharger. |
+| `slos.choix` | sessionStorage | `{id, nom, at, proprio}` : société choisie (`id` = `groupe` pour la vue Groupe) ; `proprio` : `true` pour le propriétaire (l'application choisit sa page d'arrivée). Présente au rechargement : l'application s'ouvre directement. Pour revenir au sélecteur : la retirer puis recharger. |
+| `slos.intro` | sessionStorage | `1` : l'animation d'entrée a été jouée dans cet onglet ; l'application, écrite ensuite dans le même onglet, ne la rejoue pas. |
+| `slos.introUi` | localStorage (lu) | `{"coupee":true}` si la personne a coupé l'animation dans l'application. |
 | `slos.apousser` | sessionStorage | tableau JSON des clés (sans le préfixe `slos.`) présentes seulement dans ce navigateur ou plus récentes que la base : l'application les envoie. |
 | `slos.sync.alerte` | sessionStorage | phrase écrite si les données de la base n'ont pas pu être relues (délai de 8 s, erreur) : l'application s'est ouverte avec les données du navigateur. |
 | `slos.selecteur.groupe` | localStorage | `0` vue Groupe masquée, `1` affichée (par défaut). |
@@ -32,4 +37,4 @@ assurée par les règles d'accès côté base de données.
 | `slos.__bak.<clé>` | localStorage | copie de sécurité d'une valeur locale remplacée ou supprimée par une version plus récente de la base. |
 | `slos.__uid` | localStorage | dernier compte synchronisé dans ce navigateur (si un autre compte se connecte, rien n'est envoyé sous son nom). |
 
-Test automatique (dépôt privé de l'application) : `tests/t94-entree.js`.
+Tests automatiques (dépôt privé de l'application) : `tests/t94-entree.js`, `tests/t99-vision-entree.js` (animation d'entrée).
