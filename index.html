@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#00070D">
+<meta name="theme-color" content="#FFFFFF">
 <meta name="robots" content="noindex,nofollow">
 <meta name="description" content="SUNLINK OS · Groupe SUNLINK · pilotage. Connexion par lien ou code reçu par e-mail.">
 <title>SUNLINK OS</title>
@@ -25,14 +25,19 @@
       Une fois par onglet (sessionStorage 'slos.intro') : direction.html, écrite ensuite dans le même onglet, ne la rejoue pas ;
       elle attend la fin de l'animation avant document.write. Coupée par la personne : localStorage 'slos.introUi' = {"coupee":true}.
       Paramètre explicite pour les tests : window.SLOS_INTRO = false (aucune lecture). Aucune donnée, aucune image ici : le logo seul.
+   7. v5.7 : thème « Ciel d'été » des maquettes (slides 1 à 4) : barre blanche avec logo officiel et filet aux couleurs des sociétés,
+      page d'accueil (accroche, carte « Se connecter », espaces, garanties), étape du code centrée, cartes société à leur couleur,
+      vue Groupe en bleu. Comportement, identifiants et appels inchangés.
    ===================================================================================== */
 :root{
-  --jaune:#FEC61E;--jaune-f:#F2B705;--bleu:#0183FF;--bleu-f:#0060BF;--bleu-c:#E3F0FF;--bleu-sombre:#2A324B;
-  --encre:#00070D;--fond:#F4F5F6;--surface:#FFFFFF;--surface-2:#F9FCFF;--neutre:#EAEBED;--trait:#DADEE4;--doux:#5E6678;--doux-2:#8A93A6;
+  /* v5.7 : thème « Ciel d'été » des maquettes validées (primaire #0F5C8C, doux #DDEEF8, fond #F3F7FB, texte #10212F, bordures #E1E8F0) */
+  --jaune:#FEC61E;--jaune-f:#F2B705;--bleu:#0F5C8C;--bleu-f:#0B4A72;--bleu-c:#DDEEF8;--bleu-sombre:#0B3D5E;
+  --encre:#10212F;--fond:#F3F7FB;--surface:#FFFFFF;--surface-2:#F7FAFD;--neutre:#E1E8F0;--trait:#D3DDE8;--doux:#5B6B7B;--doux-2:#8A99AA;
+  --arc:linear-gradient(90deg,#FEC61E 0%,#1F9D6B 22%,#F08C2E 42%,#0E9AA7 60%,#7A5AF8 80%,#D6458C 100%);
   --ok:#114E0B;--ok-bg:#CEF5CA;--att:#5E5515;--att-bg:#FCF8D8;--err:#3B0B0B;--err-bg:#F8E4E4;
   --nuit:#00070D;--nuit-2:#141C2B;--nuit-3:#1B2436;--nuit-trait:#253046;--nuit-txt:#C9D0DC;--nuit-doux:#8FA3C7;
   --r1:9px;--r2:14px;--r3:999px;
-  --ombre:0 1px 2px rgba(0,7,13,.05),0 12px 32px rgba(0,7,13,.07);
+  --ombre:0 1px 2px rgba(16,33,47,.04),0 12px 32px rgba(15,92,140,.08);
   --police:Lexend,"Segoe UI",system-ui,-apple-system,Roboto,"Helvetica Neue",Arial,sans-serif;
   color-scheme:light;
 }
@@ -55,19 +60,19 @@ p,li,dd{text-wrap:pretty}
 /* ---------- boutons ---------- */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:8px 18px;border-radius:var(--r1);border:1px solid transparent;font-weight:600;font-size:15px;line-height:1.25;cursor:pointer;text-align:center;transition:background-color .15s,border-color .15s,box-shadow .15s,color .15s}
 .btn[disabled]{opacity:.55;cursor:default}
-.btn-jaune{background:var(--jaune);color:var(--encre)}
-.btn-jaune:hover:not([disabled]){background:var(--jaune-f)}
+.btn-jaune{background:var(--bleu);color:#fff}   /* v5.7 : bouton principal = bleu primaire (nom conservé) */
+.btn-jaune:hover:not([disabled]){background:var(--bleu-f)}
 .btn-bleu{background:var(--bleu);color:#fff}
 .btn-bleu:hover:not([disabled]){background:var(--bleu-f)}
-.btn-sec{background:var(--surface);color:var(--encre);border-color:var(--trait)}
+.btn-sec{background:var(--surface);color:var(--bleu);border-color:var(--trait)}
 .btn-sec:hover:not([disabled]){border-color:#B9C0CC;background:var(--surface-2)}
 .btn-rouge{background:var(--surface);color:var(--err);border-color:#E9C9C9}
 .btn-rouge:hover:not([disabled]){background:var(--err-bg)}
 .btn-lien{display:inline-flex;align-items:center;gap:6px;background:none;border:0;padding:4px 0;min-height:36px;color:var(--bleu-f);font-weight:500;font-size:14px;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
 .btn-lien:hover{color:var(--encre)}
 .btn-plein{width:100%}
-.btn-nuit{background:transparent;color:var(--nuit-txt);border-color:var(--nuit-trait);min-height:40px;padding:6px 12px;font-weight:500;font-size:14px;white-space:nowrap}
-.btn-nuit:hover{background:var(--nuit-2);color:#fff}
+.btn-nuit{background:var(--surface);color:var(--encre);border-color:var(--trait);min-height:40px;padding:6px 14px;font-weight:500;font-size:14px;white-space:nowrap}   /* v5.7 : barre claire */
+.btn-nuit:hover{background:var(--surface-2);border-color:#B9C6D4}
 .actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
 
 /* ---------- champs et messages ---------- */
@@ -76,7 +81,7 @@ p,li,dd{text-wrap:pretty}
 .champ .aide,.aide{font-size:12.5px;color:var(--doux)}
 .input{display:block;width:100%;min-width:0;min-height:46px;padding:10px 14px;border:1px solid var(--trait);border-radius:var(--r1);background:var(--surface);font-size:16px;color:var(--encre);transition:border-color .15s,box-shadow .15s}
 .input:hover{border-color:#B9C0CC}
-.input:focus{outline:none;border-color:var(--bleu);box-shadow:0 0 0 3px rgba(1,131,255,.22)}
+.input:focus{outline:none;border-color:var(--bleu);box-shadow:0 0 0 3px rgba(15,92,140,.18)}
 .input::placeholder{color:#9AA1AE}
 textarea.input{min-height:112px;resize:vertical;line-height:1.45}
 .input-code{font-size:22px;letter-spacing:.28em;font-variant-numeric:tabular-nums;text-align:center;font-weight:600}
@@ -100,61 +105,81 @@ textarea.input{min-height:112px;resize:vertical;line-height:1.45}
 .carte{width:100%;background:var(--surface);border:1px solid var(--neutre);border-radius:var(--r2);box-shadow:var(--ombre)}
 .surtitre{font-size:11.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--doux)}
 
-/* ---------- marque ---------- */
-.marque{display:flex;align-items:center;gap:12px;min-width:0}
-.marque b{display:block;font-size:18px;font-weight:700;color:#fff;letter-spacing:.01em;line-height:1.1}
-.marque small{display:block;font-size:12px;color:var(--jaune);font-weight:500;margin-top:3px;white-space:nowrap}
+/* ---------- marque : barre blanche, logo officiel, pastille OS, filet aux couleurs des sociétés ---------- */
+.marque{display:flex;align-items:center;gap:12px;min-width:0;color:inherit;text-decoration:none}
+.marque-logo{display:block;width:142px;height:auto}
+.marque-logo svg{display:block;width:100%;height:auto}
+.marque-os{display:inline-flex;align-items:center;font-size:12.5px;font-weight:600;letter-spacing:.04em;line-height:1;padding:5px 10px;border-radius:var(--r3);background:var(--bleu-c);color:var(--bleu)}
+.barre{position:relative;background:var(--surface);color:var(--encre)}
+.barre::after{content:"";position:absolute;left:0;right:0;bottom:0;height:4px;background:var(--arc)}
+.barre-in{max-width:1280px;margin:0 auto;padding:14px 16px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+@media (max-width:479px){.marque-logo{width:118px}}
+@media (min-width:900px){.barre-in{padding:16px 40px 20px}}
 
-/* ---------- connexion ---------- */
-.cx{min-height:100vh;min-height:100dvh;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto 1fr}
-.cx-marque{position:relative;overflow:hidden;background:radial-gradient(520px 320px at 100% 100%,rgba(254,198,30,.16),transparent 70%),radial-gradient(420px 300px at 0% 0%,rgba(1,131,255,.12),transparent 70%),var(--nuit);color:var(--nuit-txt);padding:22px 20px 26px;display:flex;flex-direction:column;gap:18px}
-.cx-marque .soleil{width:36px;height:36px}
-.cx-accroche{display:grid;gap:10px}
-.cx-accroche h2{font-size:21px;line-height:1.25;font-weight:600;color:#fff;letter-spacing:-.01em;max-width:24ch;text-wrap:balance}
-.cx-points,.cx-schema,.cx-sign{display:none}
-.cx-schema-boite{display:block;line-height:0}
-.cx-form{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:16px;padding:24px 16px 36px}
-.cx-carte{max-width:440px;padding:26px 22px;display:grid;gap:18px}
-.cx-carte h1{font-size:25px;line-height:1.2;font-weight:600;letter-spacing:-.01em}
-.cx-carte .intro{color:var(--doux);font-size:14.5px}
+/* ---------- connexion (page d'accueil) ---------- */
+.cx{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
+.cx-main{flex:1;width:100%;max-width:1280px;margin:0 auto;padding:28px 16px 40px;display:flex;flex-direction:column;gap:28px}
+.cx-haut{display:grid;grid-template-columns:minmax(0,1fr);gap:28px;align-items:center}
+.cx-accroche{display:grid;gap:14px;justify-items:start}
+.cx-lever-boite{display:block;line-height:0}
+.cx-lever{display:block;width:118px;height:auto}
+.cx-sur{font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--bleu)}
+.cx-accroche h2{font-size:30px;line-height:1.12;font-weight:600;letter-spacing:-.015em;color:var(--encre);max-width:19ch;text-wrap:balance}
+.cx-texte{font-size:16px;line-height:1.65;color:var(--doux);max-width:46ch}
+.cx-socs{display:flex;flex-wrap:wrap;gap:8px;list-style:none;padding:0;margin:4px 0 0}
+.cx-socs li{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:500;color:var(--encre);background:var(--surface);border:1px solid var(--neutre);border-radius:var(--r3);padding:4px 12px 4px 10px;white-space:nowrap}
+.cx-socs i{width:8px;height:8px;border-radius:var(--r3)}
+.cx-carte{order:-1;width:100%;max-width:480px;justify-self:center;padding:26px 22px;display:grid;gap:16px}   /* téléphone : la connexion d'abord */
+.cx-carte h1{font-size:23px;line-height:1.2;font-weight:600;letter-spacing:-.01em}
+.cx-carte .intro{color:var(--doux);font-size:14.5px;margin-top:6px}
 .cx-etape{display:grid;gap:14px}
-.cx-envoye{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border-radius:var(--r1);background:var(--ok-bg);color:var(--ok);font-size:14px;line-height:1.45}
+.cx-ou{display:flex;align-items:center;gap:12px;font-size:12.5px;color:var(--doux-2)}
+.cx-ou::before,.cx-ou::after{content:"";flex:1;height:1px;background:var(--neutre)}
+.cx-acces{display:grid;gap:12px}
+.cx-note{font-size:12.5px;color:var(--doux)}
+.cx-envoye{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border-radius:var(--r1);background:var(--bleu-c);color:var(--bleu-sombre);font-size:14px;line-height:1.45}
 .cx-envoye .ico{width:20px;height:20px;margin-top:1px}
 .cx-envoye b{font-weight:600;overflow-wrap:anywhere}
-.cx-liens{display:flex;flex-wrap:wrap;gap:4px 18px}
-.cx-pied{display:flex;align-items:center;justify-content:center;gap:8px;font-size:12.5px;color:var(--doux);text-align:center}
-@media (min-width:900px){
-  .cx{grid-template-columns:minmax(420px,5fr) minmax(0,7fr);grid-template-rows:none}
-  .cx-marque{padding:44px 56px;justify-content:space-between;gap:28px}
-  .cx-marque .soleil{width:40px;height:40px}
-  .cx-marque .marque b{font-size:21px}
-  .cx-marque .marque small{font-size:13px}
-  .cx-accroche{gap:24px}
-  .cx-accroche h2{font-size:36px;line-height:1.14;max-width:470px}
-  .cx-points{display:grid;gap:14px;list-style:none;padding:0;font-size:15.5px;color:var(--nuit-txt);max-width:440px}
-  .cx-points li{display:flex;gap:14px;align-items:flex-start;text-wrap:pretty}
-  .cx-points li::before{content:"";flex:none;width:8px;height:8px;margin-top:8px;border-radius:var(--r3);background:var(--jaune);box-shadow:0 0 0 4px rgba(254,198,30,.16)}
-  .cx-schema{display:block;width:100%;max-width:400px;height:auto}
-  .cx-sign{display:block;font-size:12.5px;color:#6F7A8F}
-  .cx-form{justify-content:center;padding:48px 32px}
-  .cx-carte{padding:38px 38px 34px;gap:20px}
-  .cx-carte h1{font-size:28px}
+.cx-liens{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px}
+.cx-liens .btn{min-height:40px;font-weight:500;font-size:14px}
+.cx-tuiles{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;list-style:none;padding:0;margin:0}
+.cx-tuile{display:flex;flex-direction:column;gap:6px;padding:18px 18px 16px;background:var(--surface);border:1px solid var(--neutre);border-top:4px solid var(--c,var(--bleu));border-radius:var(--r2)}
+.cx-tuile h3{font-size:16px;font-weight:600;line-height:1.3}
+.cx-tuile p{font-size:14px;line-height:1.5;color:var(--doux)}
+.cx-tuile small{margin-top:auto;padding-top:8px;font-size:12.5px;color:var(--doux-2)}
+.cx-garanties{display:grid;grid-template-columns:minmax(0,1fr);gap:16px 28px;padding:20px;border-radius:var(--r2);background:var(--bleu-c);list-style:none;margin:0}
+.cx-garanties b{display:block;font-size:14px;font-weight:600;color:var(--encre)}
+.cx-garanties span{display:block;font-size:13px;line-height:1.5;color:var(--doux);margin-top:2px}
+.cx-pied{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px 8px;font-size:12.5px;color:var(--doux-2);text-align:center;padding:0 16px 28px}
+.cx-pied .ico{width:14px;height:14px}
+/* étape du code : seule la carte reste, centrée (maquette « Regarde ta boîte mail ») */
+.cx-code .cx-accroche,.cx-code .cx-tuiles,.cx-code .cx-garanties{display:none}
+.cx-code .cx-haut{grid-template-columns:minmax(0,1fr)!important;justify-items:center;gap:0;padding-top:12px}
+.cx-code .cx-carte{max-width:560px}
+.cx-lever-code{display:none}
+.cx-code .cx-lever-code{display:block;margin:0 auto 18px}
+@media (min-width:640px){
+  .cx-tuiles{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .cx-garanties{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .cx-carte{padding:30px 28px}
+}
+@media (min-width:1000px){
+  .cx-main{padding:56px 40px 40px;gap:32px}
+  .cx-haut{grid-template-columns:minmax(0,1.25fr) minmax(400px,.95fr);gap:56px}
+  .cx-carte{order:0}
+  .cx-accroche h2{font-size:46px}
+  .cx-tuiles{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .cx-garanties{grid-template-columns:repeat(4,minmax(0,1fr));padding:22px 24px}
 }
 
 /* ---------- pages connectées ---------- */
 .page{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
-.barre{background:var(--nuit);color:var(--nuit-txt)}
-.barre-in{max-width:1180px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
-.barre .soleil{width:30px;height:30px}
-.barre .marque b{font-size:16.5px}
-.barre .marque small{font-size:11.5px}
 .barre-droite{display:flex;align-items:center;gap:14px;min-width:0}
-.qui{display:none;font-size:13px;color:var(--nuit-doux);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:300px}
-.contenu{flex:1;width:100%;max-width:1180px;margin:0 auto;padding:24px 16px 48px;display:flex;flex-direction:column;gap:22px}
+.qui{display:none;font-size:13.5px;color:var(--doux);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:300px}
+.contenu{flex:1;width:100%;max-width:1280px;margin:0 auto;padding:24px 16px 48px;display:flex;flex-direction:column;gap:22px}
 .pied-page{font-size:12.5px;color:var(--doux);display:flex;flex-wrap:wrap;gap:4px 14px;justify-content:space-between;border-top:1px solid var(--neutre);padding-top:16px;margin-top:6px}
-@media (max-width:479px){.barre .marque small{display:none}}
 @media (min-width:640px){.qui{display:block}}
-@media (min-width:900px){.barre-in{padding:14px 32px}.contenu{padding:36px 32px 64px;gap:26px}}
+@media (min-width:900px){.contenu{padding:36px 40px 64px;gap:26px}}
 
 /* ---------- sélecteur ---------- */
 .tete{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px}
@@ -167,16 +192,16 @@ textarea.input{min-height:112px;resize:vertical;line-height:1.45}
 .outils{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
 .recherche{flex:1 1 260px;min-width:0;display:flex;align-items:center;gap:10px;min-height:46px;padding:0 14px;border:1px solid var(--trait);border-radius:var(--r1);background:var(--surface);color:var(--doux)}
 .recherche:hover{border-color:#B9C0CC}
-.recherche:focus-within{border-color:var(--bleu);box-shadow:0 0 0 3px rgba(1,131,255,.22)}
+.recherche:focus-within{border-color:var(--bleu);box-shadow:0 0 0 3px rgba(15,92,140,.18)}
 .recherche input{flex:1;min-width:0;border:0;background:none;outline:none;font-size:16px;color:var(--encre);min-height:44px;padding:0}
 .recherche input::placeholder{color:#9AA1AE}
 .liste{display:flex;flex-direction:column;gap:24px}
 .grp{display:grid;gap:12px}
-.grp-titre{display:flex;align-items:center;gap:12px;font-size:11.5px;font-weight:600;letter-spacing:.12em;color:var(--doux);text-transform:uppercase}
+.grp-titre{display:flex;align-items:center;gap:12px;font-size:11.5px;font-weight:600;letter-spacing:.12em;color:var(--bleu);text-transform:uppercase}
 .grp-titre::after{content:"";flex:1;height:1px;background:var(--trait)}
 .grp-titre .n{order:2;font-weight:500;letter-spacing:0}
 .grille{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,244px),1fr));gap:14px}
-.soc{position:relative;display:flex;flex-direction:column;gap:12px;width:100%;min-width:0;text-align:left;padding:16px 16px 14px;background:var(--surface);border:1px solid var(--neutre);border-radius:var(--r2);cursor:pointer;color:var(--encre);font-size:14px;line-height:1.4;transition:border-color .15s,box-shadow .15s,transform .15s}
+.soc{position:relative;display:flex;flex-direction:column;gap:12px;width:100%;min-width:0;text-align:left;padding:16px 16px 14px 20px;background:var(--surface);border:1px solid var(--neutre);border-left:5px solid var(--c,var(--doux-2));border-radius:var(--r2);cursor:pointer;color:var(--encre);font-size:14px;line-height:1.4;transition:border-color .15s,box-shadow .15s,transform .15s}
 .soc:hover{border-color:#C6CFDB;box-shadow:var(--ombre);transform:translateY(-1px)}
 .soc-haut{display:flex;align-items:flex-start;gap:10px;min-width:0}
 .pastille{flex:none;display:inline-block;width:12px;height:12px;border-radius:var(--r3);margin-top:5px;background:var(--doux-2);box-shadow:0 0 0 3px rgba(0,7,13,.06)}
@@ -193,23 +218,23 @@ textarea.input{min-height:112px;resize:vertical;line-height:1.45}
 .rien{display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--ok);font-weight:500;padding:10px 12px;background:#F1FBF0;border:1px solid #D9F2D5;border-radius:var(--r1)}
 .soc-etat{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding-left:22px}
 .soc-pied{display:flex;margin-top:auto;font-size:12px;color:var(--doux)}
-.soc.dernier{border:2px solid var(--bleu);padding:15px 15px 13px}
-.soc.vue-groupe{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;padding:20px;background:radial-gradient(520px 240px at 100% 0%,rgba(254,198,30,.14),transparent 70%),var(--nuit);border-color:var(--nuit);color:#fff}
-.soc.vue-groupe:hover{border-color:var(--nuit-trait)}
+.soc.dernier{border:2px solid var(--c,var(--bleu));border-left-width:5px;padding:15px 15px 13px 20px;box-shadow:var(--ombre)}
+.soc.vue-groupe{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;padding:20px;background:radial-gradient(520px 240px at 100% 0%,rgba(254,198,30,.16),transparent 70%),linear-gradient(100deg,#0F5C8C,#1A78B4);border:1px solid #0F5C8C;color:#fff}
+.soc.vue-groupe:hover{border-color:#0B4A72}
 .soc.vue-groupe.dernier{border:2px solid var(--jaune);padding:19px}
 .vg-g,.vg-d{display:flex;flex-direction:column;gap:12px;min-width:0}
 .vg-tete{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px}
-.vg-sur{font-size:11px;font-weight:600;letter-spacing:.14em;color:var(--jaune);text-transform:uppercase}
+.vg-sur{font-size:11px;font-weight:600;letter-spacing:.14em;color:#FFE08A;text-transform:uppercase}
 .vue-groupe .soc-nom{font-size:20px;color:#fff}
-.vue-groupe .soc-role{color:var(--nuit-doux)}
-.vue-groupe .cpts{background:var(--nuit-2);border-color:var(--nuit-trait)}
-.vue-groupe .cpt-l,.vue-groupe .cpts-titre{color:var(--nuit-doux)}
+.vue-groupe .soc-role{color:#D4E6F3}
+.vue-groupe .cpts{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.18)}
+.vue-groupe .cpt-l,.vue-groupe .cpts-titre{color:#C7DDEE}
 .vue-groupe .cpt-v{color:#fff}
-.vue-groupe .cpt-v.zero,.vue-groupe .cpt-v.inconnu{color:#6F7A8F}
+.vue-groupe .cpt-v.zero,.vue-groupe .cpt-v.inconnu{color:#A9C6DC}
 .vue-groupe .rien{background:rgba(206,245,202,.08);border-color:rgba(206,245,202,.22);color:var(--ok-bg)}
 .vue-groupe .etiquette{background:rgba(254,198,30,.16);color:var(--jaune)}
 .puces{display:flex;flex-wrap:wrap;gap:6px 8px}
-.puce{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:var(--nuit-txt);background:var(--nuit-2);border:1px solid var(--nuit-trait);border-radius:var(--r3);padding:3px 10px 3px 8px}
+.puce{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:#fff;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);border-radius:var(--r3);padding:3px 10px 3px 8px}
 .puce i{width:8px;height:8px;border-radius:var(--r3);background:var(--doux-2);box-shadow:0 0 0 1.5px rgba(255,255,255,.28)}
 @media (min-width:760px){.soc.vue-groupe{grid-template-columns:minmax(0,1.35fr) minmax(250px,1fr);align-items:center;gap:28px;padding:22px 24px}.soc.vue-groupe.dernier{padding:21px 23px}}
 .vide{display:grid;gap:10px;justify-items:start;padding:18px;border:1px dashed var(--trait);border-radius:var(--r2);color:var(--doux);background:var(--surface)}
@@ -260,10 +285,10 @@ legend{font-size:13.5px;font-weight:600;margin-bottom:8px;padding:0}
 .attente-txt{font-size:18px;font-weight:600}
 .attente-sous{font-size:14px;color:var(--doux)}
 .prog{width:220px;max-width:100%;height:4px;border-radius:var(--r3);background:var(--neutre);overflow:hidden;position:relative;margin-top:6px}
-.prog::after{content:"";position:absolute;top:0;bottom:0;left:0;width:38%;background:var(--jaune);border-radius:var(--r3);animation:glisse 1.3s ease-in-out infinite}
-.seul{min-height:100vh;display:grid;place-items:center;padding:24px 16px;background:var(--nuit);color:var(--nuit-txt)}
-.seul .attente-txt{color:#fff;font-weight:500;font-size:15px}
-.seul .prog{background:var(--nuit-3)}
+.prog::after{content:"";position:absolute;top:0;bottom:0;left:0;width:38%;background:var(--bleu);border-radius:var(--r3);animation:glisse 1.3s ease-in-out infinite}
+.seul{min-height:100vh;display:grid;place-items:center;padding:24px 16px;background:var(--fond);color:var(--doux)}
+.seul .attente-txt{color:var(--doux);font-weight:500;font-size:15px}
+
 .boite-err{padding:24px 20px;display:grid;gap:16px}
 .boite-err h1{font-size:22px;line-height:1.25;font-weight:600}
 .boite-err .msg{white-space:pre-wrap}
@@ -508,13 +533,20 @@ try { window.SLOS_MARQUE.lancer(); } catch (e) { /* la connexion reste utilisabl
     cadenas: '<svg viewBox="0 0 16 16"><rect x="3" y="7" width="10" height="7" rx="1.5"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2"/></svg>',
     lettre: '<svg viewBox="0 0 16 16"><rect x="2" y="3.5" width="12" height="9" rx="1.5"/><path d="M2.5 4.5L8 9l5.5-4.5"/></svg>',
     personnes: '<svg viewBox="0 0 16 16"><circle cx="6" cy="5.5" r="2.3"/><path d="M1.8 13.5c0-2.6 1.9-4 4.2-4s4.2 1.4 4.2 4"/><path d="M10.5 3.4a2.2 2.2 0 0 1 0 4.3M12 9.7c1.3.5 2.2 1.7 2.2 3.8"/></svg>',
+    lever: '<svg class="cx-lever" viewBox="0 0 126 44" aria-hidden="true" focusable="false"><g stroke="#FEC61E" stroke-width="3.2" stroke-linecap="round"><path d="M63 3v11M28 15l8 7M98 15l-8 7"/></g><path d="M47 40a16 16 0 0 1 32 0z" fill="#FEC61E"/><path d="M2 41h122" stroke="#0F5C8C" stroke-width="2.6" stroke-linecap="round"/></svg>',
     groupe: '<svg viewBox="0 0 16 16"><rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="2" width="5" height="5" rx="1"/><rect x="2" y="9" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1"/></svg>',
     schema: '<svg class="cx-schema" viewBox="0 0 400 150" aria-hidden="true" focusable="false"><g fill="none" stroke-linecap="round"><path d="M200 8v26" stroke="#FEC61E" stroke-width="2.5"/><path d="M24 34h352" stroke="#2A324B" stroke-width="4"/><g stroke="#2A324B" stroke-width="2"><path d="M44 34v40M110 34v40M176 34v40M290 34v40M356 34v40"/></g><path d="M224 34v40" stroke="#3A4559" stroke-width="2" stroke-dasharray="4 4"/></g><g fill="#141C2B" stroke="#253046"><rect x="22" y="74" width="44" height="44" rx="9"/><rect x="88" y="74" width="44" height="44" rx="9"/><rect x="154" y="74" width="44" height="44" rx="9"/><rect x="202" y="74" width="44" height="44" rx="9" stroke-dasharray="4 3"/><rect x="268" y="74" width="44" height="44" rx="9"/><rect x="334" y="74" width="44" height="44" rx="9"/></g><g><circle cx="44" cy="96" r="6" fill="#CEF5CA"/><circle cx="110" cy="96" r="6" fill="#FCF8D8"/><circle cx="176" cy="96" r="6" fill="#CEF5CA"/><circle cx="224" cy="96" r="6" fill="#F8E4E4"/><circle cx="290" cy="96" r="6" fill="#FCF8D8"/><circle cx="356" cy="96" r="6" fill="#CEF5CA"/></g><circle cx="200" cy="8" r="5" fill="#FEC61E"/><text x="24" y="142" fill="#6F7A8F" font-size="11" font-family="Lexend,Segoe UI,system-ui,sans-serif" letter-spacing="1.4">GROUPE SUNLINK</text><text x="270" y="142" fill="#6F7A8F" font-size="11" font-family="Lexend,Segoe UI,system-ui,sans-serif" letter-spacing="1.4">GROUPE PRIME</text></svg>'
   };
   const ico = (nom, cls) => { const s = h('span', { class: (cls || 'ico'), 'aria-hidden': 'true' }); s.innerHTML = SVG[nom]; return s; };
   const soleil = () => { const s = h('span', { class: 'soleil', 'aria-hidden': 'true' }); s.innerHTML = window.SLOS_MARQUE ? window.SLOS_MARQUE.mono({ titre: '' }) : SVG.soleil; return s; };   /* v5.6 : monogramme officiel */
   const finIntro = () => { try { return window.SLOS_MARQUE ? window.SLOS_MARQUE.fin() : Promise.resolve(); } catch (e) { return Promise.resolve(); } };
-  const marque = () => h('div', { class: 'marque' }, soleil(), h('span', null, h('b', { text: 'SUNLINK OS' }), h('small', { text: 'Groupe SUNLINK · pilotage' })));
+  /* v5.7 : barre blanche des maquettes, logo officiel SUNLINK Energies (version fond clair) et pastille « OS » */
+  const marque = () => {
+    const logo = h('span', { class: 'marque-logo', role: 'img', 'aria-label': 'SUNLINK Energies' });
+    if (window.SLOS_MARQUE) logo.innerHTML = window.SLOS_MARQUE.logo({ fond: 'clair', titre: '' }); else logo.appendChild(soleil());
+    return h('div', { class: 'marque' }, logo, h('span', { class: 'marque-os', title: 'SUNLINK OS · pilotage du Groupe', text: 'OS' }));
+  };
+  const entete = (...droite) => h('header', { class: 'barre' }, h('div', { class: 'barre-in' }, marque(), droite.length ? h('div', { class: 'barre-droite' }, ...droite) : null));
   const dire = (el, texte, cls) => { el.textContent = texte ? typo(texte) : ''; el.className = 'msg' + (texte && cls ? ' ' + cls : ''); };
   const annoncer = (t) => { annonce.textContent = ''; setTimeout(() => { annonce.textContent = typo(t); }, 30); };
   const sansAccent = (s) => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
@@ -537,14 +569,12 @@ try { window.SLOS_MARQUE.lancer(); } catch (e) { /* la connexion reste utilisabl
   }
   const focaliser = (el) => { if (el) setTimeout(() => { try { el.focus({ preventScroll: true }); } catch (e) { /* ignoré */ } }, 40); };
 
-  /* gabarit des pages connectées : barre sombre (marque, adresse, « Se déconnecter ») */
+  /* gabarit des pages connectées : barre claire (logo, adresse, « Se déconnecter ») */
   function coquille(...enfants) {
     const email = (accueil && accueil.email) || (session && session.user && session.user.email) || '';
     return h('div', { class: 'page' },
-      h('header', { class: 'barre' }, h('div', { class: 'barre-in' }, marque(),
-        h('div', { class: 'barre-droite' },
-          email ? h('span', { class: 'qui', title: email, text: email }) : null,
-          h('button', { type: 'button', class: 'btn btn-nuit', 'data-action': 'deconnexion', onclick: deconnexion }, ico('sortir'), 'Se déconnecter')))),
+      entete(email ? h('span', { class: 'qui', title: email, text: email }) : null,
+        h('button', { type: 'button', class: 'btn btn-nuit', 'data-action': 'deconnexion', onclick: deconnexion }, ico('sortir'), 'Se déconnecter')),
       h('main', { id: 'contenu', class: 'contenu', tabindex: '-1' }, ...enfants));
   }
 
@@ -611,19 +641,36 @@ try { window.SLOS_MARQUE.lancer(); } catch (e) { /* la connexion reste utilisabl
   function ecranConnexion(info) {
     let adresse = '';
     const msg = h('div', { class: 'msg', id: 'cx-msg', 'aria-live': 'polite' });
-    const email = h('input', { class: 'input', id: 'cx-email', type: 'email', name: 'email', autocomplete: 'email', inputmode: 'email', autocapitalize: 'off', spellcheck: 'false', required: true, placeholder: 'prenom@sunlink-energies.fr', 'aria-describedby': 'cx-msg' });
-    const envoyer = h('button', { type: 'submit', class: 'btn btn-jaune btn-plein', id: 'cx-envoyer' }, ico('lettre'), 'Recevoir mon lien de connexion');
+    const email = h('input', { class: 'input', id: 'cx-email', type: 'email', name: 'email', autocomplete: 'email', inputmode: 'email', autocapitalize: 'off', spellcheck: 'false', required: true, placeholder: 'prenom.nom@sunlink-energies.fr', 'aria-describedby': 'cx-msg' });
+    const envoyer = h('button', { type: 'submit', class: 'btn btn-jaune btn-plein', id: 'cx-envoyer' }, 'Recevoir mon lien de connexion');
     const etapeEmail = h('form', { class: 'cx-etape', id: 'cx-form-email', novalidate: true },
       h('div', { class: 'champ' }, h('label', { for: 'cx-email', text: 'Adresse e-mail' }), email), envoyer);
     const envoyeA = h('b');
     const code = h('input', { class: 'input input-code', id: 'cx-code', name: 'code', inputmode: 'numeric', autocomplete: 'one-time-code', maxlength: '14', placeholder: '123456', 'aria-describedby': 'cx-code-aide cx-msg' });
-    const valider = h('button', { type: 'submit', class: 'btn btn-bleu btn-plein', id: 'cx-valider' }, 'Valider le code');
-    const renvoyer = h('button', { type: 'button', class: 'btn-lien', id: 'cx-renvoyer' }, 'Renvoyer le lien');
-    const changer = h('button', { type: 'button', class: 'btn-lien', id: 'cx-changer' }, 'Changer d\'adresse');
+    const valider = h('button', { type: 'submit', class: 'btn btn-bleu btn-plein', id: 'cx-valider' }, 'Ouvrir SUNLINK OS');
+    const renvoyer = h('button', { type: 'button', class: 'btn btn-sec', id: 'cx-renvoyer' }, 'Renvoyer un code');
+    const changer = h('button', { type: 'button', class: 'btn btn-sec', id: 'cx-changer' }, 'Changer d\'adresse');
     const etapeCode = h('form', { class: 'cx-etape', id: 'cx-form-code', novalidate: true, hidden: true },
-      h('div', { class: 'cx-envoye' }, ico('lettre'), h('span', null, 'Lien envoyé à ', envoyeA, '. Ouvre-le sur cet appareil, ou saisis le code reçu dans le même e-mail.')),
-      h('div', { class: 'champ' }, h('label', { for: 'cx-code', text: 'Code reçu par e-mail' }), code, h('span', { class: 'aide', id: 'cx-code-aide', text: '6 à 10 chiffres. Pas d\'e-mail ? Pense à regarder dans les indésirables.' })),
-      valider, h('div', { class: 'cx-liens' }, renvoyer, changer));
+      h('div', { class: 'cx-envoye' }, ico('lettre'), h('span', null, 'Un lien et un code viennent d\'être envoyés à ', envoyeA, '. Clique sur le lien, ou saisis le code ici.')),
+      h('div', { class: 'champ' }, h('label', { for: 'cx-code', text: 'Code reçu (6 à 10 chiffres)' }), code),
+      valider, h('div', { class: 'cx-liens' }, renvoyer, changer),
+      h('p', { class: 'cx-note', id: 'cx-code-aide', text: 'Le lien et le code ne servent qu\'une fois. Rien n\'arrive ? Regarde les indésirables, ou demande un accès si c\'est ta première connexion.' }));
+    /* première fois : la demande d'accès se fait juste après la première connexion (rpc('slos_demander_acces')) */
+    const demander = h('button', { type: 'button', class: 'btn btn-sec btn-plein', id: 'cx-demander' }, 'Demander un accès');
+    const acces = h('div', { class: 'cx-acces' }, h('p', { class: 'cx-ou', text: 'première fois ?' }), demander,
+      h('p', { class: 'cx-note', text: 'L\'accès est accordé par le propriétaire du Groupe, société par société.' }));
+    demander.addEventListener('click', () => {
+      dire(msg, 'Entre ton adresse e-mail et reçois ton lien : à ta première connexion, un court formulaire te permet de demander l\'accès aux sociétés qui te concernent.', 'info');
+      focaliser(email);
+    });
+    const titre = h('h1', { id: 'cx-titre', text: 'Se connecter' });
+    const intro = h('p', { class: 'intro', text: 'Aucun mot de passe : tu reçois un lien ou un code par e-mail.' });
+    const etape = (codeVisible) => {
+      etapeEmail.hidden = codeVisible; etapeCode.hidden = !codeVisible; acces.hidden = codeVisible; intro.hidden = codeVisible;
+      titre.textContent = typo(codeVisible ? 'Regarde ta boîte mail' : 'Se connecter');
+      page.classList.toggle('cx-code', codeVisible);
+      document.title = (codeVisible ? 'Code de connexion' : 'Connexion') + ' · SUNLINK OS';
+    };
 
     async function demanderLien(v, renvoi) {
       envoyer.disabled = true; renvoyer.disabled = true;
@@ -634,7 +681,7 @@ try { window.SLOS_MARQUE.lancer(); } catch (e) { /* la connexion reste utilisabl
       envoyer.disabled = false; renvoyer.disabled = false;
       if (!r || r.error) { dire(msg, texteEnvoi(r && r.error), /trop de demandes/i.test(texteEnvoi(r && r.error)) ? 'att' : 'err'); return false; }
       adresse = v; envoyeA.textContent = v;
-      etapeEmail.hidden = true; etapeCode.hidden = false;
+      etape(true);
       dire(msg, renvoi ? 'Nouveau lien envoyé à ' + v + '.' : '', 'ok');
       annoncer('Lien envoyé à ' + v + '. Saisis le code reçu par e-mail, ou ouvre le lien. Pense aux indésirables.');
       focaliser(code);
@@ -647,7 +694,7 @@ try { window.SLOS_MARQUE.lancer(); } catch (e) { /* la connexion reste utilisabl
       demanderLien(v);
     });
     renvoyer.addEventListener('click', () => { if (adresse) demanderLien(adresse, true); });
-    changer.addEventListener('click', () => { etapeCode.hidden = true; etapeEmail.hidden = false; code.value = ''; dire(msg, ''); email.value = adresse; focaliser(email); });
+    changer.addEventListener('click', () => { etape(false); code.value = ''; dire(msg, ''); email.value = adresse; focaliser(email); });
     etapeCode.addEventListener('submit', async (e) => {
       e.preventDefault();
       const brut = String(code.value || '').replace(/[\s.-]/g, '');
@@ -666,22 +713,34 @@ try { window.SLOS_MARQUE.lancer(); } catch (e) { /* la connexion reste utilisabl
     });
     if (info) dire(msg, info, 'att');
 
-    const marquePanneau = h('section', { class: 'cx-marque', 'aria-label': 'SUNLINK OS' },
-      marque(),
-      h('div', { class: 'cx-accroche' },
-        h('h2', { text: 'Le Groupe SUNLINK, piloté depuis un seul écran.' }),
-        h('ul', { class: 'cx-points' },
-          h('li', { text: 'Chaque société, ce qui reste à traiter et son voyant, d\'un coup d\'œil.' }),
-          h('li', { text: 'Tes données sont enregistrées en continu : rien ne se perd.' }),
-          h('li', { text: 'Connexion par e-mail, sans mot de passe.' }))),
-      ico('schema', 'cx-schema-boite'),
-      h('p', { class: 'cx-sign', text: 'Groupe SUNLINK · Julien HUET, Président' }));
+    /* page d'accueil (maquette « Accueil ») : accroche, carte de connexion, espaces de l'application, garanties. Aucune donnée métier. */
+    const SOCS = [['SUNLINK', '#FEC61E'], ['SUNLINK PV', '#1F9D6B'], ['SUNLICÉO', '#F08C2E'], ['PRIME SOLAR', '#0E9AA7'], ['SCI PRIME INVEST', '#7A5AF8'], ['SCI PRIME IMMO', '#D6458C']];
+    const accroche = h('section', { class: 'cx-accroche', 'aria-labelledby': 'cx-accroche-titre' },
+      ico('lever', 'cx-lever-boite'),
+      h('p', { class: 'cx-sur', text: 'SUNLINK OS · Pilotage du Groupe' }),
+      h('h2', { id: 'cx-accroche-titre', text: 'Le Groupe SUNLINK, ses sociétés et ses projets, au même endroit.' }),
+      h('p', { class: 'cx-texte', text: 'Trésorerie, centrales, appels d\'offres, financement et documents : chacun ouvre l\'espace qui le concerne, avec les chiffres de l\'application et leur source.' }),
+      h('ul', { class: 'cx-socs', 'aria-label': 'Sociétés' }, SOCS.map(([nom, c]) => { const i = h('i', { 'aria-hidden': 'true' }); i.style.background = c; return h('li', null, i, nom); })));
     const carte = h('section', { class: 'carte cx-carte', 'aria-labelledby': 'cx-titre' },
-      h('div', null, h('h1', { id: 'cx-titre', text: 'Connexion' }),
-        h('p', { class: 'intro', text: 'Entre ton adresse e-mail : tu reçois un lien de connexion, et un code à saisir ici si tu préfères.' })),
-      etapeEmail, etapeCode, msg);
-    const page = h('div', { class: 'cx' }, marquePanneau,
-      h('main', { class: 'cx-form', id: 'contenu' }, carte, h('p', { class: 'cx-pied' }, ico('cadenas'), 'Données hébergées à Paris · aucun mot de passe')));
+      h('div', null, titre, intro), etapeEmail, etapeCode, msg, acces);
+    const TUILES = [
+      ['#0F5C8C', 'Groupe SUNLINK', 'Trésorerie consolidée, pilotage des projets, prévisionnel, levée et décisions.', 'Propriétaire et éditeurs'],
+      ['#1F9D6B', 'Les sociétés', 'Une couleur par société : centrales, projets, emprunts, obligations, documents.', 'selon les accès de chacun'],
+      ['#F08C2E', 'Mon bureau', 'Ma journée, les mails à valider, JARVIS et les agents, mes réglages.', 'personnel'],
+      ['#7A5AF8', 'Espace associé', 'Chaque associé voit sa trésorerie et ses parts, en lecture seule.', 'associés des SCI']];
+    const tuiles = h('ul', { class: 'cx-tuiles', 'aria-label': 'Ce que contient SUNLINK OS' }, TUILES.map(([c, t, d, qui]) => {
+      const li = h('li', { class: 'cx-tuile' }, h('h3', { text: t }), h('p', { text: d }), h('small', { text: qui }));
+      li.style.setProperty('--c', c); return li;
+    }));
+    const GARANTIES = [
+      ['Hébergé à Paris', 'Base Supabase en France ; la page publique ne contient aucune donnée.'],
+      ['Accès sur invitation', 'Chaque personne ne voit que les sociétés qui lui sont ouvertes.'],
+      ['Rien ne se perd', 'Chaque document modifié est gardé en fin de journée.'],
+      ['Partenaires à part', 'Silicéo et Ingélios voient leurs projets, jamais la trésorerie.']];
+    const garanties = h('ul', { class: 'cx-garanties', 'aria-label': 'Garanties' }, GARANTIES.map(([t, d]) => h('li', null, h('b', { text: t }), h('span', { text: d }))));
+    const page = h('div', { class: 'cx' }, entete(),
+      h('main', { class: 'cx-main', id: 'contenu' }, h('div', { class: 'cx-haut' }, accroche, ico('lever', 'cx-lever-code'), carte), tuiles, garanties),
+      h('p', { class: 'cx-pied' }, ico('cadenas'), 'SUNLINK énergies · Charleville-Mézières · SUNLINK OS, accès réservé aux personnes autorisées'));
     monter('connexion', 'Connexion', page);
     focaliser(email);
   }
@@ -792,7 +851,7 @@ try { window.SLOS_MARQUE.lancer(); } catch (e) { /* la connexion reste utilisabl
     const etat = voyant(s.compteurs);
     const idc = 'cpt-' + s.id;
     const sous = [s.forme, s.role].filter(Boolean).join(' · ');
-    return h('button', { type: 'button', class: 'soc' + (estDernier ? ' dernier' : ''), 'data-choix': s.id, 'aria-label': 'Ouvrir ' + s.nom + ' · ' + etat.lib, 'aria-describedby': idc, onclick: () => choisir(s.id, s.nom) },
+    const carte = h('button', { type: 'button', class: 'soc' + (estDernier ? ' dernier' : ''), 'data-choix': s.id, 'aria-label': 'Ouvrir ' + s.nom + ' · ' + etat.lib, 'aria-describedby': idc, onclick: () => choisir(s.id, s.nom) },
       h('span', { class: 'soc-haut' }, pastille(s.couleur),
         h('span', { class: 'soc-id' }, h('span', { class: 'soc-nom', text: s.nom }), sous ? h('span', { class: 'soc-role', text: sous }) : null)),
       h('span', { class: 'soc-etat' },
@@ -802,6 +861,8 @@ try { window.SLOS_MARQUE.lancer(); } catch (e) { /* la connexion reste utilisabl
         accueil.niveau < 3 && ROLE_LIB[s.acces] ? h('span', { class: 'etiquette neutre', text: 'Ton accès : ' + ROLE_LIB[s.acces] }) : null),
       blocCompteurs(s.compteurs, idc),
       h('span', { class: 'soc-pied' }, h('span', { class: 'soc-src', text: s.compteurs.source ? String(s.compteurs.source) : 'Source des compteurs non précisée' })));
+    if (s.couleur) carte.style.setProperty('--c', s.couleur);   /* v5.7 : liseré à la couleur de la société */
+    return carte;
   }
 
   function carteGroupe(conso, estDernier) {
