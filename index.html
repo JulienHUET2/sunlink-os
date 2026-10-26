@@ -25,6 +25,8 @@
       Une fois par onglet (sessionStorage 'slos.intro') : direction.html, écrite ensuite dans le même onglet, ne la rejoue pas ;
       elle attend la fin de l'animation avant document.write. Coupée par la personne : localStorage 'slos.introUi' = {"coupee":true}.
       Paramètre explicite pour les tests : window.SLOS_INTRO = false (aucune lecture). Aucune donnée, aucune image ici : le logo seul.
+   9. v6 : landing plus marquée : soleil levant dans le héros, boutons d'appel, console illustrée (sociétés du Groupe, cycle des
+      projets en colonnes, trésorerie, décisions, sites), gestes reliés avec un exemple concret, appel final. Aucun chiffre réel.
    7. v5.7 : thème « Ciel d'été » des maquettes (slides 1 à 4) : barre blanche avec logo officiel et filet aux couleurs des sociétés,
       page d'accueil (accroche, carte « Se connecter », espaces, garanties), étape du code centrée, cartes société à leur couleur,
       vue Groupe en bleu. Comportement, identifiants et appels inchangés.
@@ -334,6 +336,16 @@ legend{font-size:13.5px;font-weight:600;margin-bottom:8px;padding:0}
 /* héros */
 .lx-hero{position:relative;overflow:hidden;background:radial-gradient(900px 480px at 82% -10%,rgba(254,198,30,.22),transparent 60%),radial-gradient(700px 420px at 0% 110%,rgba(15,92,140,.45),transparent 60%),linear-gradient(180deg,#00070D 0%,#06182A 100%);color:#fff}
 .lx-hero::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);background-size:48px 48px;mask-image:linear-gradient(180deg,#000 0%,transparent 85%);-webkit-mask-image:linear-gradient(180deg,#000 0%,transparent 85%);pointer-events:none}
+.lx-soleil{position:absolute;left:50%;bottom:-520px;width:1100px;height:1100px;margin-left:-550px;border-radius:50%;background:radial-gradient(closest-side,rgba(254,198,30,.55),rgba(240,140,46,.28) 38%,rgba(15,92,140,0) 70%);pointer-events:none;animation:lx-leve 6s ease-in-out infinite}
+.lx-horizon{position:absolute;left:0;right:0;bottom:0;height:1px;background:linear-gradient(90deg,transparent,rgba(254,198,30,.7),transparent);pointer-events:none}
+.lx-cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}
+.lx-btn-or{background:linear-gradient(135deg,#FEC61E,#F2A91E);color:#10212F;box-shadow:0 10px 30px rgba(254,198,30,.25)}
+.lx-btn-or:hover:not([disabled]){background:linear-gradient(135deg,#FFD24A,#F2B705)}
+.lx-btn-verre{background:rgba(255,255,255,.06);color:#fff;border-color:rgba(255,255,255,.2)}
+.lx-btn-verre:hover{background:rgba(255,255,255,.12)}
+.lx-preuves{display:flex;flex-wrap:wrap;gap:6px 18px;list-style:none;padding:0;margin:4px 0 0;font-size:12.5px;color:#9DB0C6}
+.lx-preuves li{display:inline-flex;align-items:center;gap:7px}
+.lx-preuves svg{width:14px;height:14px;fill:none;stroke:#2FD08A;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
 .lx-hero-in{position:relative;max-width:1280px;margin:0 auto;padding:40px 16px 120px;display:grid;grid-template-columns:minmax(0,1fr);gap:32px;align-items:center}
 .lx-texte{display:grid;gap:18px;justify-items:start}
 .lx-sur{display:inline-flex;align-items:center;gap:10px;font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#FEC61E;padding:6px 14px;border:1px solid rgba(254,198,30,.35);border-radius:var(--r3);background:rgba(254,198,30,.06)}
@@ -346,37 +358,62 @@ legend{font-size:13.5px;font-weight:600;margin-bottom:8px;padding:0}
 .lx-publics i{width:8px;height:8px;border-radius:var(--r3)}
 .lx-slot{display:flex;justify-content:center;order:-1}
 .lx .cx-carte{order:0;max-width:440px;color:var(--encre);box-shadow:0 30px 80px rgba(0,0,0,.45);border-color:transparent}
-/* aperçu */
-.lx-apercu{max-width:1120px;margin:-84px auto 0;padding:0 16px;position:relative;z-index:1}
-.lx-fenetre{border-radius:16px;background:#0B1624;border:1px solid #1E2C40;box-shadow:0 40px 90px rgba(6,24,42,.35);overflow:hidden;color:#C9D4E2}
-.lx-fen-barre{display:flex;align-items:center;gap:7px;padding:11px 14px;border-bottom:1px solid #1E2C40;background:#0E1B2C}
+/* aperçu v6 : la console, avec les sociétés du Groupe, le cycle des projets en colonnes, la trésorerie, les décisions et les sites */
+.lx-apercu{max-width:1180px;margin:-96px auto 0;padding:0 16px;position:relative;z-index:1}
+.lx-scene{position:relative}
+.lx-scene::before{content:"";position:absolute;inset:8% 6% -6%;background:radial-gradient(closest-side,rgba(254,198,30,.28),rgba(15,92,140,.22) 55%,transparent);filter:blur(40px);z-index:-1}
+.lx-fenetre{border-radius:18px;background:linear-gradient(180deg,#0D1A2B,#0A1523);border:1px solid rgba(255,255,255,.09);box-shadow:0 1px 0 rgba(255,255,255,.06) inset,0 50px 120px rgba(6,24,42,.45);overflow:hidden;color:#C9D4E2}
+.lx-fen-barre{display:flex;align-items:center;gap:7px;padding:11px 14px;border-bottom:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.02)}
 .lx-fen-barre i{width:10px;height:10px;border-radius:var(--r3);background:#2A3A52}
 .lx-fen-barre i:first-child{background:#F08C2E}.lx-fen-barre i:nth-child(2){background:#FEC61E}.lx-fen-barre i:nth-child(3){background:#1F9D6B}
-.lx-fen-barre span{margin-left:10px;font-size:12px;color:#7F91A8;letter-spacing:.02em}
+.lx-fen-titre{margin-left:10px;font-size:12px;color:#7F91A8;letter-spacing:.02em;white-space:nowrap}
+.lx-fen-cherche{display:none;margin-left:auto;align-items:center;gap:8px;min-width:240px;padding:6px 12px;border-radius:var(--r3);background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07);font-size:11.5px;color:#6F829B}
+.lx-fen-cherche svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:1.8}
+.lx-direct{display:inline-flex;align-items:center;gap:7px;margin-left:auto;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#7EE0B0}
+.lx-direct::before{content:"";width:7px;height:7px;border-radius:var(--r3);background:#2FD08A;box-shadow:0 0 0 0 rgba(47,208,138,.6);animation:lx-pouls 2s infinite}
+.lx-fen-cherche+.lx-direct{margin-left:14px}
 .lx-fen-corps{display:grid;grid-template-columns:minmax(0,1fr)}
-.lx-fen-menu{display:none;padding:16px 12px;border-right:1px solid #1E2C40;gap:4px;align-content:start}
-.lx-fen-menu p{font-size:12.5px;padding:8px 10px;border-radius:8px;color:#8FA3BC}
-.lx-fen-menu p.on{background:rgba(254,198,30,.1);color:#FEC61E}
-.lx-fen-mono{width:30px;height:30px;margin:0 0 12px 8px}
-.lx-fen-mono svg{width:100%;height:100%}
+.lx-fen-menu{display:none;padding:16px 12px;border-right:1px solid rgba(255,255,255,.07);gap:2px;align-content:start;background:rgba(0,0,0,.12)}
+.lx-fen-menu h4{margin:14px 10px 6px;font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#5F7390}
+.lx-fen-menu p{display:flex;align-items:center;gap:9px;font-size:12.5px;padding:7px 10px;border-radius:8px;color:#8FA3BC}
+.lx-fen-menu p i{width:8px;height:8px;border-radius:3px;flex:none}
+.lx-fen-menu p.on{background:linear-gradient(90deg,rgba(254,198,30,.16),rgba(254,198,30,.02));color:#FEC61E}
+.lx-fen-mono{display:flex;align-items:center;gap:9px;margin:0 0 6px 8px;font-size:13px;font-weight:600;color:#E4EBF3}
+.lx-fen-mono span{width:26px;height:26px}.lx-fen-mono svg{width:100%;height:100%}
 .lx-fen-main{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;padding:14px}
-.lx-bloc{background:#0F1E31;border:1px solid #1E2C40;border-radius:12px;padding:14px 16px;display:grid;gap:10px;align-content:start}
-.lx-bloc-t{font-size:12px;font-weight:600;color:#E4EBF3;letter-spacing:.02em}
-.lx-ligne{display:grid;grid-template-columns:22px 104px minmax(0,1fr);align-items:center;gap:10px;font-size:12px}
-.lx-ligne b{display:grid;place-items:center;width:22px;height:22px;border-radius:var(--r3);background:#1A2B42;color:#FEC61E;font-size:11px}
-.lx-ligne span{color:#AFC0D4}
-.lx-ligne em{height:8px;border-radius:var(--r3);background:#1A2B42;overflow:hidden}
-.lx-ligne u{display:block;height:100%;border-radius:var(--r3);background:linear-gradient(90deg,#0F5C8C,#4FA3D9);animation:lx-pousse 1.4s cubic-bezier(.2,.7,.2,1) both}
-.lx-courbe svg{width:100%;height:110px;display:block}
-.lx-legende{display:flex;align-items:center;gap:8px;font-size:11.5px;color:#7F91A8}
+.lx-bloc{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:14px 16px;display:grid;gap:12px;align-content:start;min-width:0}
+.lx-bloc-t{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px;font-weight:600;color:#E4EBF3;letter-spacing:.02em}
+.lx-bloc-t small{font-size:10.5px;font-weight:500;color:#6F829B;letter-spacing:.04em}
+.lx-cols{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.lx-col{display:grid;gap:6px;align-content:start;min-width:0}
+.lx-col-t{display:flex;align-items:center;gap:6px;font-size:10.5px;color:#8FA3BC;padding-bottom:6px;border-bottom:1px solid rgba(255,255,255,.07);white-space:nowrap;overflow:hidden}
+.lx-col-t b{display:grid;place-items:center;flex:none;width:16px;height:16px;border-radius:var(--r3);background:rgba(254,198,30,.14);color:#FEC61E;font-size:9.5px}
+.lx-carte-p{display:grid;gap:5px;padding:7px 8px;border-radius:7px;background:rgba(255,255,255,.045);box-shadow:inset 2px 0 0 var(--c);font-size:10.5px;color:#C9D4E2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;animation:lx-monte .7s cubic-bezier(.2,.7,.2,1) both}
+.lx-carte-p u{display:block;height:3px;border-radius:2px;background:rgba(255,255,255,.08);text-decoration:none}
+.lx-carte-p u::after{content:"";display:block;height:100%;width:var(--w);border-radius:2px;background:var(--c)}
+.lx-courbe svg{width:100%;height:118px;display:block;overflow:visible}
+.lx-legende{display:flex;align-items:center;gap:8px;font-size:11px;color:#7F91A8}
 .lx-legende span{width:14px;height:3px;border-radius:2px;background:#FEC61E}.lx-legende span.b{background:#4FA3D9;margin-left:8px}
-.lx-al{display:flex;align-items:center;gap:10px;font-size:12.5px;color:#C9D4E2;padding:8px 10px;border-radius:8px;background:#132539}
-.lx-al span{width:8px;height:8px;border-radius:var(--r3)}.lx-al .j{background:#FEC61E}.lx-al .b{background:#4FA3D9}.lx-al .v{background:#1F9D6B}
-.lx-illu{margin-top:12px;font-size:12.5px;color:var(--doux-2);text-align:center}
-@keyframes lx-pousse{from{width:0}}
-@media (prefers-reduced-motion:reduce){.lx-ligne u{animation:none}}
+.lx-trait{stroke-dasharray:600;stroke-dashoffset:600;animation:lx-trace 2.2s .3s cubic-bezier(.3,.7,.2,1) forwards}
+.lx-al{display:flex;align-items:center;gap:10px;font-size:12px;color:#C9D4E2;padding:8px 10px;border-radius:8px;background:rgba(255,255,255,.04)}
+.lx-al span{width:8px;height:8px;border-radius:var(--r3);flex:none}.lx-al .j{background:#FEC61E}.lx-al .b{background:#4FA3D9}.lx-al .v{background:#2FD08A}
+.lx-al em{margin-left:auto;font-style:normal;font-size:10px;color:#6F829B;white-space:nowrap}
+.lx-carte-sites svg{width:100%;height:118px;display:block}
+.lx-site{transform-box:fill-box;transform-origin:center;animation:lx-onde 2.6s ease-out infinite}
+.lx-flotte{display:none}
+.lx-illu{margin-top:14px;font-size:12.5px;color:var(--doux-2);text-align:center}
+@keyframes lx-pouls{0%{box-shadow:0 0 0 0 rgba(47,208,138,.55)}70%{box-shadow:0 0 0 8px rgba(47,208,138,0)}100%{box-shadow:0 0 0 0 rgba(47,208,138,0)}}
+@keyframes lx-trace{to{stroke-dashoffset:0}}
+@keyframes lx-monte{from{opacity:0;transform:translateY(6px)}}
+@keyframes lx-onde{0%{opacity:.7;transform:scale(1)}100%{opacity:0;transform:scale(3.2)}}
+@keyframes lx-flotte{50%{transform:translateY(-6px)}}
+@keyframes lx-leve{0%,100%{opacity:.85}50%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.lx-trait{stroke-dashoffset:0}.lx-site{display:none}}
 /* Groupe */
-.lx-groupe{display:grid;gap:18px;justify-items:center;text-align:center;padding-top:48px}
+.lx-groupe{display:grid;gap:22px;justify-items:center;text-align:center;padding-top:56px}
+.lx-logos{padding:22px 28px!important;border-radius:var(--r2);background:var(--surface);border:1px solid var(--neutre);box-shadow:var(--ombre)}
+.lx-logos li+li{padding-left:44px;border-left:1px solid var(--neutre)}
+@media (max-width:640px){.lx-logos li+li{padding-left:0;border-left:0}}
 .lx-logos{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:20px 44px;list-style:none;padding:0;margin:0}
 .lx-logo-off svg{display:block;width:170px;height:auto}
 .lx-marque{display:inline-flex;align-items:center;gap:10px}
@@ -385,10 +422,13 @@ legend{font-size:13.5px;font-weight:600;margin-bottom:8px;padding:0}
 .lx-marque-nom b{color:var(--c)}
 .lx-marque:last-child .lx-marque-nom{color:var(--c)}
 /* gestes */
-.lx-gestes{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;list-style:none;padding:0;margin:26px 0 0}
-.lx-gestes li{position:relative;display:grid;gap:8px;align-content:start;padding:22px 20px;background:var(--surface);border:1px solid var(--neutre);border-radius:var(--r2)}
+.lx-gestes{position:relative;display:grid;grid-template-columns:minmax(0,1fr);gap:14px;list-style:none;padding:0;margin:26px 0 0}
+.lx-chaine{display:none}
+.lx-gestes li{position:relative;display:grid;gap:8px;align-content:start;padding:22px 20px;background:var(--surface);border:1px solid var(--neutre);border-radius:var(--r2);transition:transform .2s,box-shadow .2s}
+.lx-gestes li:hover{transform:translateY(-3px);box-shadow:var(--ombre)}
+.lx-gestes .lx-ex{margin-top:6px;padding-top:10px;border-top:1px dashed var(--neutre);font-size:12.5px;color:var(--bleu)}
 .lx-gestes small{position:absolute;top:18px;right:20px;font-size:12px;font-weight:600;color:var(--doux-2);letter-spacing:.08em}
-.lx-geste-ic{display:grid;place-items:center;width:42px;height:42px;border-radius:12px;background:#06182A;color:#FEC61E}
+.lx-geste-ic{position:relative;z-index:1;display:grid;place-items:center;width:46px;height:46px;border-radius:14px;background:linear-gradient(145deg,#0F5C8C,#06182A);color:#FEC61E;box-shadow:0 8px 20px rgba(15,92,140,.28),0 0 0 6px var(--fond)}
 .lx-geste-ic svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .lx-gestes h3{font-size:17px;font-weight:600;margin-top:4px}
 .lx-gestes p{font-size:14px;line-height:1.55;color:var(--doux)}
@@ -405,6 +445,12 @@ legend{font-size:13.5px;font-weight:600;margin-bottom:8px;padding:0}
 .lx-modules em{justify-self:start;margin-top:6px;font-size:11.5px;font-style:normal;font-weight:600;border-radius:var(--r3);padding:2px 10px}
 .lx-modules em.dispo{color:#114E0B;background:#CEF5CA}
 .lx-modules em.prep{color:var(--doux);background:var(--fond);border:1px solid var(--neutre)}
+/* appel final */
+.lx-final{max-width:1280px;margin:0 auto;padding:64px 16px 0}
+.lx-final-in{position:relative;overflow:hidden;display:grid;gap:18px;justify-items:start;padding:36px 24px;border-radius:20px;background:radial-gradient(600px 300px at 90% 120%,rgba(254,198,30,.35),transparent 60%),linear-gradient(135deg,#06182A,#0F5C8C);color:#fff}
+.lx-final-in h2{font-size:28px;line-height:1.12;font-weight:600;letter-spacing:-.02em;max-width:20ch;text-wrap:balance}
+.lx-final-in p{color:#C7DDEE;max-width:52ch}
+.cx-code .lx-final{display:none}
 /* garanties */
 .lx-confiance{padding-bottom:40px}
 .lx-confiance ul{display:grid;grid-template-columns:minmax(0,1fr);gap:18px 28px;list-style:none;margin:0;padding:24px;border-radius:var(--r2);background:#06182A;color:#C9D4E2}
@@ -416,24 +462,36 @@ legend{font-size:13.5px;font-weight:600;margin-bottom:8px;padding:0}
 @media (min-width:640px){
   .lx-gestes,.lx-cartes,.lx-modules,.lx-confiance ul{grid-template-columns:repeat(2,minmax(0,1fr))}
   .lx-fen-main{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .lx-cycle{grid-column:1/-1}
+  .lx-pipeline{grid-column:1/-1}
 }
 @media (min-width:1000px){
   .lx-hero-in{grid-template-columns:minmax(0,1.2fr) minmax(400px,.9fr);gap:64px;padding:72px 40px 150px}
   .lx-slot{order:0}
-  .lx-texte h2{font-size:58px}
   .lx-h2{font-size:36px}
   .lx-pilote,.lx-espaces,.lx-modules-s,.lx-groupe,.lx-confiance{padding-left:40px;padding-right:40px;padding-top:80px}
   .lx-groupe{padding-top:56px}
-  .lx-apercu{margin-top:-110px;padding:0 40px}
-  .lx-fen-corps{grid-template-columns:180px minmax(0,1fr)}
+  .lx-apercu{margin-top:-130px;padding:0 40px}
   .lx-fen-menu{display:grid}
-  .lx-fen-main{grid-template-columns:1.2fr 1fr 0.9fr}
-  .lx-cycle{grid-column:auto}
   .lx-gestes,.lx-confiance ul{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .lx-chaine{display:block;position:absolute;left:44px;right:44px;top:44px;height:2px;background:linear-gradient(90deg,#0F5C8C,#FEC61E,#F08C2E,#1F9D6B);opacity:.55}
+  .lx-fen-cherche{display:inline-flex}
+  .lx-fen-corps{grid-template-columns:200px minmax(0,1fr)}
+  .lx-fen-main{grid-template-columns:1.3fr 1fr 1fr}
+  .lx-pipeline{grid-column:1/-1}
+  .lx-flotte{display:flex;position:absolute;z-index:2;align-items:center;gap:10px;padding:10px 14px;border-radius:14px;background:rgba(255,255,255,.92);color:var(--encre);font-size:12.5px;box-shadow:0 18px 40px rgba(6,24,42,.22);backdrop-filter:blur(8px);animation:lx-flotte 5s ease-in-out infinite}
+  .lx-flotte b{display:block;font-size:13px;font-weight:600}
+  .lx-flotte span{display:block;color:var(--doux);font-size:11.5px}
+  .lx-flotte i{width:30px;height:30px;border-radius:9px;flex:none;display:grid;place-items:center;color:#fff;font-style:normal;font-weight:700}
+  .lx-flotte.f1{left:-64px;top:64%}.lx-flotte.f2{left:-64px;top:22%;animation-delay:-1.6s}.lx-flotte.f3{right:6%;bottom:-26px;animation-delay:-3.2s}
+  .lx-final{padding:96px 40px 0}
+  .lx-final-in{padding:56px 56px;grid-template-columns:minmax(0,1fr) auto;align-items:center}
+  .lx-final-in h2{font-size:40px}
+  .lx-texte h2{font-size:64px}
   .lx-cartes,.lx-modules{grid-template-columns:repeat(5,minmax(0,1fr))}
 }
-@media (min-width:1000px) and (max-width:1199px){.lx-cartes,.lx-modules{grid-template-columns:repeat(3,minmax(0,1fr))}.lx-fen-main{grid-template-columns:repeat(2,minmax(0,1fr))}.lx-cycle{grid-column:1/-1}}
+@media (min-width:1000px) and (max-width:1199px){.lx-cartes,.lx-modules{grid-template-columns:repeat(3,minmax(0,1fr))}.lx-fen-cherche{display:none}}
+@media (max-width:639px){.lx-cols{grid-template-columns:repeat(3,minmax(0,1fr))}.lx-col:nth-child(n+4){display:none}}
+@media (prefers-reduced-motion:reduce){.lx-soleil,.lx-flotte{animation:none}}
 .cx-rester{display:flex;gap:10px;align-items:flex-start;cursor:pointer;font-size:14px;color:var(--encre)}
 .cx-rester input{width:18px;height:18px;margin:2px 0 0;accent-color:var(--bleu);flex:none}
 .cx-rester small{display:block;font-size:12.5px;color:var(--doux);margin-top:2px}
@@ -850,40 +908,59 @@ try { window.SLOS_MARQUE.lancer(); } catch (e) { /* la connexion reste utilisabl
     const PUBLICS = [['#1F9D6B', 'Clients'], ['#F08C2E', 'Apporteurs d\'affaires'], ['#0E9AA7', 'Partenaires'], ['#7A5AF8', 'Associés'], ['#4FA3D9', 'Collectivités']];
     const hero = h('section', { class: 'lx-hero', 'aria-labelledby': 'cx-accroche-titre' });
     hero.innerHTML =
+      '<div class="lx-soleil" aria-hidden="true"></div><div class="lx-horizon" aria-hidden="true"></div>' +
       '<div class="lx-hero-in"><div class="lx-texte cx-accroche">' +
         '<p class="lx-sur"><span class="lx-point"></span>SUNLINK OS · plateforme de pilotage</p>' +
         '<h2 id="cx-accroche-titre">Vos projets solaires, <span>pilotés en temps réel.</span></h2>' +
         '<p class="lx-lead">Une seule plateforme pour suivre chaque projet, du terrain à la mise en service, avec les documents, la trésorerie et les décisions au même endroit. Chaque client, apporteur, partenaire, associé ou collectivité ouvre son propre espace, et ne voit que ce qui le concerne.</p>' +
         '<ul class="lx-publics" aria-label="Pour qui">' + PUBLICS.map(([c, n]) => '<li><i style="background:' + c + '"></i>' + n + '</li>').join('') + '</ul>' +
+        '<div class="lx-cta"><button type="button" class="btn lx-btn-or" data-lx="demander">Demander un accès</button><button type="button" class="btn lx-btn-verre" data-lx="voir">Voir comment on pilote</button></div>' +
+        '<ul class="lx-preuves">' + ['Hébergé à Paris', 'Sans mot de passe', 'Accès sur invitation'].map((t) => '<li><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7"/></svg>' + t + '</li>').join('') + '</ul>' +
       '</div><div class="lx-slot"></div></div>';
     hero.querySelector('.lx-slot').appendChild(h('section', { class: 'carte cx-carte', 'aria-labelledby': 'cx-titre' }, h('div', null, titre, intro), etapeEmail, etapeCode, msg, acces));
 
-    /* aperçu illustratif de l'application : formes et libellés seulement, aucun chiffre */
-    const ETAPES_CYCLE = [['1', 'Opportunités', 92], ['2', 'Développement', 74], ['3', 'Financement', 48], ['4', 'Construction', 34], ['5', 'Exploitation', 62]];
+    /* aperçu illustratif de la console (v6) : formes, libellés et types de projets seulement, aucun nom réel ni aucun chiffre */
+    const SOC = [['SUNLINK', '#FEC61E'], ['SUNLINK PV', '#1F9D6B'], ['SUNLICÉO', '#F08C2E']];
+    const COLS = [['1', 'Opportunités', [['Toiture', 1, 30], ['Ombrière', 2, 18], ['Batterie', 2, 10]]], ['2', 'Développement', [['Centrale au sol', 1, 55], ['Toiture', 2, 42]]],
+      ['3', 'Financement', [['Batterie', 2, 70], ['Toiture', 1, 62]]], ['4', 'Construction', [['Ombrière', 1, 84]]], ['5', 'Exploitation', [['Toiture', 1, 100], ['ACC', 2, 100]]]];
+    const SITES = [[60, 40], [118, 70], [168, 34], [214, 82], [252, 50], [96, 92]];
     const apercu = h('section', { class: 'lx-apercu', 'aria-label': 'Aperçu de l\'application (illustration)' });
     apercu.innerHTML =
-      '<div class="lx-fenetre" aria-hidden="true">' +
-        '<div class="lx-fen-barre"><i></i><i></i><i></i><span>SUNLINK OS · Console</span></div>' +
+      '<div class="lx-scene" aria-hidden="true"><div class="lx-fenetre">' +
+        '<div class="lx-fen-barre"><i></i><i></i><i></i><span class="lx-fen-titre">SUNLINK OS · Vue d\'ensemble</span>' +
+          '<span class="lx-fen-cherche"><svg viewBox="0 0 16 16"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5L14 14"/></svg>Rechercher un projet, un document…</span><span class="lx-direct">En direct</span></div>' +
         '<div class="lx-fen-corps">' +
-          '<div class="lx-fen-menu"><div class="lx-fen-mono">' + monoSvg + '</div>' +
-            ['Vue d\'ensemble', 'Projets', 'Trésorerie', 'Documents', 'Décisions'].map((t, k) => '<p' + (k === 1 ? ' class="on"' : '') + '>' + t + '</p>').join('') +
+          '<div class="lx-fen-menu"><p class="lx-fen-mono"><span>' + monoSvg + '</span>SUNLINK OS</p>' +
+            '<h4>Sociétés</h4>' + SOC.map(([n, c]) => '<p><i style="background:' + c + '"></i>' + n + '</p>').join('') +
+            '<h4>Pilotage</h4>' + ['Vue d\'ensemble', 'Projets', 'Trésorerie', 'Documents', 'Décisions'].map((t, k) => '<p' + (k === 0 ? ' class="on"' : '') + '>' + t + '</p>').join('') +
           '</div>' +
           '<div class="lx-fen-main">' +
-            '<div class="lx-bloc lx-cycle"><p class="lx-bloc-t">Cycle des projets</p>' +
-              ETAPES_CYCLE.map(([n, t, w]) => '<div class="lx-ligne"><b>' + n + '</b><span>' + t + '</span><em><u style="width:' + w + '%"></u></em></div>').join('') +
-            '</div>' +
-            '<div class="lx-bloc lx-courbe"><p class="lx-bloc-t">Trésorerie prévisionnelle</p>' +
-              '<svg viewBox="0 0 300 110" preserveAspectRatio="none"><defs><linearGradient id="lx-g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FEC61E" stop-opacity=".35"/><stop offset="1" stop-color="#FEC61E" stop-opacity="0"/></linearGradient></defs>' +
-              '<path d="M0 84 C40 80 60 62 95 66 S150 40 185 46 S240 22 300 18 L300 110 L0 110Z" fill="url(#lx-g)"/>' +
-              '<path d="M0 84 C40 80 60 62 95 66 S150 40 185 46 S240 22 300 18" fill="none" stroke="#FEC61E" stroke-width="2.5"/>' +
-              '<path d="M185 46 S240 30 300 34" fill="none" stroke="#4FA3D9" stroke-width="2" stroke-dasharray="5 5"/></svg>' +
+            '<div class="lx-bloc lx-pipeline"><p class="lx-bloc-t">Cycle des projets<small>du foncier à l\'exploitation</small></p><div class="lx-cols">' +
+              COLS.map(([n, t, cartes], ci) => '<div class="lx-col"><p class="lx-col-t"><b>' + n + '</b>' + t + '</p>' +
+                cartes.map(([lib, soc, w], k) => '<p class="lx-carte-p" style="--c:' + SOC[soc][1] + ';--w:' + w + '%;animation-delay:' + (0.15 + ci * 0.12 + k * 0.08) + 's">' + lib + '<u></u></p>').join('') + '</div>').join('') +
+            '</div></div>' +
+            '<div class="lx-bloc lx-courbe"><p class="lx-bloc-t">Trésorerie prévisionnelle<small>réalisé et prévu</small></p>' +
+              '<svg viewBox="0 0 300 118" preserveAspectRatio="none"><defs><linearGradient id="lx-g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FEC61E" stop-opacity=".35"/><stop offset="1" stop-color="#FEC61E" stop-opacity="0"/></linearGradient><filter id="lx-lueur"><feGaussianBlur stdDeviation="3"/></filter></defs>' +
+              [30, 60, 90].map((y) => '<path d="M0 ' + y + 'H300" stroke="rgba(255,255,255,.06)"/>').join('') +
+              '<path d="M0 90 C40 86 60 66 95 70 S150 44 185 50 S240 26 300 20 L300 118 L0 118Z" fill="url(#lx-g)"/>' +
+              '<path d="M0 90 C40 86 60 66 95 70 S150 44 185 50" fill="none" stroke="#FEC61E" stroke-width="5" opacity=".35" filter="url(#lx-lueur)"/>' +
+              '<path class="lx-trait" d="M0 90 C40 86 60 66 95 70 S150 44 185 50" fill="none" stroke="#FEC61E" stroke-width="2.5" stroke-linecap="round"/>' +
+              '<path d="M185 50 S240 30 300 24" fill="none" stroke="#4FA3D9" stroke-width="2" stroke-dasharray="5 5"/><circle cx="185" cy="50" r="4" fill="#FEC61E" stroke="#0A1523" stroke-width="2"/></svg>' +
               '<p class="lx-legende"><span class="j"></span>réalisé <span class="b"></span>prévu</p>' +
             '</div>' +
             '<div class="lx-bloc lx-alertes"><p class="lx-bloc-t">À traiter aujourd\'hui</p>' +
-              [['j', 'Décision à valider'], ['b', 'Document à déposer'], ['v', 'Étape franchie']].map(([c, t]) => '<p class="lx-al"><span class="' + c + '"></span>' + t + '</p>').join('') +
+              [['j', 'Décision à valider', 'sources jointes'], ['b', 'Document à déposer', 'rattaché au projet'], ['v', 'Étape franchie', 'automatique']].map(([c, t, d]) => '<p class="lx-al"><span class="' + c + '"></span>' + t + '<em>' + d + '</em></p>').join('') +
             '</div>' +
+            '<div class="lx-bloc lx-carte-sites"><p class="lx-bloc-t">Sites suivis<small>illustration</small></p>' +
+              '<svg viewBox="0 0 300 118"><defs><pattern id="lx-pts" width="12" height="12" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" fill="rgba(255,255,255,.08)"/></pattern></defs><rect width="300" height="118" fill="url(#lx-pts)"/>' +
+              SITES.map(([x, y], k) => { const c = SOC[k % 3][1]; return '<circle class="lx-site" cx="' + x + '" cy="' + y + '" r="4" fill="' + c + '" style="animation-delay:' + (k * 0.4) + 's"/><circle cx="' + x + '" cy="' + y + '" r="4" fill="' + c + '"/>'; }).join('') +
+              '</svg></div>' +
           '</div>' +
         '</div>' +
+      '</div>' +
+      '<div class="lx-flotte f1"><i style="background:#0F5C8C">✓</i><div><b>Décision prête</b><span>chiffres et sources joints</span></div></div>' +
+      '<div class="lx-flotte f2"><i style="background:#1F9D6B">↥</i><div><b>Document déposé</b><span>rangé dans le bon projet</span></div></div>' +
+      '<div class="lx-flotte f3"><i style="background:#F08C2E">!</i><div><b>Échéance anticipée</b><span>alerte avant le problème</span></div></div>' +
       '</div>' +
       '<p class="lx-illu">Aperçu illustratif : dans l\'application, chaque chiffre vient de nos dossiers, avec sa source.</p>';
 
@@ -901,9 +978,10 @@ try { window.SLOS_MARQUE.lancer(); } catch (e) { /* la connexion reste utilisabl
       ['02', 'Suivre', 'Chaque projet avance d\'étape en étape, des opportunités à l\'exploitation, avec sa prochaine action et son responsable.', '<path d="M4 18l5-6 4 3 7-9"/><path d="M16 6h4v4"/>'],
       ['03', 'Anticiper', 'Trésorerie, financements et échéances sont projetés à l\'avance : les alertes arrivent avant les problèmes.', '<circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/>'],
       ['04', 'Décider', 'Les arbitrages à rendre remontent tout seuls, préparés avec leurs chiffres et leurs sources, validés en un clic.', '<path d="M5 12l4 4 10-10"/>']];
-    const pilote = h('section', { class: 'lx-pilote', 'aria-labelledby': 'lx-pilote-t' });
-    pilote.innerHTML = '<p class="lx-kicker">Comment on pilote</p><h2 id="lx-pilote-t" class="lx-h2">Quatre gestes, une seule source de vérité.</h2><ol class="lx-gestes">' +
-      GESTES.map(([n, t, d, ic]) => '<li><span class="lx-geste-ic"><svg viewBox="0 0 24 24" aria-hidden="true">' + ic + '</svg></span><small>' + n + '</small><h3>' + t + '</h3><p>' + d + '</p></li>').join('') + '</ol>';
+    const pilote = h('section', { class: 'lx-pilote', id: 'lx-pilote', 'aria-labelledby': 'lx-pilote-t' });
+    const EXEMPLES = ['Un mail d\'Enedis arrive : il rejoint le dossier de la centrale.', 'Le Consuel est reçu : le projet passe en mise en service.', 'Une échéance d\'emprunt approche : l\'alerte part un mois avant.', 'Un devis attend : il arrive avec son plan de financement.'];
+    pilote.innerHTML = '<p class="lx-kicker">Comment on pilote</p><h2 id="lx-pilote-t" class="lx-h2">Quatre gestes, une seule source de vérité.</h2><ol class="lx-gestes"><span class="lx-chaine" aria-hidden="true"></span>' +
+      GESTES.map(([n, t, d, ic], k) => '<li><span class="lx-geste-ic"><svg viewBox="0 0 24 24" aria-hidden="true">' + ic + '</svg></span><small>' + n + '</small><h3>' + t + '</h3><p>' + d + '</p><p class="lx-ex">Par exemple : ' + EXEMPLES[k] + '</p></li>').join('') + '</ol>';
 
     /* un espace pour chacun */
     const ESPACES = [
@@ -935,9 +1013,24 @@ try { window.SLOS_MARQUE.lancer(); } catch (e) { /* la connexion reste utilisabl
     const garanties = h('section', { class: 'lx-confiance', 'aria-label': 'Garanties' });
     garanties.innerHTML = '<ul>' + GARANTIES.map(([t, d]) => '<li><b>' + t + '</b><span>' + d + '</span></li>').join('') + '</ul>';
 
+    /* appel final (v6) */
+    const final = h('section', { class: 'lx-final', 'aria-labelledby': 'lx-final-t' });
+    final.innerHTML = '<div class="lx-final-in"><div><h2 id="lx-final-t">Vos affaires avec SUNLINK méritent mieux qu\'un fil de mails.</h2>' +
+      '<p>Demandez votre accès : votre espace est ouvert par SUNLINK, avec seulement ce qui vous concerne.</p></div>' +
+      '<div class="lx-cta"><button type="button" class="btn lx-btn-or" data-lx="demander">Demander un accès</button><button type="button" class="btn lx-btn-verre" data-lx="connexion">J\'ai déjà un accès</button></div></div>';
+
     const page = h('div', { class: 'cx lx' }, entete(),
-      h('main', { class: 'cx-main lx-main', id: 'contenu' }, hero, apercu, groupe, pilote, espaces, modules, garanties),
+      h('main', { class: 'cx-main lx-main', id: 'contenu' }, hero, apercu, groupe, pilote, espaces, modules, final, garanties),
       h('p', { class: 'cx-pied' }, ico('cadenas'), 'SUNLINK énergies · Charleville-Mézières · SUNLINK OS, accès réservé aux personnes invitées'));
+    /* boutons d'appel : remonter à la carte de connexion, ou descendre à « Comment on pilote » */
+    const versCarte = () => { try { email.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) { /* ignoré */ } focaliser(email); };
+    page.addEventListener('click', (e) => {
+      const b = e.target.closest && e.target.closest('[data-lx]'); if (!b) return;
+      const quoi = b.getAttribute('data-lx');
+      if (quoi === 'voir') { try { pilote.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (x) { /* ignoré */ } return; }
+      if (quoi === 'demander') { versCarte(); demander.click(); return; }
+      versCarte();
+    });
     monter('connexion', 'Connexion', page);
     focaliser(email);
   }
