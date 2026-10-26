@@ -323,6 +323,117 @@ legend{font-size:13.5px;font-weight:600;margin-bottom:8px;padding:0}
 .sli-calme .sli-halo{display:none}
 @media (max-width:600px){.sli-passer{right:auto;left:50%;transform:translateX(-50%)}}
 /* ==== style de l'entrée : fin ==== */
+
+/* ---------- landing v5.9 : héros nuit, aperçu de l'application, Groupe, gestes de pilotage, espaces, modules ---------- */
+.lx{background:var(--fond)}
+.lx-main{max-width:none;padding:0;gap:0}
+.lx-main>section{width:100%}
+.lx-kicker{font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--bleu)}
+.lx-h2{font-size:28px;line-height:1.15;font-weight:600;letter-spacing:-.02em;color:var(--encre);max-width:22ch;text-wrap:balance;margin-top:8px}
+.lx-pilote,.lx-espaces,.lx-modules-s,.lx-groupe,.lx-confiance{max-width:1280px;margin:0 auto;padding:56px 16px 0}
+/* héros */
+.lx-hero{position:relative;overflow:hidden;background:radial-gradient(900px 480px at 82% -10%,rgba(254,198,30,.22),transparent 60%),radial-gradient(700px 420px at 0% 110%,rgba(15,92,140,.45),transparent 60%),linear-gradient(180deg,#00070D 0%,#06182A 100%);color:#fff}
+.lx-hero::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);background-size:48px 48px;mask-image:linear-gradient(180deg,#000 0%,transparent 85%);-webkit-mask-image:linear-gradient(180deg,#000 0%,transparent 85%);pointer-events:none}
+.lx-hero-in{position:relative;max-width:1280px;margin:0 auto;padding:40px 16px 120px;display:grid;grid-template-columns:minmax(0,1fr);gap:32px;align-items:center}
+.lx-texte{display:grid;gap:18px;justify-items:start}
+.lx-sur{display:inline-flex;align-items:center;gap:10px;font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#FEC61E;padding:6px 14px;border:1px solid rgba(254,198,30,.35);border-radius:var(--r3);background:rgba(254,198,30,.06)}
+.lx-point{width:7px;height:7px;border-radius:var(--r3);background:#FEC61E;box-shadow:0 0 0 4px rgba(254,198,30,.18)}
+.lx-texte h2{font-size:36px;line-height:1.05;font-weight:600;letter-spacing:-.03em;color:#fff;max-width:14ch;text-wrap:balance}
+.lx-texte h2 span{background:linear-gradient(90deg,#FEC61E,#F08C2E);-webkit-background-clip:text;background-clip:text;color:transparent}
+.lx-lead{font-size:16.5px;line-height:1.65;color:#B8C6D6;max-width:52ch}
+.lx-publics{display:flex;flex-wrap:wrap;gap:8px;list-style:none;padding:0;margin:0}
+.lx-publics li{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:500;color:#E4EBF3;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);border-radius:var(--r3);padding:5px 12px 5px 10px;white-space:nowrap}
+.lx-publics i{width:8px;height:8px;border-radius:var(--r3)}
+.lx-slot{display:flex;justify-content:center;order:-1}
+.lx .cx-carte{order:0;max-width:440px;color:var(--encre);box-shadow:0 30px 80px rgba(0,0,0,.45);border-color:transparent}
+/* aperçu */
+.lx-apercu{max-width:1120px;margin:-84px auto 0;padding:0 16px;position:relative;z-index:1}
+.lx-fenetre{border-radius:16px;background:#0B1624;border:1px solid #1E2C40;box-shadow:0 40px 90px rgba(6,24,42,.35);overflow:hidden;color:#C9D4E2}
+.lx-fen-barre{display:flex;align-items:center;gap:7px;padding:11px 14px;border-bottom:1px solid #1E2C40;background:#0E1B2C}
+.lx-fen-barre i{width:10px;height:10px;border-radius:var(--r3);background:#2A3A52}
+.lx-fen-barre i:first-child{background:#F08C2E}.lx-fen-barre i:nth-child(2){background:#FEC61E}.lx-fen-barre i:nth-child(3){background:#1F9D6B}
+.lx-fen-barre span{margin-left:10px;font-size:12px;color:#7F91A8;letter-spacing:.02em}
+.lx-fen-corps{display:grid;grid-template-columns:minmax(0,1fr)}
+.lx-fen-menu{display:none;padding:16px 12px;border-right:1px solid #1E2C40;gap:4px;align-content:start}
+.lx-fen-menu p{font-size:12.5px;padding:8px 10px;border-radius:8px;color:#8FA3BC}
+.lx-fen-menu p.on{background:rgba(254,198,30,.1);color:#FEC61E}
+.lx-fen-mono{width:30px;height:30px;margin:0 0 12px 8px}
+.lx-fen-mono svg{width:100%;height:100%}
+.lx-fen-main{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;padding:14px}
+.lx-bloc{background:#0F1E31;border:1px solid #1E2C40;border-radius:12px;padding:14px 16px;display:grid;gap:10px;align-content:start}
+.lx-bloc-t{font-size:12px;font-weight:600;color:#E4EBF3;letter-spacing:.02em}
+.lx-ligne{display:grid;grid-template-columns:22px 104px minmax(0,1fr);align-items:center;gap:10px;font-size:12px}
+.lx-ligne b{display:grid;place-items:center;width:22px;height:22px;border-radius:var(--r3);background:#1A2B42;color:#FEC61E;font-size:11px}
+.lx-ligne span{color:#AFC0D4}
+.lx-ligne em{height:8px;border-radius:var(--r3);background:#1A2B42;overflow:hidden}
+.lx-ligne u{display:block;height:100%;border-radius:var(--r3);background:linear-gradient(90deg,#0F5C8C,#4FA3D9);animation:lx-pousse 1.4s cubic-bezier(.2,.7,.2,1) both}
+.lx-courbe svg{width:100%;height:110px;display:block}
+.lx-legende{display:flex;align-items:center;gap:8px;font-size:11.5px;color:#7F91A8}
+.lx-legende span{width:14px;height:3px;border-radius:2px;background:#FEC61E}.lx-legende span.b{background:#4FA3D9;margin-left:8px}
+.lx-al{display:flex;align-items:center;gap:10px;font-size:12.5px;color:#C9D4E2;padding:8px 10px;border-radius:8px;background:#132539}
+.lx-al span{width:8px;height:8px;border-radius:var(--r3)}.lx-al .j{background:#FEC61E}.lx-al .b{background:#4FA3D9}.lx-al .v{background:#1F9D6B}
+.lx-illu{margin-top:12px;font-size:12.5px;color:var(--doux-2);text-align:center}
+@keyframes lx-pousse{from{width:0}}
+@media (prefers-reduced-motion:reduce){.lx-ligne u{animation:none}}
+/* Groupe */
+.lx-groupe{display:grid;gap:18px;justify-items:center;text-align:center;padding-top:48px}
+.lx-logos{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:20px 44px;list-style:none;padding:0;margin:0}
+.lx-logo-off svg{display:block;width:170px;height:auto}
+.lx-marque{display:inline-flex;align-items:center;gap:10px}
+.lx-marque-mono{width:34px;height:34px}.lx-marque-mono svg{width:100%;height:100%}
+.lx-marque-nom{font-size:22px;font-weight:700;letter-spacing:.01em;color:var(--encre)}
+.lx-marque-nom b{color:var(--c)}
+.lx-marque:last-child .lx-marque-nom{color:var(--c)}
+/* gestes */
+.lx-gestes{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;list-style:none;padding:0;margin:26px 0 0}
+.lx-gestes li{position:relative;display:grid;gap:8px;align-content:start;padding:22px 20px;background:var(--surface);border:1px solid var(--neutre);border-radius:var(--r2)}
+.lx-gestes small{position:absolute;top:18px;right:20px;font-size:12px;font-weight:600;color:var(--doux-2);letter-spacing:.08em}
+.lx-geste-ic{display:grid;place-items:center;width:42px;height:42px;border-radius:12px;background:#06182A;color:#FEC61E}
+.lx-geste-ic svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.lx-gestes h3{font-size:17px;font-weight:600;margin-top:4px}
+.lx-gestes p{font-size:14px;line-height:1.55;color:var(--doux)}
+/* espaces */
+.lx-cartes{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;list-style:none;padding:0;margin:26px 0 0}
+.lx-cartes li{display:grid;gap:6px;align-content:start;padding:18px 18px 18px 20px;background:var(--surface);border:1px solid var(--neutre);border-radius:var(--r2);box-shadow:inset 3px 0 0 var(--c)}
+.lx-cartes h3{font-size:15.5px;font-weight:600}
+.lx-cartes p{font-size:13.5px;line-height:1.5;color:var(--doux)}
+/* modules */
+.lx-modules{display:grid;grid-template-columns:minmax(0,1fr);gap:1px;list-style:none;padding:0;margin:26px 0 0;background:var(--neutre);border:1px solid var(--neutre);border-radius:var(--r2);overflow:hidden}
+.lx-modules li{display:grid;gap:6px;align-content:start;padding:20px;background:var(--surface)}
+.lx-modules h3{font-size:15px;font-weight:600}
+.lx-modules p{font-size:13.5px;line-height:1.5;color:var(--doux)}
+.lx-modules em{justify-self:start;margin-top:6px;font-size:11.5px;font-style:normal;font-weight:600;border-radius:var(--r3);padding:2px 10px}
+.lx-modules em.dispo{color:#114E0B;background:#CEF5CA}
+.lx-modules em.prep{color:var(--doux);background:var(--fond);border:1px solid var(--neutre)}
+/* garanties */
+.lx-confiance{padding-bottom:40px}
+.lx-confiance ul{display:grid;grid-template-columns:minmax(0,1fr);gap:18px 28px;list-style:none;margin:0;padding:24px;border-radius:var(--r2);background:#06182A;color:#C9D4E2}
+.lx-confiance b{display:block;font-size:14px;font-weight:600;color:#fff}
+.lx-confiance span{display:block;font-size:13px;line-height:1.5;margin-top:2px;color:#9DB0C6}
+/* étape du code : seule la carte reste */
+.cx-code .lx-texte,.cx-code .lx-apercu,.cx-code .lx-groupe,.cx-code .lx-pilote,.cx-code .lx-espaces,.cx-code .lx-modules-s,.cx-code .lx-confiance{display:none}
+.cx-code .lx-hero-in{padding-bottom:64px}
+@media (min-width:640px){
+  .lx-gestes,.lx-cartes,.lx-modules,.lx-confiance ul{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .lx-fen-main{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .lx-cycle{grid-column:1/-1}
+}
+@media (min-width:1000px){
+  .lx-hero-in{grid-template-columns:minmax(0,1.2fr) minmax(400px,.9fr);gap:64px;padding:72px 40px 150px}
+  .lx-slot{order:0}
+  .lx-texte h2{font-size:58px}
+  .lx-h2{font-size:36px}
+  .lx-pilote,.lx-espaces,.lx-modules-s,.lx-groupe,.lx-confiance{padding-left:40px;padding-right:40px;padding-top:80px}
+  .lx-groupe{padding-top:56px}
+  .lx-apercu{margin-top:-110px;padding:0 40px}
+  .lx-fen-corps{grid-template-columns:180px minmax(0,1fr)}
+  .lx-fen-menu{display:grid}
+  .lx-fen-main{grid-template-columns:1.2fr 1fr 0.9fr}
+  .lx-cycle{grid-column:auto}
+  .lx-gestes,.lx-confiance ul{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .lx-cartes,.lx-modules{grid-template-columns:repeat(5,minmax(0,1fr))}
+}
+@media (min-width:1000px) and (max-width:1199px){.lx-cartes,.lx-modules{grid-template-columns:repeat(3,minmax(0,1fr))}.lx-fen-main{grid-template-columns:repeat(2,minmax(0,1fr))}.lx-cycle{grid-column:1/-1}}
 </style>
 </head>
 <body>
@@ -722,52 +833,101 @@ try { window.SLOS_MARQUE.lancer(); } catch (e) { /* la connexion reste utilisabl
     });
     if (info) dire(msg, info, 'att');
 
-    /* page d'accueil publique : présente SUNLINK OS à tous ceux qui font des affaires avec SUNLINK (clients, apporteurs,
-       partenaires, associés), puis la carte de connexion. Aucune donnée métier, aucun nom de partenaire. */
-    const PROFILS = ['Clients', 'Apporteurs d\'affaires', 'Partenaires', 'Associés', 'Collectivités'];
-    const accroche = h('section', { class: 'cx-accroche', 'aria-labelledby': 'cx-accroche-titre' },
-      ico('lever', 'cx-lever-boite'),
-      h('p', { class: 'cx-sur', text: 'SUNLINK OS · Pilotage de vos affaires' }),
-      h('h2', { id: 'cx-accroche-titre', text: 'Toutes vos affaires avec SUNLINK, suivies au même endroit.' }),
-      h('p', { class: 'cx-texte', text: 'Projets, avancement, documents, factures et rémunérations : chaque client, apporteur d\'affaires, partenaire, associé ou collectivité ouvre son propre espace et suit en temps réel ce qui le concerne, et seulement cela.' }),
-      h('ul', { class: 'cx-socs', 'aria-label': 'Pour qui' }, PROFILS.map((nom, k) => { const i = h('i', { 'aria-hidden': 'true' }); i.style.background = ['#1F9D6B', '#F08C2E', '#0E9AA7', '#7A5AF8', '#0F5C8C'][k]; return h('li', null, i, nom); })));
-    const carte = h('section', { class: 'carte cx-carte', 'aria-labelledby': 'cx-titre' },
-      h('div', null, titre, intro), etapeEmail, etapeCode, msg, acces);
-    const TUILES = [
-      ['#1F9D6B', 'Clients', 'Propriétaires de toiture ou de terrain, participants à l\'autoconsommation : l\'avancement de votre projet, vos contrats, votre production et vos factures.', 'votre projet, rien d\'autre'],
-      ['#F08C2E', 'Apporteurs d\'affaires', 'Les affaires que vous avez apportées, l\'étape de chacune et vos rémunérations, mises à jour au fil de l\'eau.', 'vos affaires uniquement'],
-      ['#0E9AA7', 'Partenaires et prestataires', 'Bureaux d\'études, constructeurs, mainteneurs : les projets confiés, le planning, les devis, les factures et les documents à déposer.', 'vos missions'],
-      ['#7A5AF8', 'Associés et investisseurs', 'Vos participations, la trésorerie qui vous concerne et les décisions à prendre, en lecture.', 'sur invitation'],
-      ['#0F5C8C', 'Collectivités', 'Mairies et intercommunalités : les projets de votre territoire, leur avancement et les opérations de partage d\'énergie locales.', 'votre territoire']];
-    const titreTuiles = h('h2', { class: 'cx-section', text: 'Un espace pour chacun' });
-    const tuiles = h('ul', { class: 'cx-tuiles', 'aria-label': 'Un espace pour chacun' }, TUILES.map(([c, t, d, qui]) => {
-      const li = h('li', { class: 'cx-tuile' }, h('h3', { text: t }), h('p', { text: d }), h('small', { text: qui }));
-      li.style.setProperty('--c', c); return li;
-    }));
-    /* modules retenus par Julien le 06/10/2026 (une seule application, une seule base) ; « en préparation » tant qu'ils ne sont pas livrés */
+    /* page d'accueil publique (v5.9) : présente SUNLINK OS à tous ceux qui font des affaires avec SUNLINK, montre comment on
+       pilote (aperçu illustratif, sans aucune donnée réelle), puis la carte de connexion. Rien d'autre n'est lu ni affiché ici. */
+    const M = window.SLOS_MARQUE;
+    const logoClair = M ? M.logo({ fond: 'clair', titre: 'SUNLINK Energies' }) : '';
+    const monoSvg = M ? M.mono({ titre: '' }) : '';
+    const PUBLICS = [['#1F9D6B', 'Clients'], ['#F08C2E', 'Apporteurs d\'affaires'], ['#0E9AA7', 'Partenaires'], ['#7A5AF8', 'Associés'], ['#4FA3D9', 'Collectivités']];
+    const hero = h('section', { class: 'lx-hero', 'aria-labelledby': 'cx-accroche-titre' });
+    hero.innerHTML =
+      '<div class="lx-hero-in"><div class="lx-texte cx-accroche">' +
+        '<p class="lx-sur"><span class="lx-point"></span>SUNLINK OS · plateforme de pilotage</p>' +
+        '<h2 id="cx-accroche-titre">Vos projets solaires, <span>pilotés en temps réel.</span></h2>' +
+        '<p class="lx-lead">Une seule plateforme pour suivre chaque projet, du terrain à la mise en service, avec les documents, la trésorerie et les décisions au même endroit. Chaque client, apporteur, partenaire, associé ou collectivité ouvre son propre espace, et ne voit que ce qui le concerne.</p>' +
+        '<ul class="lx-publics" aria-label="Pour qui">' + PUBLICS.map(([c, n]) => '<li><i style="background:' + c + '"></i>' + n + '</li>').join('') + '</ul>' +
+      '</div><div class="lx-slot"></div></div>';
+    hero.querySelector('.lx-slot').appendChild(h('section', { class: 'carte cx-carte', 'aria-labelledby': 'cx-titre' }, h('div', null, titre, intro), etapeEmail, etapeCode, msg, acces));
+
+    /* aperçu illustratif de l'application : formes et libellés seulement, aucun chiffre */
+    const ETAPES_CYCLE = [['1', 'Opportunités', 92], ['2', 'Développement', 74], ['3', 'Financement', 48], ['4', 'Construction', 34], ['5', 'Exploitation', 62]];
+    const apercu = h('section', { class: 'lx-apercu', 'aria-label': 'Aperçu de l\'application (illustration)' });
+    apercu.innerHTML =
+      '<div class="lx-fenetre" aria-hidden="true">' +
+        '<div class="lx-fen-barre"><i></i><i></i><i></i><span>SUNLINK OS · Console</span></div>' +
+        '<div class="lx-fen-corps">' +
+          '<div class="lx-fen-menu"><div class="lx-fen-mono">' + monoSvg + '</div>' +
+            ['Vue d\'ensemble', 'Projets', 'Trésorerie', 'Documents', 'Décisions'].map((t, k) => '<p' + (k === 1 ? ' class="on"' : '') + '>' + t + '</p>').join('') +
+          '</div>' +
+          '<div class="lx-fen-main">' +
+            '<div class="lx-bloc lx-cycle"><p class="lx-bloc-t">Cycle des projets</p>' +
+              ETAPES_CYCLE.map(([n, t, w]) => '<div class="lx-ligne"><b>' + n + '</b><span>' + t + '</span><em><u style="width:' + w + '%"></u></em></div>').join('') +
+            '</div>' +
+            '<div class="lx-bloc lx-courbe"><p class="lx-bloc-t">Trésorerie prévisionnelle</p>' +
+              '<svg viewBox="0 0 300 110" preserveAspectRatio="none"><defs><linearGradient id="lx-g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FEC61E" stop-opacity=".35"/><stop offset="1" stop-color="#FEC61E" stop-opacity="0"/></linearGradient></defs>' +
+              '<path d="M0 84 C40 80 60 62 95 66 S150 40 185 46 S240 22 300 18 L300 110 L0 110Z" fill="url(#lx-g)"/>' +
+              '<path d="M0 84 C40 80 60 62 95 66 S150 40 185 46 S240 22 300 18" fill="none" stroke="#FEC61E" stroke-width="2.5"/>' +
+              '<path d="M185 46 S240 30 300 34" fill="none" stroke="#4FA3D9" stroke-width="2" stroke-dasharray="5 5"/></svg>' +
+              '<p class="lx-legende"><span class="j"></span>réalisé <span class="b"></span>prévu</p>' +
+            '</div>' +
+            '<div class="lx-bloc lx-alertes"><p class="lx-bloc-t">À traiter aujourd\'hui</p>' +
+              [['j', 'Décision à valider'], ['b', 'Document à déposer'], ['v', 'Étape franchie']].map(([c, t]) => '<p class="lx-al"><span class="' + c + '"></span>' + t + '</p>').join('') +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+      '<p class="lx-illu">Aperçu illustratif : dans l\'application, chaque chiffre vient de nos dossiers, avec sa source.</p>';
+
+    /* le Groupe : logo officiel de SUNLINK, marques des sociétés à leur couleur */
+    const groupe = h('section', { class: 'lx-groupe', 'aria-label': 'Le Groupe SUNLINK' });
+    groupe.innerHTML = '<p class="lx-kicker">Une plateforme du Groupe SUNLINK</p><ul class="lx-logos">' +
+      '<li class="lx-logo-off">' + logoClair + '</li>' +
+      [['SUNLINK', 'PV', '#1F9D6B'], ['SUNLICÉO', '', '#F08C2E']].map(([a, b, c]) =>
+        '<li class="lx-marque" style="--c:' + c + '"><span class="lx-marque-mono">' + monoSvg + '</span><span class="lx-marque-nom">' + a + (b ? ' <b>' + b + '</b>' : '') + '</span></li>').join('') +
+      '</ul>';
+
+    /* comment on pilote : quatre gestes */
+    const GESTES = [
+      ['01', 'Centraliser', 'Documents, mails, devis et contrats sont rattachés au bon projet, dans une base unique. Fini la double saisie.', '<path d="M4 7h16M4 12h16M4 17h10"/>'],
+      ['02', 'Suivre', 'Chaque projet avance d\'étape en étape, des opportunités à l\'exploitation, avec sa prochaine action et son responsable.', '<path d="M4 18l5-6 4 3 7-9"/><path d="M16 6h4v4"/>'],
+      ['03', 'Anticiper', 'Trésorerie, financements et échéances sont projetés à l\'avance : les alertes arrivent avant les problèmes.', '<circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/>'],
+      ['04', 'Décider', 'Les arbitrages à rendre remontent tout seuls, préparés avec leurs chiffres et leurs sources, validés en un clic.', '<path d="M5 12l4 4 10-10"/>']];
+    const pilote = h('section', { class: 'lx-pilote', 'aria-labelledby': 'lx-pilote-t' });
+    pilote.innerHTML = '<p class="lx-kicker">Comment on pilote</p><h2 id="lx-pilote-t" class="lx-h2">Quatre gestes, une seule source de vérité.</h2><ol class="lx-gestes">' +
+      GESTES.map(([n, t, d, ic]) => '<li><span class="lx-geste-ic"><svg viewBox="0 0 24 24" aria-hidden="true">' + ic + '</svg></span><small>' + n + '</small><h3>' + t + '</h3><p>' + d + '</p></li>').join('') + '</ol>';
+
+    /* un espace pour chacun */
+    const ESPACES = [
+      ['#1F9D6B', 'Clients', 'Propriétaires de toiture ou de terrain, participants à l\'autoconsommation : l\'avancement de votre projet, vos contrats, votre production et vos factures.'],
+      ['#F08C2E', 'Apporteurs d\'affaires', 'Les affaires que vous avez apportées, l\'étape de chacune et vos rémunérations, à jour au fil de l\'eau.'],
+      ['#0E9AA7', 'Partenaires et prestataires', 'Bureaux d\'études, constructeurs, mainteneurs : projets confiés, planning, devis, factures et documents à déposer.'],
+      ['#7A5AF8', 'Associés et investisseurs', 'Vos participations, la trésorerie qui vous concerne et les décisions à prendre, en lecture.'],
+      ['#4FA3D9', 'Collectivités', 'Mairies et intercommunalités : les projets de votre territoire et les opérations de partage d\'énergie locales.']];
+    const espaces = h('section', { class: 'lx-espaces', 'aria-labelledby': 'lx-espaces-t' });
+    espaces.innerHTML = '<p class="lx-kicker">Un espace pour chacun</p><h2 id="lx-espaces-t" class="lx-h2">Chacun voit ses affaires. Jamais celles des autres.</h2><ul class="lx-cartes">' +
+      ESPACES.map(([c, t, d]) => '<li style="--c:' + c + '"><h3>' + t + '</h3><p>' + d + '</p></li>').join('') + '</ul>';
+
+    /* modules retenus le 06/10/2026 ; « en préparation » tant qu'ils ne sont pas livrés */
     const MODULES = [
-      ['Pilotage des projets', 'Du foncier à la mise en service : études, urbanisme, raccordement et prochaines actions.', true],
-      ['Trésorerie et financement', 'Soldes, flux prévus, plans de financement et emprunts, chaque chiffre avec sa source.', true],
-      ['Documents et échanges', 'Pièces, contrats et devis rangés par projet, au même endroit que le suivi.', true],
-      ['Partage d\'énergie', 'Autoconsommation collective : relier producteurs et consommateurs proches, suivre les opérations.', false],
-      ['Facturation et exploitation', 'Facturation de l\'énergie, production des centrales et maintenance.', false]];
-    const titreModules = h('h2', { class: 'cx-section', text: 'Ce que fait SUNLINK OS' });
-    const modules = h('ul', { class: 'cx-garanties cx-modules', 'aria-label': 'Ce que fait SUNLINK OS' }, MODULES.map(([t, d, ok]) => h('li', null, h('b', { text: t }), h('span', { text: d }), h('em', { class: ok ? 'dispo' : 'prep', text: ok ? 'disponible' : 'en préparation' }))));
-    const ETAPES = [
-      ['1 · Votre adresse e-mail', 'Saisissez-la ci-dessus : vous recevez un lien ou un code, sans mot de passe.'],
-      ['2 · Votre demande d\'accès', 'À la première connexion, indiquez qui vous êtes et le projet qui vous concerne.'],
-      ['3 · Votre espace ouvert', 'SUNLINK valide votre accès : vous suivez vos affaires, déposez vos documents et échangez.'],
-      ['4 · Toujours à jour', 'Les étapes, documents et montants affichés sont ceux de nos dossiers, avec leur source.']];
-    const titreEtapes = h('h2', { class: 'cx-section', text: 'Comment ça marche' });
-    const etapes = h('ul', { class: 'cx-garanties cx-etapes', 'aria-label': 'Comment ça marche' }, ETAPES.map(([t, d]) => h('li', null, h('b', { text: t }), h('span', { text: d }))));
+      ['Pilotage des projets', 'Du foncier à la mise en service : études, urbanisme, raccordement.', true],
+      ['Trésorerie et financement', 'Soldes, flux prévus, plans de financement et emprunts.', true],
+      ['Documents et échanges', 'Pièces, contrats et devis rangés par projet.', true],
+      ['Partage d\'énergie', 'Relier producteurs et consommateurs proches en autoconsommation collective.', false],
+      ['Facturation et exploitation', 'Facturation de l\'énergie, production des centrales, maintenance.', false]];
+    const modules = h('section', { class: 'lx-modules-s', 'aria-labelledby': 'lx-modules-t' });
+    modules.innerHTML = '<p class="lx-kicker">La plateforme</p><h2 id="lx-modules-t" class="lx-h2">Cinq modules, une seule base.</h2><ul class="lx-modules">' +
+      MODULES.map(([t, d, ok]) => '<li><h3>' + t + '</h3><p>' + d + '</p><em class="' + (ok ? 'dispo' : 'prep') + '">' + (ok ? 'disponible' : 'en préparation') + '</em></li>').join('') + '</ul>';
+
     const GARANTIES = [
-      ['Hébergé en France', 'Données hébergées à Paris ; cette page publique n\'en contient aucune.'],
+      ['Hébergé en France', 'Données hébergées à Paris. Cette page publique n\'en contient aucune.'],
       ['Accès sur invitation', 'Chaque accès est ouvert par SUNLINK, personne par personne.'],
-      ['Chacun ses données', 'Chacun ne voit que ses propres affaires, jamais celles des autres.'],
+      ['Sans mot de passe', 'Connexion par lien ou code envoyé par e-mail.'],
       ['Rien ne se perd', 'Chaque document modifié est gardé en fin de journée.']];
-    const garanties = h('ul', { class: 'cx-garanties', 'aria-label': 'Garanties' }, GARANTIES.map(([t, d]) => h('li', null, h('b', { text: t }), h('span', { text: d }))));
-    const page = h('div', { class: 'cx' }, entete(),
-      h('main', { class: 'cx-main', id: 'contenu' }, h('div', { class: 'cx-haut' }, accroche, ico('lever', 'cx-lever-code'), carte), titreTuiles, tuiles, titreModules, modules, titreEtapes, etapes, garanties),
+    const garanties = h('section', { class: 'lx-confiance', 'aria-label': 'Garanties' });
+    garanties.innerHTML = '<ul>' + GARANTIES.map(([t, d]) => '<li><b>' + t + '</b><span>' + d + '</span></li>').join('') + '</ul>';
+
+    const page = h('div', { class: 'cx lx' }, entete(),
+      h('main', { class: 'cx-main lx-main', id: 'contenu' }, hero, apercu, groupe, pilote, espaces, modules, garanties),
       h('p', { class: 'cx-pied' }, ico('cadenas'), 'SUNLINK énergies · Charleville-Mézières · SUNLINK OS, accès réservé aux personnes invitées'));
     monter('connexion', 'Connexion', page);
     focaliser(email);
