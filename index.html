@@ -1503,7 +1503,10 @@ try { window.SLOS_MARQUE.lancer(); } catch (e) { /* la connexion reste utilisabl
   /* =====================================================================================
      Ouverture de l'application (niveau ≥ 3) : données relues, puis direction.html sans cache
      ===================================================================================== */
+  /* test local uniquement (localhost) : l'app est lue dans ../app/ à côté de la page, pour essayer une branche avant de la publier */
+  const LOCAL = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
   async function telecharger(fichier) {
+    if (LOCAL) { const r = await fetch('../app/' + (fichier || FICHIER), { cache: 'no-store' }); if (r.ok) return { ok: true, status: 200, html: await r.text() }; }
     let tok = session.access_token;
     try { const r = await client.auth.getSession(); if (r && r.data && r.data.session) { session = r.data.session; tok = session.access_token; } } catch (e) { /* ignoré */ }
     const res = await fetch(String(ENV.SUPABASE_URL).replace(/\/$/, '') + '/storage/v1/object/authenticated/' + BUCKET + '/' + (fichier || FICHIER), { headers: { Authorization: 'Bearer ' + tok, apikey: ENV.SUPABASE_ANON_KEY }, cache: 'no-store' });
