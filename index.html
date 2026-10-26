@@ -25,6 +25,8 @@
       Une fois par onglet (sessionStorage 'slos.intro') : direction.html, écrite ensuite dans le même onglet, ne la rejoue pas ;
       elle attend la fin de l'animation avant document.write. Coupée par la personne : localStorage 'slos.introUi' = {"coupee":true}.
       Paramètre explicite pour les tests : window.SLOS_INTRO = false (aucune lecture). Aucune donnée, aucune image ici : le logo seul.
+  10. v7 : barre de navigation sombre collée en haut (ancres, « Se connecter »), titres et introductions de section, icônes des
+      espaces, modules et garanties, cadre lumineux autour de la connexion, appel final puis pied de page sombre.
    9. v6 : landing plus marquée : soleil levant dans le héros, boutons d'appel, console illustrée (sociétés du Groupe, cycle des
       projets en colonnes, trésorerie, décisions, sites), gestes reliés avec un exemple concret, appel final. Aucun chiffre réel.
    7. v5.7 : thème « Ciel d'été » des maquettes (slides 1 à 4) : barre blanche avec logo officiel et filet aux couleurs des sociétés,
@@ -329,9 +331,53 @@ legend{font-size:13.5px;font-weight:600;margin-bottom:8px;padding:0}
 /* ---------- landing v5.9 : héros nuit, aperçu de l'application, Groupe, gestes de pilotage, espaces, modules ---------- */
 .lx{background:var(--fond)}
 .lx-main{max-width:none;padding:0;gap:0}
-.lx-main>section{width:100%}
-.lx-kicker{font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--bleu)}
-.lx-h2{font-size:28px;line-height:1.15;font-weight:600;letter-spacing:-.02em;color:var(--encre);max-width:22ch;text-wrap:balance;margin-top:8px}
+.lx-main>section{width:100%;scroll-margin-top:84px}
+.lx-kicker{display:inline-flex;align-items:center;gap:10px;font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--bleu)}
+.lx-kicker::before{content:"";width:22px;height:2px;border-radius:2px;background:linear-gradient(90deg,#FEC61E,#F08C2E)}
+.lx-h2{font-size:30px;line-height:1.1;font-weight:600;letter-spacing:-.03em;color:var(--encre);max-width:20ch;text-wrap:balance;margin-top:12px}
+.lx-intro{margin-top:12px;font-size:16.5px;line-height:1.6;color:var(--doux);max-width:58ch}
+/* v7 : barre de navigation sombre et vitrée, collée en haut */
+.lx .barre{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:rgba(4,12,22,.97);-webkit-backdrop-filter:saturate(160%) blur(14px);backdrop-filter:saturate(160%) blur(14px);color:#E4EBF3;border-bottom:1px solid rgba(255,255,255,.06)}
+.lx .barre::after{height:2px;opacity:.85}
+.lx .marque-os{background:rgba(255,255,255,.1);color:#fff}
+.lx .barre .marque-logo path[fill="#040414"]{fill:#fff}   /* mot « sunlink » en blanc sur la barre sombre (comme le logo sombre officiel) */
+.lx-final-in>div{display:grid;gap:14px}
+.lx-nav{display:none;align-items:center;gap:4px}
+.lx-nav button{background:none;border:0;padding:8px 12px;border-radius:8px;font-size:14px;font-weight:500;color:#AFC0D4;cursor:pointer}
+.lx-nav button:hover{color:#fff;background:rgba(255,255,255,.06)}
+.lx .barre .btn-nuit{background:#fff;color:#06182A;border-color:#fff;font-weight:600}
+.lx .barre .btn-nuit:hover{background:#FEC61E;border-color:#FEC61E}
+.cx-code .lx-nav,.cx-code #cx-haut-connexion{display:none}
+/* v7 : grain léger et halo du héros */
+.lx-hero::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.05;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E")}
+.lx .cx-carte{position:relative}
+.lx .cx-carte::before{content:"";position:absolute;inset:-1px;border-radius:inherit;padding:1px;background:linear-gradient(160deg,rgba(254,198,30,.9),rgba(255,255,255,0) 40%,rgba(79,163,217,.6));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+/* v7 : icônes des espaces et des modules, survol */
+.lx-ic{display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:color-mix(in srgb,var(--c,#0F5C8C) 12%,#fff);color:var(--c,#0F5C8C);margin-bottom:6px}
+.lx-ic svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.lx-cartes li,.lx-modules li{transition:transform .2s,box-shadow .2s,border-color .2s}
+.lx-cartes li:hover{transform:translateY(-3px);border-color:color-mix(in srgb,var(--c) 45%,#fff);box-shadow:0 18px 40px color-mix(in srgb,var(--c) 18%,transparent)}
+.lx-modules li:hover{background:#FBFDFF}
+/* v7 : garanties claires avec icônes */
+.lx-confiance{padding-bottom:0}
+.lx-confiance ul{background:var(--surface)!important;color:var(--doux)!important;border:1px solid var(--neutre);box-shadow:var(--ombre)}
+.lx-confiance li{display:flex;gap:12px;align-items:flex-start}
+.lx-confiance li>i{flex:none;display:grid;place-items:center;width:34px;height:34px;border-radius:10px;background:var(--bleu-c);color:var(--bleu)}
+.lx-confiance li>i svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.lx-confiance b{color:var(--encre)!important}
+.lx-confiance span{color:var(--doux)!important}
+/* v7 : pied de page sombre */
+.lx-pied{margin-top:72px;background:#040D17;color:#8FA3BC}
+.lx-pied-in{max-width:1280px;margin:0 auto;padding:36px 16px 28px;display:grid;gap:18px}
+.lx-pied-logo{width:150px}.lx-pied-logo svg{display:block;width:100%;height:auto}
+.lx-pied p{font-size:13.5px;line-height:1.6;max-width:56ch}
+.lx-pied small{display:flex;flex-wrap:wrap;gap:6px 16px;padding-top:16px;border-top:1px solid rgba(255,255,255,.08);font-size:12px;color:#5F7390}
+.lx .cx-pied{display:none}
+.cx-code .lx-pied{display:none}
+.cx-code .lx-main{padding-bottom:0}
+.cx-code .lx-hero{min-height:calc(100vh - 70px);min-height:calc(100dvh - 70px)}
+.cx-code .lx-hero-in{grid-template-columns:minmax(0,1fr)!important;justify-items:center}
+
 .lx-pilote,.lx-espaces,.lx-modules-s,.lx-groupe,.lx-confiance{max-width:1280px;margin:0 auto;padding:56px 16px 0}
 /* héros */
 .lx-hero{position:relative;overflow:hidden;background:radial-gradient(900px 480px at 82% -10%,rgba(254,198,30,.22),transparent 60%),radial-gradient(700px 420px at 0% 110%,rgba(15,92,140,.45),transparent 60%),linear-gradient(180deg,#00070D 0%,#06182A 100%);color:#fff}
@@ -446,7 +492,7 @@ legend{font-size:13.5px;font-weight:600;margin-bottom:8px;padding:0}
 .lx-modules em.dispo{color:#114E0B;background:#CEF5CA}
 .lx-modules em.prep{color:var(--doux);background:var(--fond);border:1px solid var(--neutre)}
 /* appel final */
-.lx-final{max-width:1280px;margin:0 auto;padding:64px 16px 0}
+.lx-final{max-width:1280px;margin:0 auto;padding:56px 16px 0}
 .lx-final-in{position:relative;overflow:hidden;display:grid;gap:18px;justify-items:start;padding:36px 24px;border-radius:20px;background:radial-gradient(600px 300px at 90% 120%,rgba(254,198,30,.35),transparent 60%),linear-gradient(135deg,#06182A,#0F5C8C);color:#fff}
 .lx-final-in h2{font-size:28px;line-height:1.12;font-weight:600;letter-spacing:-.02em;max-width:20ch;text-wrap:balance}
 .lx-final-in p{color:#C7DDEE;max-width:52ch}
@@ -467,7 +513,10 @@ legend{font-size:13.5px;font-weight:600;margin-bottom:8px;padding:0}
 @media (min-width:1000px){
   .lx-hero-in{grid-template-columns:minmax(0,1.2fr) minmax(400px,.9fr);gap:64px;padding:72px 40px 150px}
   .lx-slot{order:0}
-  .lx-h2{font-size:36px}
+  .lx-h2{font-size:44px}
+  .lx-nav{display:flex}
+  .lx-pied-in{grid-template-columns:auto minmax(0,1fr);align-items:center;column-gap:48px;padding:44px 40px 32px}
+  .lx-pied small{grid-column:1/-1}
   .lx-pilote,.lx-espaces,.lx-modules-s,.lx-groupe,.lx-confiance{padding-left:40px;padding-right:40px;padding-top:80px}
   .lx-groupe{padding-top:56px}
   .lx-apercu{margin-top:-130px;padding:0 40px}
@@ -483,7 +532,7 @@ legend{font-size:13.5px;font-weight:600;margin-bottom:8px;padding:0}
   .lx-flotte span{display:block;color:var(--doux);font-size:11.5px}
   .lx-flotte i{width:30px;height:30px;border-radius:9px;flex:none;display:grid;place-items:center;color:#fff;font-style:normal;font-weight:700}
   .lx-flotte.f1{left:-64px;top:64%}.lx-flotte.f2{left:-64px;top:22%;animation-delay:-1.6s}.lx-flotte.f3{right:6%;bottom:-26px;animation-delay:-3.2s}
-  .lx-final{padding:96px 40px 0}
+  .lx-final{padding:80px 40px 0}
   .lx-final-in{padding:56px 56px;grid-template-columns:minmax(0,1fr) auto;align-items:center}
   .lx-final-in h2{font-size:40px}
   .lx-texte h2{font-size:64px}
@@ -990,9 +1039,28 @@ try { window.SLOS_MARQUE.lancer(); } catch (e) { /* la connexion reste utilisabl
       ['#0E9AA7', 'Partenaires et prestataires', 'Bureaux d\'études, constructeurs, mainteneurs : projets confiés, planning, devis, factures et documents à déposer.'],
       ['#7A5AF8', 'Associés et investisseurs', 'Vos participations, la trésorerie qui vous concerne et les décisions à prendre, en lecture.'],
       ['#4FA3D9', 'Collectivités', 'Mairies et intercommunalités : les projets de votre territoire et les opérations de partage d\'énergie locales.']];
-    const espaces = h('section', { class: 'lx-espaces', 'aria-labelledby': 'lx-espaces-t' });
-    espaces.innerHTML = '<p class="lx-kicker">Un espace pour chacun</p><h2 id="lx-espaces-t" class="lx-h2">Chacun voit ses affaires. Jamais celles des autres.</h2><ul class="lx-cartes">' +
-      ESPACES.map(([c, t, d]) => '<li style="--c:' + c + '"><h3>' + t + '</h3><p>' + d + '</p></li>').join('') + '</ul>';
+    const IC = {
+      maison: '<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-5h4v5"/>',
+      poignee: '<path d="M8 12l3 3 5-5"/><path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"/>',
+      outil: '<path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z"/>',
+      parts: '<path d="M12 3v9h9"/><path d="M20.5 15A9 9 0 1 1 9 3.5"/>',
+      mairie: '<path d="M3 21h18"/><path d="M5 21V10M19 21V10M9 21V10M15 21V10"/><path d="M2 10l10-6 10 6z"/>',
+      projets: '<path d="M4 6h16M4 12h10M4 18h7"/><circle cx="18" cy="16" r="3"/>',
+      euro: '<path d="M17 6.5A7 7 0 1 0 17 17.5"/><path d="M4 10h9M4 14h9"/>',
+      doc: '<path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 13h6M10 17h6"/>',
+      partage: '<circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8.3 11l7.4-4M8.3 13l7.4 4"/>',
+      eclair: '<path d="M13 2L4 14h7l-1 8 9-12h-7z"/>',
+      france: '<path d="M12 21s-7-6.2-7-12a7 7 0 0 1 14 0c0 5.8-7 12-7 12z"/><circle cx="12" cy="9" r="2.5"/>',
+      cle: '<circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M17 6l3 3"/>',
+      lettre: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6.5L12 13l8.5-6.5"/>',
+      horloge: '<path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v4h4M12 7v5l3 2"/>'
+    };
+    const icone = (n) => '<span class="lx-ic"><svg viewBox="0 0 24 24" aria-hidden="true">' + IC[n] + '</svg></span>';
+    const IC_ESPACES = ['maison', 'poignee', 'outil', 'parts', 'mairie'], IC_MODULES = ['projets', 'euro', 'doc', 'partage', 'eclair'];
+    const espaces = h('section', { class: 'lx-espaces', id: 'lx-espaces', 'aria-labelledby': 'lx-espaces-t' });
+    espaces.innerHTML = '<p class="lx-kicker">Un espace pour chacun</p><h2 id="lx-espaces-t" class="lx-h2">Chacun voit ses affaires. Jamais celles des autres.</h2>' +
+      '<p class="lx-intro">Un même outil, des portes différentes : chaque espace est ouvert par SUNLINK et ne montre que les projets, les documents et les chiffres qui vous concernent.</p><ul class="lx-cartes">' +
+      ESPACES.map(([c, t, d], k) => '<li style="--c:' + c + '">' + icone(IC_ESPACES[k]) + '<h3>' + t + '</h3><p>' + d + '</p></li>').join('') + '</ul>';
 
     /* modules retenus le 06/10/2026 ; « en préparation » tant qu'ils ne sont pas livrés */
     const MODULES = [
@@ -1001,9 +1069,10 @@ try { window.SLOS_MARQUE.lancer(); } catch (e) { /* la connexion reste utilisabl
       ['Documents et échanges', 'Pièces, contrats et devis rangés par projet.', true],
       ['Partage d\'énergie', 'Relier producteurs et consommateurs proches en autoconsommation collective.', false],
       ['Facturation et exploitation', 'Facturation de l\'énergie, production des centrales, maintenance.', false]];
-    const modules = h('section', { class: 'lx-modules-s', 'aria-labelledby': 'lx-modules-t' });
-    modules.innerHTML = '<p class="lx-kicker">La plateforme</p><h2 id="lx-modules-t" class="lx-h2">Cinq modules, une seule base.</h2><ul class="lx-modules">' +
-      MODULES.map(([t, d, ok]) => '<li><h3>' + t + '</h3><p>' + d + '</p><em class="' + (ok ? 'dispo' : 'prep') + '">' + (ok ? 'disponible' : 'en préparation') + '</em></li>').join('') + '</ul>';
+    const modules = h('section', { class: 'lx-modules-s', id: 'lx-modules', 'aria-labelledby': 'lx-modules-t' });
+    modules.innerHTML = '<p class="lx-kicker">La plateforme</p><h2 id="lx-modules-t" class="lx-h2">Cinq modules, une seule base.</h2>' +
+      '<p class="lx-intro">Chaque information est saisie une fois et sert partout : le projet, sa trésorerie, ses documents et ses décisions restent liés.</p><ul class="lx-modules">' +
+      MODULES.map(([t, d, ok], k) => '<li>' + icone(IC_MODULES[k]) + '<h3>' + t + '</h3><p>' + d + '</p><em class="' + (ok ? 'dispo' : 'prep') + '">' + (ok ? 'disponible' : 'en préparation') + '</em></li>').join('') + '</ul>';
 
     const GARANTIES = [
       ['Hébergé en France', 'Données hébergées à Paris. Cette page publique n\'en contient aucune.'],
@@ -1011,7 +1080,8 @@ try { window.SLOS_MARQUE.lancer(); } catch (e) { /* la connexion reste utilisabl
       ['Sans mot de passe', 'Connexion par lien ou code envoyé par e-mail.'],
       ['Rien ne se perd', 'Chaque document modifié est gardé en fin de journée.']];
     const garanties = h('section', { class: 'lx-confiance', 'aria-label': 'Garanties' });
-    garanties.innerHTML = '<ul>' + GARANTIES.map(([t, d]) => '<li><b>' + t + '</b><span>' + d + '</span></li>').join('') + '</ul>';
+    const IC_GARANTIES = ['france', 'cle', 'lettre', 'horloge'];
+    garanties.innerHTML = '<ul>' + GARANTIES.map(([t, d], k) => '<li><i><svg viewBox="0 0 24 24" aria-hidden="true">' + IC[IC_GARANTIES[k]] + '</svg></i><div><b>' + t + '</b><span>' + d + '</span></div></li>').join('') + '</ul>';
 
     /* appel final (v6) */
     const final = h('section', { class: 'lx-final', 'aria-labelledby': 'lx-final-t' });
@@ -1019,8 +1089,17 @@ try { window.SLOS_MARQUE.lancer(); } catch (e) { /* la connexion reste utilisabl
       '<p>Demandez votre accès : votre espace est ouvert par SUNLINK, avec seulement ce qui vous concerne.</p></div>' +
       '<div class="lx-cta"><button type="button" class="btn lx-btn-or" data-lx="demander">Demander un accès</button><button type="button" class="btn lx-btn-verre" data-lx="connexion">J\'ai déjà un accès</button></div></div>';
 
-    const page = h('div', { class: 'cx lx' }, entete(),
-      h('main', { class: 'cx-main lx-main', id: 'contenu' }, hero, apercu, groupe, pilote, espaces, modules, final, garanties),
+    /* v7 : navigation de la landing (ancres internes) et pied de page */
+    const nav = h('nav', { class: 'lx-nav', 'aria-label': 'Sections' },
+      [['Comment on pilote', 'lx-pilote'], ['Espaces', 'lx-espaces'], ['Modules', 'lx-modules']].map(([t, id]) => h('button', { type: 'button', 'data-lx': 'ancre', 'data-cible': id }, t)));
+    const logoSombre = M ? M.logo({ fond: 'sombre', titre: 'SUNLINK Energies' }) : '';
+    const pied = h('footer', { class: 'lx-pied' });
+    pied.innerHTML = '<div class="lx-pied-in"><div class="lx-pied-logo">' + logoSombre + '</div>' +
+      '<p>SUNLINK OS est la plateforme de pilotage du Groupe SUNLINK : projets solaires, stockage, autoconsommation collective et financement, suivis au même endroit par tous ceux qui y participent.</p>' +
+      '<small><span>Groupe SUNLINK · SUNLINK énergies, Charleville-Mézières</span><span>Accès réservé aux personnes invitées</span><span>Données hébergées à Paris</span></small></div>';
+    const boutonHaut = h('button', { type: 'button', class: 'btn btn-nuit', id: 'cx-haut-connexion', 'data-lx': 'connexion' }, 'Se connecter');
+    const page = h('div', { class: 'cx lx' }, entete(nav, boutonHaut),
+      h('main', { class: 'cx-main lx-main', id: 'contenu' }, hero, apercu, groupe, pilote, espaces, modules, garanties, final), pied,
       h('p', { class: 'cx-pied' }, ico('cadenas'), 'SUNLINK énergies · Charleville-Mézières · SUNLINK OS, accès réservé aux personnes invitées'));
     /* boutons d'appel : remonter à la carte de connexion, ou descendre à « Comment on pilote » */
     const versCarte = () => { try { email.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) { /* ignoré */ } focaliser(email); };
@@ -1028,6 +1107,7 @@ try { window.SLOS_MARQUE.lancer(); } catch (e) { /* la connexion reste utilisabl
       const b = e.target.closest && e.target.closest('[data-lx]'); if (!b) return;
       const quoi = b.getAttribute('data-lx');
       if (quoi === 'voir') { try { pilote.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (x) { /* ignoré */ } return; }
+      if (quoi === 'ancre') { const c = document.getElementById(b.getAttribute('data-cible')); try { if (c) c.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (x) { /* ignoré */ } return; }
       if (quoi === 'demander') { versCarte(); demander.click(); return; }
       versCarte();
     });
