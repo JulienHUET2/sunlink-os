@@ -434,6 +434,9 @@ legend{font-size:13.5px;font-weight:600;margin-bottom:8px;padding:0}
   .lx-cartes,.lx-modules{grid-template-columns:repeat(5,minmax(0,1fr))}
 }
 @media (min-width:1000px) and (max-width:1199px){.lx-cartes,.lx-modules{grid-template-columns:repeat(3,minmax(0,1fr))}.lx-fen-main{grid-template-columns:repeat(2,minmax(0,1fr))}.lx-cycle{grid-column:1/-1}}
+.cx-rester{display:flex;gap:10px;align-items:flex-start;cursor:pointer;font-size:14px;color:var(--encre)}
+.cx-rester input{width:18px;height:18px;margin:2px 0 0;accent-color:var(--bleu);flex:none}
+.cx-rester small{display:block;font-size:12.5px;color:var(--doux);margin-top:2px}
 </style>
 </head>
 <body>
@@ -763,8 +766,13 @@ try { window.SLOS_MARQUE.lancer(); } catch (e) { /* la connexion reste utilisabl
     const msg = h('div', { class: 'msg', id: 'cx-msg', 'aria-live': 'polite' });
     const email = h('input', { class: 'input', id: 'cx-email', type: 'email', name: 'email', autocomplete: 'email', inputmode: 'email', autocapitalize: 'off', spellcheck: 'false', required: true, placeholder: 'prenom.nom@exemple.fr', 'aria-describedby': 'cx-msg' });
     const envoyer = h('button', { type: 'submit', class: 'btn btn-jaune btn-plein', id: 'cx-envoyer' }, 'Recevoir mon lien de connexion');
+    try { const memo = window.localStorage.getItem('slos.email'); if (memo) email.value = memo; } catch (e) { /* ignoré */ }
+    const caseRester = h('input', { type: 'checkbox', id: 'cx-rester', name: 'rester' });
+    try { caseRester.checked = window.localStorage.getItem('slos.rester') !== '0'; } catch (e) { caseRester.checked = true; }
+    caseRester.addEventListener('change', () => { try { window.localStorage.setItem('slos.rester', caseRester.checked ? '1' : '0'); if (!caseRester.checked) window.localStorage.removeItem('slos.email'); } catch (e) { /* ignoré */ } });
+    const ligneRester = h('label', { class: 'cx-rester', for: 'cx-rester' }, caseRester, h('span', null, 'Rester connecté sur cet appareil', h('small', { text: 'Votre adresse est retenue et la session reste ouverte. Décochez sur un ordinateur partagé.' })));
     const etapeEmail = h('form', { class: 'cx-etape', id: 'cx-form-email', novalidate: true },
-      h('div', { class: 'champ' }, h('label', { for: 'cx-email', text: 'Adresse e-mail' }), email), envoyer);
+      h('div', { class: 'champ' }, h('label', { for: 'cx-email', text: 'Adresse e-mail' }), email), ligneRester, envoyer);
     const envoyeA = h('b');
     const code = h('input', { class: 'input input-code', id: 'cx-code', name: 'code', inputmode: 'numeric', autocomplete: 'one-time-code', maxlength: '14', placeholder: '123456', 'aria-describedby': 'cx-code-aide cx-msg' });
     const valider = h('button', { type: 'submit', class: 'btn btn-bleu btn-plein', id: 'cx-valider' }, 'Ouvrir SUNLINK OS');
@@ -801,6 +809,7 @@ try { window.SLOS_MARQUE.lancer(); } catch (e) { /* la connexion reste utilisabl
       envoyer.disabled = false; renvoyer.disabled = false;
       if (!r || r.error) { dire(msg, texteEnvoi(r && r.error), /trop de demandes/i.test(texteEnvoi(r && r.error)) ? 'att' : 'err'); return false; }
       adresse = v; envoyeA.textContent = v;
+      try { if (caseRester.checked) window.localStorage.setItem('slos.email', v); } catch (e) { /* ignoré */ }
       etape(true);
       dire(msg, renvoi ? 'Nouveau lien envoyé à ' + v + '.' : '', 'ok');
       annoncer('Lien envoyé à ' + v + '. Saisissez le code reçu par e-mail, ou ouvrez le lien. Pensez aux indésirables.');
@@ -1645,7 +1654,16 @@ try { window.SLOS_MARQUE.lancer(); } catch (e) { /* la connexion reste utilisabl
     return;
   }
   const erreurLien = lireErreurLien();
-  client = window.supabase.createClient(ENV.SUPABASE_URL, ENV.SUPABASE_ANON_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
+  /* « Rester connecté sur cet appareil » (coché par défaut) : session dans localStorage, renouvelée toute seule tant que le
+     navigateur s'ouvre ; décoché : session dans sessionStorage, fermée avec le navigateur. Le choix est lu à chaque accès. */
+  const rester = () => { try { return window.localStorage.getItem('slos.rester') !== '0'; } catch (e) { return true; } };
+  const zoneSession = () => { try { return rester() ? window.localStorage : window.sessionStorage; } catch (e) { return null; } };
+  const STOCKAGE_SESSION = {
+    getItem: (k) => { try { const z = zoneSession(); return z ? z.getItem(k) : null; } catch (e) { return null; } },
+    setItem: (k, v) => { try { const z = zoneSession(); if (z) z.setItem(k, v); } catch (e) { /* stockage indisponible */ } },
+    removeItem: (k) => { try { window.localStorage.removeItem(k); } catch (e) { /* ignoré */ } try { window.sessionStorage.removeItem(k); } catch (e) { /* ignoré */ } }
+  };
+  client = window.supabase.createClient(ENV.SUPABASE_URL, ENV.SUPABASE_ANON_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true, storage: STOCKAGE_SESSION } });
   abonnement = client.auth.onAuthStateChange((ev, s) => {
     if (ferme) return;
     if (ev === 'SIGNED_OUT') { if (session && !ouverture) { session = null; accueil = null; demarre = null; ecranConnexion('Tu as été déconnecté·e.'); } return; }
