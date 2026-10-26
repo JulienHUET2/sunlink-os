@@ -653,23 +653,23 @@ try { window.SLOS_MARQUE.lancer(); } catch (e) { /* la connexion reste utilisabl
     const renvoyer = h('button', { type: 'button', class: 'btn btn-sec', id: 'cx-renvoyer' }, 'Renvoyer un code');
     const changer = h('button', { type: 'button', class: 'btn btn-sec', id: 'cx-changer' }, 'Changer d\'adresse');
     const etapeCode = h('form', { class: 'cx-etape', id: 'cx-form-code', novalidate: true, hidden: true },
-      h('div', { class: 'cx-envoye' }, ico('lettre'), h('span', null, 'Un lien et un code viennent d\'être envoyés à ', envoyeA, '. Clique sur le lien, ou saisis le code ici.')),
+      h('div', { class: 'cx-envoye' }, ico('lettre'), h('span', null, 'Un lien et un code viennent d\'être envoyés à ', envoyeA, '. Cliquez sur le lien, ou saisissez le code ici.')),
       h('div', { class: 'champ' }, h('label', { for: 'cx-code', text: 'Code reçu (6 à 10 chiffres)' }), code),
       valider, h('div', { class: 'cx-liens' }, renvoyer, changer),
-      h('p', { class: 'cx-note', id: 'cx-code-aide', text: 'Le lien et le code ne servent qu\'une fois. Rien n\'arrive ? Regarde les indésirables, ou demande un accès si c\'est ta première connexion.' }));
+      h('p', { class: 'cx-note', id: 'cx-code-aide', text: 'Le lien et le code ne servent qu\'une fois. Rien n\'arrive ? Regardez dans les indésirables, ou demandez un accès s\'il s\'agit de votre première connexion.' }));
     /* première fois : la demande d'accès se fait juste après la première connexion (rpc('slos_demander_acces')) */
     const demander = h('button', { type: 'button', class: 'btn btn-sec btn-plein', id: 'cx-demander' }, 'Demander un accès');
     const acces = h('div', { class: 'cx-acces' }, h('p', { class: 'cx-ou', text: 'première fois ?' }), demander,
       h('p', { class: 'cx-note', text: 'L\'accès est ouvert par SUNLINK, projet par projet.' }));
     demander.addEventListener('click', () => {
-      dire(msg, 'Entre ton adresse e-mail et reçois ton lien : à ta première connexion, un court formulaire te permet de demander l\'accès aux sociétés qui te concernent.', 'info');
+      dire(msg, 'Saisissez votre adresse e-mail et recevez votre lien : à votre première connexion, un court formulaire vous permet de demander l\'accès aux projets qui vous concernent.', 'info');
       focaliser(email);
     });
     const titre = h('h1', { id: 'cx-titre', text: 'Se connecter' });
-    const intro = h('p', { class: 'intro', text: 'Aucun mot de passe : tu reçois un lien ou un code par e-mail.' });
+    const intro = h('p', { class: 'intro', text: 'Aucun mot de passe : vous recevez un lien ou un code par e-mail.' });
     const etape = (codeVisible) => {
       etapeEmail.hidden = codeVisible; etapeCode.hidden = !codeVisible; acces.hidden = codeVisible; intro.hidden = codeVisible;
-      titre.textContent = typo(codeVisible ? 'Regarde ta boîte mail' : 'Se connecter');
+      titre.textContent = typo(codeVisible ? 'Consultez votre boîte mail' : 'Se connecter');
       page.classList.toggle('cx-code', codeVisible);
       document.title = (codeVisible ? 'Code de connexion' : 'Connexion') + ' · SUNLINK OS';
     };
@@ -685,14 +685,14 @@ try { window.SLOS_MARQUE.lancer(); } catch (e) { /* la connexion reste utilisabl
       adresse = v; envoyeA.textContent = v;
       etape(true);
       dire(msg, renvoi ? 'Nouveau lien envoyé à ' + v + '.' : '', 'ok');
-      annoncer('Lien envoyé à ' + v + '. Saisis le code reçu par e-mail, ou ouvre le lien. Pense aux indésirables.');
+      annoncer('Lien envoyé à ' + v + '. Saisissez le code reçu par e-mail, ou ouvrez le lien. Pensez aux indésirables.');
       focaliser(code);
       return true;
     }
     etapeEmail.addEventListener('submit', (e) => {
       e.preventDefault();
       const v = String(email.value || '').trim().toLowerCase();
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) { dire(msg, 'Entre une adresse e-mail valide, par exemple prenom.nom@exemple.fr.', 'err'); email.focus(); return; }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) { dire(msg, 'Saisissez une adresse e-mail valide, par exemple prenom.nom@exemple.fr.', 'err'); email.focus(); return; }
       demanderLien(v);
     });
     renvoyer.addEventListener('click', () => { if (adresse) demanderLien(adresse, true); });
@@ -706,7 +706,7 @@ try { window.SLOS_MARQUE.lancer(); } catch (e) { /* la connexion reste utilisabl
       try { r = await client.auth.verifyOtp({ email: adresse, token: brut, type: 'email' }); } catch (err) { r = { error: err }; }
       valider.disabled = false;
       if (!r || r.error || !r.data || !r.data.session) {
-        dire(msg, r && r.error && estReseau(r.error) ? MSG_RESEAU : 'Code refusé : il est faux ou a expiré. Saisis le code du dernier e-mail reçu, ou demande un nouveau lien.', 'err');
+        dire(msg, r && r.error && estReseau(r.error) ? MSG_RESEAU : 'Code refusé : il est faux ou a expiré. Saisissez le code du dernier e-mail reçu, ou demandez un nouveau lien.', 'err');
         try { code.select(); } catch (x) { /* ignoré */ }
         return;
       }
