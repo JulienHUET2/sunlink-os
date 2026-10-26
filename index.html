@@ -155,7 +155,10 @@ textarea.input{min-height:112px;resize:vertical;line-height:1.45}
 /* étape du code : seule la carte reste, centrée (maquette « Regarde ta boîte mail ») */
 .cx-code .cx-accroche,.cx-code .cx-tuiles,.cx-code .cx-garanties,.cx-code .cx-section{display:none}
 .cx-section{font-size:20px;font-weight:600;color:var(--encre);margin:8px 0 -4px;letter-spacing:-.01em}
-.cx-etapes{background:var(--surface);border:1px solid var(--neutre)}
+.cx-etapes,.cx-modules{background:var(--surface);border:1px solid var(--neutre)}
+.cx-modules em{display:inline-block;margin-top:8px;font-size:11.5px;font-style:normal;font-weight:600;color:var(--bleu);background:var(--bleu-c);border-radius:var(--r3);padding:2px 10px}
+.cx-modules em.prep{color:var(--doux);background:var(--fond)}
+.cx-code .cx-modules{display:none}
 .cx-code .cx-haut{grid-template-columns:minmax(0,1fr)!important;justify-items:center;gap:0;padding-top:12px}
 .cx-code .cx-carte{max-width:560px}
 .cx-lever-code{display:none}
@@ -170,8 +173,12 @@ textarea.input{min-height:112px;resize:vertical;line-height:1.45}
   .cx-haut{grid-template-columns:minmax(0,1.25fr) minmax(400px,.95fr);gap:56px}
   .cx-carte{order:0}
   .cx-accroche h2{font-size:46px}
-  .cx-tuiles{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .cx-tuiles{grid-template-columns:repeat(3,minmax(0,1fr))}
   .cx-garanties{grid-template-columns:repeat(4,minmax(0,1fr));padding:22px 24px}
+  .cx-modules{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media (min-width:1280px){
+  .cx-tuiles,.cx-modules{grid-template-columns:repeat(5,minmax(0,1fr))}
 }
 
 /* ---------- pages connectées ---------- */
@@ -717,25 +724,35 @@ try { window.SLOS_MARQUE.lancer(); } catch (e) { /* la connexion reste utilisabl
 
     /* page d'accueil publique : présente SUNLINK OS à tous ceux qui font des affaires avec SUNLINK (clients, apporteurs,
        partenaires, associés), puis la carte de connexion. Aucune donnée métier, aucun nom de partenaire. */
-    const PROFILS = ['Clients', 'Apporteurs d\'affaires', 'Partenaires', 'Associés'];
+    const PROFILS = ['Clients', 'Apporteurs d\'affaires', 'Partenaires', 'Associés', 'Collectivités'];
     const accroche = h('section', { class: 'cx-accroche', 'aria-labelledby': 'cx-accroche-titre' },
       ico('lever', 'cx-lever-boite'),
       h('p', { class: 'cx-sur', text: 'SUNLINK OS · Pilotage de vos affaires' }),
       h('h2', { id: 'cx-accroche-titre', text: 'Toutes vos affaires avec SUNLINK, suivies au même endroit.' }),
-      h('p', { class: 'cx-texte', text: 'Projets, avancement, documents, factures et rémunérations : chaque client, apporteur d\'affaires, partenaire ou associé ouvre son propre espace et suit en temps réel ce qui le concerne, et seulement cela.' }),
-      h('ul', { class: 'cx-socs', 'aria-label': 'Pour qui' }, PROFILS.map((nom, k) => { const i = h('i', { 'aria-hidden': 'true' }); i.style.background = ['#1F9D6B', '#F08C2E', '#0E9AA7', '#7A5AF8'][k]; return h('li', null, i, nom); })));
+      h('p', { class: 'cx-texte', text: 'Projets, avancement, documents, factures et rémunérations : chaque client, apporteur d\'affaires, partenaire, associé ou collectivité ouvre son propre espace et suit en temps réel ce qui le concerne, et seulement cela.' }),
+      h('ul', { class: 'cx-socs', 'aria-label': 'Pour qui' }, PROFILS.map((nom, k) => { const i = h('i', { 'aria-hidden': 'true' }); i.style.background = ['#1F9D6B', '#F08C2E', '#0E9AA7', '#7A5AF8', '#0F5C8C'][k]; return h('li', null, i, nom); })));
     const carte = h('section', { class: 'carte cx-carte', 'aria-labelledby': 'cx-titre' },
       h('div', null, titre, intro), etapeEmail, etapeCode, msg, acces);
     const TUILES = [
       ['#1F9D6B', 'Clients', 'Propriétaires de toiture ou de terrain, participants à l\'autoconsommation : l\'avancement de votre projet, vos contrats, votre production et vos factures.', 'votre projet, rien d\'autre'],
       ['#F08C2E', 'Apporteurs d\'affaires', 'Les affaires que vous avez apportées, l\'étape de chacune et vos rémunérations, mises à jour au fil de l\'eau.', 'vos affaires uniquement'],
       ['#0E9AA7', 'Partenaires et prestataires', 'Bureaux d\'études, constructeurs, mainteneurs : les projets confiés, le planning, les devis, les factures et les documents à déposer.', 'vos missions'],
-      ['#7A5AF8', 'Associés et investisseurs', 'Vos participations, la trésorerie qui vous concerne et les décisions à prendre, en lecture.', 'sur invitation']];
+      ['#7A5AF8', 'Associés et investisseurs', 'Vos participations, la trésorerie qui vous concerne et les décisions à prendre, en lecture.', 'sur invitation'],
+      ['#0F5C8C', 'Collectivités', 'Mairies et intercommunalités : les projets de votre territoire, leur avancement et les opérations de partage d\'énergie locales.', 'votre territoire']];
     const titreTuiles = h('h2', { class: 'cx-section', text: 'Un espace pour chacun' });
     const tuiles = h('ul', { class: 'cx-tuiles', 'aria-label': 'Un espace pour chacun' }, TUILES.map(([c, t, d, qui]) => {
       const li = h('li', { class: 'cx-tuile' }, h('h3', { text: t }), h('p', { text: d }), h('small', { text: qui }));
       li.style.setProperty('--c', c); return li;
     }));
+    /* modules retenus par Julien le 06/10/2026 (une seule application, une seule base) ; « en préparation » tant qu'ils ne sont pas livrés */
+    const MODULES = [
+      ['Pilotage des projets', 'Du foncier à la mise en service : études, urbanisme, raccordement et prochaines actions.', true],
+      ['Trésorerie et financement', 'Soldes, flux prévus, plans de financement et emprunts, chaque chiffre avec sa source.', true],
+      ['Documents et échanges', 'Pièces, contrats et devis rangés par projet, au même endroit que le suivi.', true],
+      ['Partage d\'énergie', 'Autoconsommation collective : relier producteurs et consommateurs proches, suivre les opérations.', false],
+      ['Facturation et exploitation', 'Facturation de l\'énergie, production des centrales et maintenance.', false]];
+    const titreModules = h('h2', { class: 'cx-section', text: 'Ce que fait SUNLINK OS' });
+    const modules = h('ul', { class: 'cx-garanties cx-modules', 'aria-label': 'Ce que fait SUNLINK OS' }, MODULES.map(([t, d, ok]) => h('li', null, h('b', { text: t }), h('span', { text: d }), h('em', { class: ok ? 'dispo' : 'prep', text: ok ? 'disponible' : 'en préparation' }))));
     const ETAPES = [
       ['1 · Votre adresse e-mail', 'Saisissez-la ci-dessus : vous recevez un lien ou un code, sans mot de passe.'],
       ['2 · Votre demande d\'accès', 'À la première connexion, indiquez qui vous êtes et le projet qui vous concerne.'],
@@ -746,11 +763,11 @@ try { window.SLOS_MARQUE.lancer(); } catch (e) { /* la connexion reste utilisabl
     const GARANTIES = [
       ['Hébergé en France', 'Données hébergées à Paris ; cette page publique n\'en contient aucune.'],
       ['Accès sur invitation', 'Chaque accès est ouvert par SUNLINK, personne par personne.'],
-      ['Chacun ses données', 'Un client, un apporteur ou un partenaire ne voit jamais les affaires des autres.'],
+      ['Chacun ses données', 'Chacun ne voit que ses propres affaires, jamais celles des autres.'],
       ['Rien ne se perd', 'Chaque document modifié est gardé en fin de journée.']];
     const garanties = h('ul', { class: 'cx-garanties', 'aria-label': 'Garanties' }, GARANTIES.map(([t, d]) => h('li', null, h('b', { text: t }), h('span', { text: d }))));
     const page = h('div', { class: 'cx' }, entete(),
-      h('main', { class: 'cx-main', id: 'contenu' }, h('div', { class: 'cx-haut' }, accroche, ico('lever', 'cx-lever-code'), carte), titreTuiles, tuiles, titreEtapes, etapes, garanties),
+      h('main', { class: 'cx-main', id: 'contenu' }, h('div', { class: 'cx-haut' }, accroche, ico('lever', 'cx-lever-code'), carte), titreTuiles, tuiles, titreModules, modules, titreEtapes, etapes, garanties),
       h('p', { class: 'cx-pied' }, ico('cadenas'), 'SUNLINK énergies · Charleville-Mézières · SUNLINK OS, accès réservé aux personnes invitées'));
     monter('connexion', 'Connexion', page);
     focaliser(email);
