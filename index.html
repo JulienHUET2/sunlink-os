@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#00070D">
+<meta name="theme-color" content="#FFFFFF">
 <meta name="robots" content="noindex,nofollow">
 <meta name="description" content="SUNLINK OS · Groupe SUNLINK · pilotage. Connexion par lien ou code reçu par e-mail.">
 <title>SUNLINK OS</title>
@@ -25,14 +25,21 @@
       Une fois par onglet (sessionStorage 'slos.intro') : direction.html, écrite ensuite dans le même onglet, ne la rejoue pas ;
       elle attend la fin de l'animation avant document.write. Coupée par la personne : localStorage 'slos.introUi' = {"coupee":true}.
       Paramètre explicite pour les tests : window.SLOS_INTRO = false (aucune lecture). Aucune donnée, aucune image ici : le logo seul.
+   9. v6 : landing plus marquée : soleil levant dans le héros, boutons d'appel, console illustrée (sociétés du Groupe, cycle des
+      projets en colonnes, trésorerie, décisions, sites), gestes reliés avec un exemple concret, appel final. Aucun chiffre réel.
+   7. v5.7 : thème « Ciel d'été » des maquettes (slides 1 à 4) : barre blanche avec logo officiel et filet aux couleurs des sociétés,
+      page d'accueil (accroche, carte « Se connecter », espaces, garanties), étape du code centrée, cartes société à leur couleur,
+      vue Groupe en bleu. Comportement, identifiants et appels inchangés.
    ===================================================================================== */
 :root{
-  --jaune:#FEC61E;--jaune-f:#F2B705;--bleu:#0183FF;--bleu-f:#0060BF;--bleu-c:#E3F0FF;--bleu-sombre:#2A324B;
-  --encre:#00070D;--fond:#F4F5F6;--surface:#FFFFFF;--surface-2:#F9FCFF;--neutre:#EAEBED;--trait:#DADEE4;--doux:#5E6678;--doux-2:#8A93A6;
+  /* v5.7 : thème « Ciel d'été » des maquettes validées (primaire #0F5C8C, doux #DDEEF8, fond #F3F7FB, texte #10212F, bordures #E1E8F0) */
+  --jaune:#FEC61E;--jaune-f:#F2B705;--bleu:#0F5C8C;--bleu-f:#0B4A72;--bleu-c:#DDEEF8;--bleu-sombre:#0B3D5E;
+  --encre:#10212F;--fond:#F3F7FB;--surface:#FFFFFF;--surface-2:#F7FAFD;--neutre:#E1E8F0;--trait:#D3DDE8;--doux:#5B6B7B;--doux-2:#8A99AA;
+  --arc:linear-gradient(90deg,#FEC61E 0%,#1F9D6B 22%,#F08C2E 42%,#0E9AA7 60%,#7A5AF8 80%,#D6458C 100%);
   --ok:#114E0B;--ok-bg:#CEF5CA;--att:#5E5515;--att-bg:#FCF8D8;--err:#3B0B0B;--err-bg:#F8E4E4;
   --nuit:#00070D;--nuit-2:#141C2B;--nuit-3:#1B2436;--nuit-trait:#253046;--nuit-txt:#C9D0DC;--nuit-doux:#8FA3C7;
   --r1:9px;--r2:14px;--r3:999px;
-  --ombre:0 1px 2px rgba(0,7,13,.05),0 12px 32px rgba(0,7,13,.07);
+  --ombre:0 1px 2px rgba(16,33,47,.04),0 12px 32px rgba(15,92,140,.08);
   --police:Lexend,"Segoe UI",system-ui,-apple-system,Roboto,"Helvetica Neue",Arial,sans-serif;
   color-scheme:light;
 }
@@ -55,19 +62,19 @@ p,li,dd{text-wrap:pretty}
 /* ---------- boutons ---------- */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:8px 18px;border-radius:var(--r1);border:1px solid transparent;font-weight:600;font-size:15px;line-height:1.25;cursor:pointer;text-align:center;transition:background-color .15s,border-color .15s,box-shadow .15s,color .15s}
 .btn[disabled]{opacity:.55;cursor:default}
-.btn-jaune{background:var(--jaune);color:var(--encre)}
-.btn-jaune:hover:not([disabled]){background:var(--jaune-f)}
+.btn-jaune{background:var(--bleu);color:#fff}   /* v5.7 : bouton principal = bleu primaire (nom conservé) */
+.btn-jaune:hover:not([disabled]){background:var(--bleu-f)}
 .btn-bleu{background:var(--bleu);color:#fff}
 .btn-bleu:hover:not([disabled]){background:var(--bleu-f)}
-.btn-sec{background:var(--surface);color:var(--encre);border-color:var(--trait)}
+.btn-sec{background:var(--surface);color:var(--bleu);border-color:var(--trait)}
 .btn-sec:hover:not([disabled]){border-color:#B9C0CC;background:var(--surface-2)}
 .btn-rouge{background:var(--surface);color:var(--err);border-color:#E9C9C9}
 .btn-rouge:hover:not([disabled]){background:var(--err-bg)}
 .btn-lien{display:inline-flex;align-items:center;gap:6px;background:none;border:0;padding:4px 0;min-height:36px;color:var(--bleu-f);font-weight:500;font-size:14px;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
 .btn-lien:hover{color:var(--encre)}
 .btn-plein{width:100%}
-.btn-nuit{background:transparent;color:var(--nuit-txt);border-color:var(--nuit-trait);min-height:40px;padding:6px 12px;font-weight:500;font-size:14px;white-space:nowrap}
-.btn-nuit:hover{background:var(--nuit-2);color:#fff}
+.btn-nuit{background:var(--surface);color:var(--encre);border-color:var(--trait);min-height:40px;padding:6px 14px;font-weight:500;font-size:14px;white-space:nowrap}   /* v5.7 : barre claire */
+.btn-nuit:hover{background:var(--surface-2);border-color:#B9C6D4}
 .actions{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
 
 /* ---------- champs et messages ---------- */
@@ -76,7 +83,7 @@ p,li,dd{text-wrap:pretty}
 .champ .aide,.aide{font-size:12.5px;color:var(--doux)}
 .input{display:block;width:100%;min-width:0;min-height:46px;padding:10px 14px;border:1px solid var(--trait);border-radius:var(--r1);background:var(--surface);font-size:16px;color:var(--encre);transition:border-color .15s,box-shadow .15s}
 .input:hover{border-color:#B9C0CC}
-.input:focus{outline:none;border-color:var(--bleu);box-shadow:0 0 0 3px rgba(1,131,255,.22)}
+.input:focus{outline:none;border-color:var(--bleu);box-shadow:0 0 0 3px rgba(15,92,140,.18)}
 .input::placeholder{color:#9AA1AE}
 textarea.input{min-height:112px;resize:vertical;line-height:1.45}
 .input-code{font-size:22px;letter-spacing:.28em;font-variant-numeric:tabular-nums;text-align:center;font-weight:600}
@@ -100,61 +107,90 @@ textarea.input{min-height:112px;resize:vertical;line-height:1.45}
 .carte{width:100%;background:var(--surface);border:1px solid var(--neutre);border-radius:var(--r2);box-shadow:var(--ombre)}
 .surtitre{font-size:11.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--doux)}
 
-/* ---------- marque ---------- */
-.marque{display:flex;align-items:center;gap:12px;min-width:0}
-.marque b{display:block;font-size:18px;font-weight:700;color:#fff;letter-spacing:.01em;line-height:1.1}
-.marque small{display:block;font-size:12px;color:var(--jaune);font-weight:500;margin-top:3px;white-space:nowrap}
+/* ---------- marque : barre blanche, logo officiel, pastille OS, filet aux couleurs des sociétés ---------- */
+.marque{display:flex;align-items:center;gap:12px;min-width:0;color:inherit;text-decoration:none}
+.marque-logo{display:block;width:142px;height:auto}
+.marque-logo svg{display:block;width:100%;height:auto}
+.marque-os{display:inline-flex;align-items:center;font-size:12.5px;font-weight:600;letter-spacing:.04em;line-height:1;padding:5px 10px;border-radius:var(--r3);background:var(--bleu-c);color:var(--bleu)}
+.barre{position:relative;background:var(--surface);color:var(--encre)}
+.barre::after{content:"";position:absolute;left:0;right:0;bottom:0;height:4px;background:var(--arc)}
+.barre-in{max-width:1280px;margin:0 auto;padding:14px 16px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+@media (max-width:479px){.marque-logo{width:118px}}
+@media (min-width:900px){.barre-in{padding:16px 40px 20px}}
 
-/* ---------- connexion ---------- */
-.cx{min-height:100vh;min-height:100dvh;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto 1fr}
-.cx-marque{position:relative;overflow:hidden;background:radial-gradient(520px 320px at 100% 100%,rgba(254,198,30,.16),transparent 70%),radial-gradient(420px 300px at 0% 0%,rgba(1,131,255,.12),transparent 70%),var(--nuit);color:var(--nuit-txt);padding:22px 20px 26px;display:flex;flex-direction:column;gap:18px}
-.cx-marque .soleil{width:36px;height:36px}
-.cx-accroche{display:grid;gap:10px}
-.cx-accroche h2{font-size:21px;line-height:1.25;font-weight:600;color:#fff;letter-spacing:-.01em;max-width:24ch;text-wrap:balance}
-.cx-points,.cx-schema,.cx-sign{display:none}
-.cx-schema-boite{display:block;line-height:0}
-.cx-form{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:16px;padding:24px 16px 36px}
-.cx-carte{max-width:440px;padding:26px 22px;display:grid;gap:18px}
-.cx-carte h1{font-size:25px;line-height:1.2;font-weight:600;letter-spacing:-.01em}
-.cx-carte .intro{color:var(--doux);font-size:14.5px}
+/* ---------- connexion (page d'accueil) ---------- */
+.cx{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
+.cx-main{flex:1;width:100%;max-width:1280px;margin:0 auto;padding:28px 16px 40px;display:flex;flex-direction:column;gap:28px}
+.cx-haut{display:grid;grid-template-columns:minmax(0,1fr);gap:28px;align-items:center}
+.cx-accroche{display:grid;gap:14px;justify-items:start}
+.cx-lever-boite{display:block;line-height:0}
+.cx-lever{display:block;width:118px;height:auto}
+.cx-sur{font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--bleu)}
+.cx-accroche h2{font-size:30px;line-height:1.12;font-weight:600;letter-spacing:-.015em;color:var(--encre);max-width:19ch;text-wrap:balance}
+.cx-texte{font-size:16px;line-height:1.65;color:var(--doux);max-width:46ch}
+.cx-socs{display:flex;flex-wrap:wrap;gap:8px;list-style:none;padding:0;margin:4px 0 0}
+.cx-socs li{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:500;color:var(--encre);background:var(--surface);border:1px solid var(--neutre);border-radius:var(--r3);padding:4px 12px 4px 10px;white-space:nowrap}
+.cx-socs i{width:8px;height:8px;border-radius:var(--r3)}
+.cx-carte{order:-1;width:100%;max-width:480px;justify-self:center;padding:26px 22px;display:grid;gap:16px}   /* téléphone : la connexion d'abord */
+.cx-carte h1{font-size:23px;line-height:1.2;font-weight:600;letter-spacing:-.01em}
+.cx-carte .intro{color:var(--doux);font-size:14.5px;margin-top:6px}
 .cx-etape{display:grid;gap:14px}
-.cx-envoye{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border-radius:var(--r1);background:var(--ok-bg);color:var(--ok);font-size:14px;line-height:1.45}
+.cx-ou{display:flex;align-items:center;gap:12px;font-size:12.5px;color:var(--doux-2)}
+.cx-ou::before,.cx-ou::after{content:"";flex:1;height:1px;background:var(--neutre)}
+.cx-acces{display:grid;gap:12px}
+.cx-note{font-size:12.5px;color:var(--doux)}
+.cx-envoye{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border-radius:var(--r1);background:var(--bleu-c);color:var(--bleu-sombre);font-size:14px;line-height:1.45}
 .cx-envoye .ico{width:20px;height:20px;margin-top:1px}
 .cx-envoye b{font-weight:600;overflow-wrap:anywhere}
-.cx-liens{display:flex;flex-wrap:wrap;gap:4px 18px}
-.cx-pied{display:flex;align-items:center;justify-content:center;gap:8px;font-size:12.5px;color:var(--doux);text-align:center}
-@media (min-width:900px){
-  .cx{grid-template-columns:minmax(420px,5fr) minmax(0,7fr);grid-template-rows:none}
-  .cx-marque{padding:44px 56px;justify-content:space-between;gap:28px}
-  .cx-marque .soleil{width:40px;height:40px}
-  .cx-marque .marque b{font-size:21px}
-  .cx-marque .marque small{font-size:13px}
-  .cx-accroche{gap:24px}
-  .cx-accroche h2{font-size:36px;line-height:1.14;max-width:470px}
-  .cx-points{display:grid;gap:14px;list-style:none;padding:0;font-size:15.5px;color:var(--nuit-txt);max-width:440px}
-  .cx-points li{display:flex;gap:14px;align-items:flex-start;text-wrap:pretty}
-  .cx-points li::before{content:"";flex:none;width:8px;height:8px;margin-top:8px;border-radius:var(--r3);background:var(--jaune);box-shadow:0 0 0 4px rgba(254,198,30,.16)}
-  .cx-schema{display:block;width:100%;max-width:400px;height:auto}
-  .cx-sign{display:block;font-size:12.5px;color:#6F7A8F}
-  .cx-form{justify-content:center;padding:48px 32px}
-  .cx-carte{padding:38px 38px 34px;gap:20px}
-  .cx-carte h1{font-size:28px}
+.cx-liens{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px}
+.cx-liens .btn{min-height:40px;font-weight:500;font-size:14px}
+.cx-tuiles{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;list-style:none;padding:0;margin:0}
+.cx-tuile{display:flex;flex-direction:column;gap:6px;padding:18px 18px 16px;background:var(--surface);border:1px solid var(--neutre);border-top:4px solid var(--c,var(--bleu));border-radius:var(--r2)}
+.cx-tuile h3{font-size:16px;font-weight:600;line-height:1.3}
+.cx-tuile p{font-size:14px;line-height:1.5;color:var(--doux)}
+.cx-tuile small{margin-top:auto;padding-top:8px;font-size:12.5px;color:var(--doux-2)}
+.cx-garanties{display:grid;grid-template-columns:minmax(0,1fr);gap:16px 28px;padding:20px;border-radius:var(--r2);background:var(--bleu-c);list-style:none;margin:0}
+.cx-garanties b{display:block;font-size:14px;font-weight:600;color:var(--encre)}
+.cx-garanties span{display:block;font-size:13px;line-height:1.5;color:var(--doux);margin-top:2px}
+.cx-pied{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px 8px;font-size:12.5px;color:var(--doux-2);text-align:center;padding:0 16px 28px}
+.cx-pied .ico{width:14px;height:14px}
+/* étape du code : seule la carte reste, centrée (maquette « Regarde ta boîte mail ») */
+.cx-code .cx-accroche,.cx-code .cx-tuiles,.cx-code .cx-garanties,.cx-code .cx-section{display:none}
+.cx-section{font-size:20px;font-weight:600;color:var(--encre);margin:8px 0 -4px;letter-spacing:-.01em}
+.cx-etapes,.cx-modules{background:var(--surface);border:1px solid var(--neutre)}
+.cx-modules em{display:inline-block;margin-top:8px;font-size:11.5px;font-style:normal;font-weight:600;color:var(--bleu);background:var(--bleu-c);border-radius:var(--r3);padding:2px 10px}
+.cx-modules em.prep{color:var(--doux);background:var(--fond)}
+.cx-code .cx-modules{display:none}
+.cx-code .cx-haut{grid-template-columns:minmax(0,1fr)!important;justify-items:center;gap:0;padding-top:12px}
+.cx-code .cx-carte{max-width:560px}
+.cx-lever-code{display:none}
+.cx-code .cx-lever-code{display:block;margin:0 auto 18px}
+@media (min-width:640px){
+  .cx-tuiles{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .cx-garanties{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .cx-carte{padding:30px 28px}
+}
+@media (min-width:1000px){
+  .cx-main{padding:56px 40px 40px;gap:32px}
+  .cx-haut{grid-template-columns:minmax(0,1.25fr) minmax(400px,.95fr);gap:56px}
+  .cx-carte{order:0}
+  .cx-accroche h2{font-size:46px}
+  .cx-tuiles{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .cx-garanties{grid-template-columns:repeat(4,minmax(0,1fr));padding:22px 24px}
+  .cx-modules{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media (min-width:1280px){
+  .cx-tuiles,.cx-modules{grid-template-columns:repeat(5,minmax(0,1fr))}
 }
 
 /* ---------- pages connectées ---------- */
 .page{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
-.barre{background:var(--nuit);color:var(--nuit-txt)}
-.barre-in{max-width:1180px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
-.barre .soleil{width:30px;height:30px}
-.barre .marque b{font-size:16.5px}
-.barre .marque small{font-size:11.5px}
 .barre-droite{display:flex;align-items:center;gap:14px;min-width:0}
-.qui{display:none;font-size:13px;color:var(--nuit-doux);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:300px}
-.contenu{flex:1;width:100%;max-width:1180px;margin:0 auto;padding:24px 16px 48px;display:flex;flex-direction:column;gap:22px}
+.qui{display:none;font-size:13.5px;color:var(--doux);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:300px}
+.contenu{flex:1;width:100%;max-width:1280px;margin:0 auto;padding:24px 16px 48px;display:flex;flex-direction:column;gap:22px}
 .pied-page{font-size:12.5px;color:var(--doux);display:flex;flex-wrap:wrap;gap:4px 14px;justify-content:space-between;border-top:1px solid var(--neutre);padding-top:16px;margin-top:6px}
-@media (max-width:479px){.barre .marque small{display:none}}
 @media (min-width:640px){.qui{display:block}}
-@media (min-width:900px){.barre-in{padding:14px 32px}.contenu{padding:36px 32px 64px;gap:26px}}
+@media (min-width:900px){.contenu{padding:36px 40px 64px;gap:26px}}
 
 /* ---------- sélecteur ---------- */
 .tete{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px}
@@ -167,16 +203,16 @@ textarea.input{min-height:112px;resize:vertical;line-height:1.45}
 .outils{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
 .recherche{flex:1 1 260px;min-width:0;display:flex;align-items:center;gap:10px;min-height:46px;padding:0 14px;border:1px solid var(--trait);border-radius:var(--r1);background:var(--surface);color:var(--doux)}
 .recherche:hover{border-color:#B9C0CC}
-.recherche:focus-within{border-color:var(--bleu);box-shadow:0 0 0 3px rgba(1,131,255,.22)}
+.recherche:focus-within{border-color:var(--bleu);box-shadow:0 0 0 3px rgba(15,92,140,.18)}
 .recherche input{flex:1;min-width:0;border:0;background:none;outline:none;font-size:16px;color:var(--encre);min-height:44px;padding:0}
 .recherche input::placeholder{color:#9AA1AE}
 .liste{display:flex;flex-direction:column;gap:24px}
 .grp{display:grid;gap:12px}
-.grp-titre{display:flex;align-items:center;gap:12px;font-size:11.5px;font-weight:600;letter-spacing:.12em;color:var(--doux);text-transform:uppercase}
+.grp-titre{display:flex;align-items:center;gap:12px;font-size:11.5px;font-weight:600;letter-spacing:.12em;color:var(--bleu);text-transform:uppercase}
 .grp-titre::after{content:"";flex:1;height:1px;background:var(--trait)}
 .grp-titre .n{order:2;font-weight:500;letter-spacing:0}
 .grille{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,244px),1fr));gap:14px}
-.soc{position:relative;display:flex;flex-direction:column;gap:12px;width:100%;min-width:0;text-align:left;padding:16px 16px 14px;background:var(--surface);border:1px solid var(--neutre);border-radius:var(--r2);cursor:pointer;color:var(--encre);font-size:14px;line-height:1.4;transition:border-color .15s,box-shadow .15s,transform .15s}
+.soc{position:relative;display:flex;flex-direction:column;gap:12px;width:100%;min-width:0;text-align:left;padding:16px 16px 14px 20px;background:var(--surface);border:1px solid var(--neutre);border-left:5px solid var(--c,var(--doux-2));border-radius:var(--r2);cursor:pointer;color:var(--encre);font-size:14px;line-height:1.4;transition:border-color .15s,box-shadow .15s,transform .15s}
 .soc:hover{border-color:#C6CFDB;box-shadow:var(--ombre);transform:translateY(-1px)}
 .soc-haut{display:flex;align-items:flex-start;gap:10px;min-width:0}
 .pastille{flex:none;display:inline-block;width:12px;height:12px;border-radius:var(--r3);margin-top:5px;background:var(--doux-2);box-shadow:0 0 0 3px rgba(0,7,13,.06)}
@@ -193,23 +229,23 @@ textarea.input{min-height:112px;resize:vertical;line-height:1.45}
 .rien{display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--ok);font-weight:500;padding:10px 12px;background:#F1FBF0;border:1px solid #D9F2D5;border-radius:var(--r1)}
 .soc-etat{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding-left:22px}
 .soc-pied{display:flex;margin-top:auto;font-size:12px;color:var(--doux)}
-.soc.dernier{border:2px solid var(--bleu);padding:15px 15px 13px}
-.soc.vue-groupe{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;padding:20px;background:radial-gradient(520px 240px at 100% 0%,rgba(254,198,30,.14),transparent 70%),var(--nuit);border-color:var(--nuit);color:#fff}
-.soc.vue-groupe:hover{border-color:var(--nuit-trait)}
+.soc.dernier{border:2px solid var(--c,var(--bleu));border-left-width:5px;padding:15px 15px 13px 20px;box-shadow:var(--ombre)}
+.soc.vue-groupe{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;padding:20px;background:radial-gradient(520px 240px at 100% 0%,rgba(254,198,30,.16),transparent 70%),linear-gradient(100deg,#0F5C8C,#1A78B4);border:1px solid #0F5C8C;color:#fff}
+.soc.vue-groupe:hover{border-color:#0B4A72}
 .soc.vue-groupe.dernier{border:2px solid var(--jaune);padding:19px}
 .vg-g,.vg-d{display:flex;flex-direction:column;gap:12px;min-width:0}
 .vg-tete{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px}
-.vg-sur{font-size:11px;font-weight:600;letter-spacing:.14em;color:var(--jaune);text-transform:uppercase}
+.vg-sur{font-size:11px;font-weight:600;letter-spacing:.14em;color:#FFE08A;text-transform:uppercase}
 .vue-groupe .soc-nom{font-size:20px;color:#fff}
-.vue-groupe .soc-role{color:var(--nuit-doux)}
-.vue-groupe .cpts{background:var(--nuit-2);border-color:var(--nuit-trait)}
-.vue-groupe .cpt-l,.vue-groupe .cpts-titre{color:var(--nuit-doux)}
+.vue-groupe .soc-role{color:#D4E6F3}
+.vue-groupe .cpts{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.18)}
+.vue-groupe .cpt-l,.vue-groupe .cpts-titre{color:#C7DDEE}
 .vue-groupe .cpt-v{color:#fff}
-.vue-groupe .cpt-v.zero,.vue-groupe .cpt-v.inconnu{color:#6F7A8F}
+.vue-groupe .cpt-v.zero,.vue-groupe .cpt-v.inconnu{color:#A9C6DC}
 .vue-groupe .rien{background:rgba(206,245,202,.08);border-color:rgba(206,245,202,.22);color:var(--ok-bg)}
 .vue-groupe .etiquette{background:rgba(254,198,30,.16);color:var(--jaune)}
 .puces{display:flex;flex-wrap:wrap;gap:6px 8px}
-.puce{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:var(--nuit-txt);background:var(--nuit-2);border:1px solid var(--nuit-trait);border-radius:var(--r3);padding:3px 10px 3px 8px}
+.puce{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:#fff;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);border-radius:var(--r3);padding:3px 10px 3px 8px}
 .puce i{width:8px;height:8px;border-radius:var(--r3);background:var(--doux-2);box-shadow:0 0 0 1.5px rgba(255,255,255,.28)}
 @media (min-width:760px){.soc.vue-groupe{grid-template-columns:minmax(0,1.35fr) minmax(250px,1fr);align-items:center;gap:28px;padding:22px 24px}.soc.vue-groupe.dernier{padding:21px 23px}}
 .vide{display:grid;gap:10px;justify-items:start;padding:18px;border:1px dashed var(--trait);border-radius:var(--r2);color:var(--doux);background:var(--surface)}
@@ -260,10 +296,10 @@ legend{font-size:13.5px;font-weight:600;margin-bottom:8px;padding:0}
 .attente-txt{font-size:18px;font-weight:600}
 .attente-sous{font-size:14px;color:var(--doux)}
 .prog{width:220px;max-width:100%;height:4px;border-radius:var(--r3);background:var(--neutre);overflow:hidden;position:relative;margin-top:6px}
-.prog::after{content:"";position:absolute;top:0;bottom:0;left:0;width:38%;background:var(--jaune);border-radius:var(--r3);animation:glisse 1.3s ease-in-out infinite}
-.seul{min-height:100vh;display:grid;place-items:center;padding:24px 16px;background:var(--nuit);color:var(--nuit-txt)}
-.seul .attente-txt{color:#fff;font-weight:500;font-size:15px}
-.seul .prog{background:var(--nuit-3)}
+.prog::after{content:"";position:absolute;top:0;bottom:0;left:0;width:38%;background:var(--bleu);border-radius:var(--r3);animation:glisse 1.3s ease-in-out infinite}
+.seul{min-height:100vh;display:grid;place-items:center;padding:24px 16px;background:var(--fond);color:var(--doux)}
+.seul .attente-txt{color:var(--doux);font-weight:500;font-size:15px}
+
 .boite-err{padding:24px 20px;display:grid;gap:16px}
 .boite-err h1{font-size:22px;line-height:1.25;font-weight:600}
 .boite-err .msg{white-space:pre-wrap}
@@ -289,6 +325,176 @@ legend{font-size:13.5px;font-weight:600;margin-bottom:8px;padding:0}
 .sli-calme .sli-halo{display:none}
 @media (max-width:600px){.sli-passer{right:auto;left:50%;transform:translateX(-50%)}}
 /* ==== style de l'entrée : fin ==== */
+
+/* ---------- landing v5.9 : héros nuit, aperçu de l'application, Groupe, gestes de pilotage, espaces, modules ---------- */
+.lx{background:var(--fond)}
+.lx-main{max-width:none;padding:0;gap:0}
+.lx-main>section{width:100%}
+.lx-kicker{font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--bleu)}
+.lx-h2{font-size:28px;line-height:1.15;font-weight:600;letter-spacing:-.02em;color:var(--encre);max-width:22ch;text-wrap:balance;margin-top:8px}
+.lx-pilote,.lx-espaces,.lx-modules-s,.lx-groupe,.lx-confiance{max-width:1280px;margin:0 auto;padding:56px 16px 0}
+/* héros */
+.lx-hero{position:relative;overflow:hidden;background:radial-gradient(900px 480px at 82% -10%,rgba(254,198,30,.22),transparent 60%),radial-gradient(700px 420px at 0% 110%,rgba(15,92,140,.45),transparent 60%),linear-gradient(180deg,#00070D 0%,#06182A 100%);color:#fff}
+.lx-hero::before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);background-size:48px 48px;mask-image:linear-gradient(180deg,#000 0%,transparent 85%);-webkit-mask-image:linear-gradient(180deg,#000 0%,transparent 85%);pointer-events:none}
+.lx-soleil{position:absolute;left:50%;bottom:-520px;width:1100px;height:1100px;margin-left:-550px;border-radius:50%;background:radial-gradient(closest-side,rgba(254,198,30,.55),rgba(240,140,46,.28) 38%,rgba(15,92,140,0) 70%);pointer-events:none;animation:lx-leve 6s ease-in-out infinite}
+.lx-horizon{position:absolute;left:0;right:0;bottom:0;height:1px;background:linear-gradient(90deg,transparent,rgba(254,198,30,.7),transparent);pointer-events:none}
+.lx-cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}
+.lx-btn-or{background:linear-gradient(135deg,#FEC61E,#F2A91E);color:#10212F;box-shadow:0 10px 30px rgba(254,198,30,.25)}
+.lx-btn-or:hover:not([disabled]){background:linear-gradient(135deg,#FFD24A,#F2B705)}
+.lx-btn-verre{background:rgba(255,255,255,.06);color:#fff;border-color:rgba(255,255,255,.2)}
+.lx-btn-verre:hover{background:rgba(255,255,255,.12)}
+.lx-preuves{display:flex;flex-wrap:wrap;gap:6px 18px;list-style:none;padding:0;margin:4px 0 0;font-size:12.5px;color:#9DB0C6}
+.lx-preuves li{display:inline-flex;align-items:center;gap:7px}
+.lx-preuves svg{width:14px;height:14px;fill:none;stroke:#2FD08A;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.lx-hero-in{position:relative;max-width:1280px;margin:0 auto;padding:40px 16px 120px;display:grid;grid-template-columns:minmax(0,1fr);gap:32px;align-items:center}
+.lx-texte{display:grid;gap:18px;justify-items:start}
+.lx-sur{display:inline-flex;align-items:center;gap:10px;font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#FEC61E;padding:6px 14px;border:1px solid rgba(254,198,30,.35);border-radius:var(--r3);background:rgba(254,198,30,.06)}
+.lx-point{width:7px;height:7px;border-radius:var(--r3);background:#FEC61E;box-shadow:0 0 0 4px rgba(254,198,30,.18)}
+.lx-texte h2{font-size:36px;line-height:1.05;font-weight:600;letter-spacing:-.03em;color:#fff;max-width:14ch;text-wrap:balance}
+.lx-texte h2 span{background:linear-gradient(90deg,#FEC61E,#F08C2E);-webkit-background-clip:text;background-clip:text;color:transparent}
+.lx-lead{font-size:16.5px;line-height:1.65;color:#B8C6D6;max-width:52ch}
+.lx-publics{display:flex;flex-wrap:wrap;gap:8px;list-style:none;padding:0;margin:0}
+.lx-publics li{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:500;color:#E4EBF3;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);border-radius:var(--r3);padding:5px 12px 5px 10px;white-space:nowrap}
+.lx-publics i{width:8px;height:8px;border-radius:var(--r3)}
+.lx-slot{display:flex;justify-content:center;order:-1}
+.lx .cx-carte{order:0;max-width:440px;color:var(--encre);box-shadow:0 30px 80px rgba(0,0,0,.45);border-color:transparent}
+/* aperçu v6 : la console, avec les sociétés du Groupe, le cycle des projets en colonnes, la trésorerie, les décisions et les sites */
+.lx-apercu{max-width:1180px;margin:-96px auto 0;padding:0 16px;position:relative;z-index:1}
+.lx-scene{position:relative}
+.lx-scene::before{content:"";position:absolute;inset:8% 6% -6%;background:radial-gradient(closest-side,rgba(254,198,30,.28),rgba(15,92,140,.22) 55%,transparent);filter:blur(40px);z-index:-1}
+.lx-fenetre{border-radius:18px;background:linear-gradient(180deg,#0D1A2B,#0A1523);border:1px solid rgba(255,255,255,.09);box-shadow:0 1px 0 rgba(255,255,255,.06) inset,0 50px 120px rgba(6,24,42,.45);overflow:hidden;color:#C9D4E2}
+.lx-fen-barre{display:flex;align-items:center;gap:7px;padding:11px 14px;border-bottom:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.02)}
+.lx-fen-barre i{width:10px;height:10px;border-radius:var(--r3);background:#2A3A52}
+.lx-fen-barre i:first-child{background:#F08C2E}.lx-fen-barre i:nth-child(2){background:#FEC61E}.lx-fen-barre i:nth-child(3){background:#1F9D6B}
+.lx-fen-titre{margin-left:10px;font-size:12px;color:#7F91A8;letter-spacing:.02em;white-space:nowrap}
+.lx-fen-cherche{display:none;margin-left:auto;align-items:center;gap:8px;min-width:240px;padding:6px 12px;border-radius:var(--r3);background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.07);font-size:11.5px;color:#6F829B}
+.lx-fen-cherche svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:1.8}
+.lx-direct{display:inline-flex;align-items:center;gap:7px;margin-left:auto;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#7EE0B0}
+.lx-direct::before{content:"";width:7px;height:7px;border-radius:var(--r3);background:#2FD08A;box-shadow:0 0 0 0 rgba(47,208,138,.6);animation:lx-pouls 2s infinite}
+.lx-fen-cherche+.lx-direct{margin-left:14px}
+.lx-fen-corps{display:grid;grid-template-columns:minmax(0,1fr)}
+.lx-fen-menu{display:none;padding:16px 12px;border-right:1px solid rgba(255,255,255,.07);gap:2px;align-content:start;background:rgba(0,0,0,.12)}
+.lx-fen-menu h4{margin:14px 10px 6px;font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#5F7390}
+.lx-fen-menu p{display:flex;align-items:center;gap:9px;font-size:12.5px;padding:7px 10px;border-radius:8px;color:#8FA3BC}
+.lx-fen-menu p i{width:8px;height:8px;border-radius:3px;flex:none}
+.lx-fen-menu p.on{background:linear-gradient(90deg,rgba(254,198,30,.16),rgba(254,198,30,.02));color:#FEC61E}
+.lx-fen-mono{display:flex;align-items:center;gap:9px;margin:0 0 6px 8px;font-size:13px;font-weight:600;color:#E4EBF3}
+.lx-fen-mono span{width:26px;height:26px}.lx-fen-mono svg{width:100%;height:100%}
+.lx-fen-main{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;padding:14px}
+.lx-bloc{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:14px 16px;display:grid;gap:12px;align-content:start;min-width:0}
+.lx-bloc-t{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px;font-weight:600;color:#E4EBF3;letter-spacing:.02em}
+.lx-bloc-t small{font-size:10.5px;font-weight:500;color:#6F829B;letter-spacing:.04em}
+.lx-cols{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.lx-col{display:grid;gap:6px;align-content:start;min-width:0}
+.lx-col-t{display:flex;align-items:center;gap:6px;font-size:10.5px;color:#8FA3BC;padding-bottom:6px;border-bottom:1px solid rgba(255,255,255,.07);white-space:nowrap;overflow:hidden}
+.lx-col-t b{display:grid;place-items:center;flex:none;width:16px;height:16px;border-radius:var(--r3);background:rgba(254,198,30,.14);color:#FEC61E;font-size:9.5px}
+.lx-carte-p{display:grid;gap:5px;padding:7px 8px;border-radius:7px;background:rgba(255,255,255,.045);box-shadow:inset 2px 0 0 var(--c);font-size:10.5px;color:#C9D4E2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;animation:lx-monte .7s cubic-bezier(.2,.7,.2,1) both}
+.lx-carte-p u{display:block;height:3px;border-radius:2px;background:rgba(255,255,255,.08);text-decoration:none}
+.lx-carte-p u::after{content:"";display:block;height:100%;width:var(--w);border-radius:2px;background:var(--c)}
+.lx-courbe svg{width:100%;height:118px;display:block;overflow:visible}
+.lx-legende{display:flex;align-items:center;gap:8px;font-size:11px;color:#7F91A8}
+.lx-legende span{width:14px;height:3px;border-radius:2px;background:#FEC61E}.lx-legende span.b{background:#4FA3D9;margin-left:8px}
+.lx-trait{stroke-dasharray:600;stroke-dashoffset:600;animation:lx-trace 2.2s .3s cubic-bezier(.3,.7,.2,1) forwards}
+.lx-al{display:flex;align-items:center;gap:10px;font-size:12px;color:#C9D4E2;padding:8px 10px;border-radius:8px;background:rgba(255,255,255,.04)}
+.lx-al span{width:8px;height:8px;border-radius:var(--r3);flex:none}.lx-al .j{background:#FEC61E}.lx-al .b{background:#4FA3D9}.lx-al .v{background:#2FD08A}
+.lx-al em{margin-left:auto;font-style:normal;font-size:10px;color:#6F829B;white-space:nowrap}
+.lx-carte-sites svg{width:100%;height:118px;display:block}
+.lx-site{transform-box:fill-box;transform-origin:center;animation:lx-onde 2.6s ease-out infinite}
+.lx-flotte{display:none}
+.lx-illu{margin-top:14px;font-size:12.5px;color:var(--doux-2);text-align:center}
+@keyframes lx-pouls{0%{box-shadow:0 0 0 0 rgba(47,208,138,.55)}70%{box-shadow:0 0 0 8px rgba(47,208,138,0)}100%{box-shadow:0 0 0 0 rgba(47,208,138,0)}}
+@keyframes lx-trace{to{stroke-dashoffset:0}}
+@keyframes lx-monte{from{opacity:0;transform:translateY(6px)}}
+@keyframes lx-onde{0%{opacity:.7;transform:scale(1)}100%{opacity:0;transform:scale(3.2)}}
+@keyframes lx-flotte{50%{transform:translateY(-6px)}}
+@keyframes lx-leve{0%,100%{opacity:.85}50%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.lx-trait{stroke-dashoffset:0}.lx-site{display:none}}
+/* Groupe */
+.lx-groupe{display:grid;gap:22px;justify-items:center;text-align:center;padding-top:56px}
+.lx-logos{padding:22px 28px!important;border-radius:var(--r2);background:var(--surface);border:1px solid var(--neutre);box-shadow:var(--ombre)}
+.lx-logos li+li{padding-left:44px;border-left:1px solid var(--neutre)}
+@media (max-width:640px){.lx-logos li+li{padding-left:0;border-left:0}}
+.lx-logos{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:20px 44px;list-style:none;padding:0;margin:0}
+.lx-logo-off svg{display:block;width:170px;height:auto}
+.lx-marque{display:inline-flex;align-items:center;gap:10px}
+.lx-marque-mono{width:34px;height:34px}.lx-marque-mono svg{width:100%;height:100%}
+.lx-marque-nom{font-size:22px;font-weight:700;letter-spacing:.01em;color:var(--encre)}
+.lx-marque-nom b{color:var(--c)}
+.lx-marque:last-child .lx-marque-nom{color:var(--c)}
+/* gestes */
+.lx-gestes{position:relative;display:grid;grid-template-columns:minmax(0,1fr);gap:14px;list-style:none;padding:0;margin:26px 0 0}
+.lx-chaine{display:none}
+.lx-gestes li{position:relative;display:grid;gap:8px;align-content:start;padding:22px 20px;background:var(--surface);border:1px solid var(--neutre);border-radius:var(--r2);transition:transform .2s,box-shadow .2s}
+.lx-gestes li:hover{transform:translateY(-3px);box-shadow:var(--ombre)}
+.lx-gestes .lx-ex{margin-top:6px;padding-top:10px;border-top:1px dashed var(--neutre);font-size:12.5px;color:var(--bleu)}
+.lx-gestes small{position:absolute;top:18px;right:20px;font-size:12px;font-weight:600;color:var(--doux-2);letter-spacing:.08em}
+.lx-geste-ic{position:relative;z-index:1;display:grid;place-items:center;width:46px;height:46px;border-radius:14px;background:linear-gradient(145deg,#0F5C8C,#06182A);color:#FEC61E;box-shadow:0 8px 20px rgba(15,92,140,.28),0 0 0 6px var(--fond)}
+.lx-geste-ic svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.lx-gestes h3{font-size:17px;font-weight:600;margin-top:4px}
+.lx-gestes p{font-size:14px;line-height:1.55;color:var(--doux)}
+/* espaces */
+.lx-cartes{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;list-style:none;padding:0;margin:26px 0 0}
+.lx-cartes li{display:grid;gap:6px;align-content:start;padding:18px 18px 18px 20px;background:var(--surface);border:1px solid var(--neutre);border-radius:var(--r2);box-shadow:inset 3px 0 0 var(--c)}
+.lx-cartes h3{font-size:15.5px;font-weight:600}
+.lx-cartes p{font-size:13.5px;line-height:1.5;color:var(--doux)}
+/* modules */
+.lx-modules{display:grid;grid-template-columns:minmax(0,1fr);gap:1px;list-style:none;padding:0;margin:26px 0 0;background:var(--neutre);border:1px solid var(--neutre);border-radius:var(--r2);overflow:hidden}
+.lx-modules li{display:grid;gap:6px;align-content:start;padding:20px;background:var(--surface)}
+.lx-modules h3{font-size:15px;font-weight:600}
+.lx-modules p{font-size:13.5px;line-height:1.5;color:var(--doux)}
+.lx-modules em{justify-self:start;margin-top:6px;font-size:11.5px;font-style:normal;font-weight:600;border-radius:var(--r3);padding:2px 10px}
+.lx-modules em.dispo{color:#114E0B;background:#CEF5CA}
+.lx-modules em.prep{color:var(--doux);background:var(--fond);border:1px solid var(--neutre)}
+/* appel final */
+.lx-final{max-width:1280px;margin:0 auto;padding:64px 16px 0}
+.lx-final-in{position:relative;overflow:hidden;display:grid;gap:18px;justify-items:start;padding:36px 24px;border-radius:20px;background:radial-gradient(600px 300px at 90% 120%,rgba(254,198,30,.35),transparent 60%),linear-gradient(135deg,#06182A,#0F5C8C);color:#fff}
+.lx-final-in h2{font-size:28px;line-height:1.12;font-weight:600;letter-spacing:-.02em;max-width:20ch;text-wrap:balance}
+.lx-final-in p{color:#C7DDEE;max-width:52ch}
+.cx-code .lx-final{display:none}
+/* garanties */
+.lx-confiance{padding-bottom:40px}
+.lx-confiance ul{display:grid;grid-template-columns:minmax(0,1fr);gap:18px 28px;list-style:none;margin:0;padding:24px;border-radius:var(--r2);background:#06182A;color:#C9D4E2}
+.lx-confiance b{display:block;font-size:14px;font-weight:600;color:#fff}
+.lx-confiance span{display:block;font-size:13px;line-height:1.5;margin-top:2px;color:#9DB0C6}
+/* étape du code : seule la carte reste */
+.cx-code .lx-texte,.cx-code .lx-apercu,.cx-code .lx-groupe,.cx-code .lx-pilote,.cx-code .lx-espaces,.cx-code .lx-modules-s,.cx-code .lx-confiance{display:none}
+.cx-code .lx-hero-in{padding-bottom:64px}
+@media (min-width:640px){
+  .lx-gestes,.lx-cartes,.lx-modules,.lx-confiance ul{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .lx-fen-main{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .lx-pipeline{grid-column:1/-1}
+}
+@media (min-width:1000px){
+  .lx-hero-in{grid-template-columns:minmax(0,1.2fr) minmax(400px,.9fr);gap:64px;padding:72px 40px 150px}
+  .lx-slot{order:0}
+  .lx-h2{font-size:36px}
+  .lx-pilote,.lx-espaces,.lx-modules-s,.lx-groupe,.lx-confiance{padding-left:40px;padding-right:40px;padding-top:80px}
+  .lx-groupe{padding-top:56px}
+  .lx-apercu{margin-top:-130px;padding:0 40px}
+  .lx-fen-menu{display:grid}
+  .lx-gestes,.lx-confiance ul{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .lx-chaine{display:block;position:absolute;left:44px;right:44px;top:44px;height:2px;background:linear-gradient(90deg,#0F5C8C,#FEC61E,#F08C2E,#1F9D6B);opacity:.55}
+  .lx-fen-cherche{display:inline-flex}
+  .lx-fen-corps{grid-template-columns:200px minmax(0,1fr)}
+  .lx-fen-main{grid-template-columns:1.3fr 1fr 1fr}
+  .lx-pipeline{grid-column:1/-1}
+  .lx-flotte{display:flex;position:absolute;z-index:2;align-items:center;gap:10px;padding:10px 14px;border-radius:14px;background:rgba(255,255,255,.92);color:var(--encre);font-size:12.5px;box-shadow:0 18px 40px rgba(6,24,42,.22);backdrop-filter:blur(8px);animation:lx-flotte 5s ease-in-out infinite}
+  .lx-flotte b{display:block;font-size:13px;font-weight:600}
+  .lx-flotte span{display:block;color:var(--doux);font-size:11.5px}
+  .lx-flotte i{width:30px;height:30px;border-radius:9px;flex:none;display:grid;place-items:center;color:#fff;font-style:normal;font-weight:700}
+  .lx-flotte.f1{left:-64px;top:64%}.lx-flotte.f2{left:-64px;top:22%;animation-delay:-1.6s}.lx-flotte.f3{right:6%;bottom:-26px;animation-delay:-3.2s}
+  .lx-final{padding:96px 40px 0}
+  .lx-final-in{padding:56px 56px;grid-template-columns:minmax(0,1fr) auto;align-items:center}
+  .lx-final-in h2{font-size:40px}
+  .lx-texte h2{font-size:64px}
+  .lx-cartes,.lx-modules{grid-template-columns:repeat(5,minmax(0,1fr))}
+}
+@media (min-width:1000px) and (max-width:1199px){.lx-cartes,.lx-modules{grid-template-columns:repeat(3,minmax(0,1fr))}.lx-fen-cherche{display:none}}
+@media (max-width:639px){.lx-cols{grid-template-columns:repeat(3,minmax(0,1fr))}.lx-col:nth-child(n+4){display:none}}
+@media (prefers-reduced-motion:reduce){.lx-soleil,.lx-flotte{animation:none}}
+.cx-rester{display:flex;gap:10px;align-items:flex-start;cursor:pointer;font-size:14px;color:var(--encre)}
+.cx-rester input{width:18px;height:18px;margin:2px 0 0;accent-color:var(--bleu);flex:none}
+.cx-rester small{display:block;font-size:12.5px;color:var(--doux);margin-top:2px}
 </style>
 </head>
 <body>
@@ -421,7 +627,7 @@ legend{font-size:13.5px;font-weight:600;margin-bottom:8px;padding:0}
     var el = document.createElement('div');
     el.className = 'sli ' + (anime ? 'sli-anim' : 'sli-calme');
     el.setAttribute('data-sli', 'joue');
-    el.innerHTML = '<div class="sli-c">' + scene() + '<p class="sli-ligne">SUNLINK OS · Pilotage du Groupe</p></div><button type="button" class="sli-passer">Passer</button>';
+    el.innerHTML = '<div class="sli-c">' + scene() + '<p class="sli-ligne">SUNLINK OS · Pilotage de vos affaires</p></div><button type="button" class="sli-passer">Passer</button>';
     var resoudre = null, p = new Promise(function (r) { resoudre = r; });
     etat = { el: el, p: p, resoudre: resoudre, t: [], sortie: false };
     corps.appendChild(el);
@@ -508,13 +714,20 @@ try { window.SLOS_MARQUE.lancer(); } catch (e) { /* la connexion reste utilisabl
     cadenas: '<svg viewBox="0 0 16 16"><rect x="3" y="7" width="10" height="7" rx="1.5"/><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2"/></svg>',
     lettre: '<svg viewBox="0 0 16 16"><rect x="2" y="3.5" width="12" height="9" rx="1.5"/><path d="M2.5 4.5L8 9l5.5-4.5"/></svg>',
     personnes: '<svg viewBox="0 0 16 16"><circle cx="6" cy="5.5" r="2.3"/><path d="M1.8 13.5c0-2.6 1.9-4 4.2-4s4.2 1.4 4.2 4"/><path d="M10.5 3.4a2.2 2.2 0 0 1 0 4.3M12 9.7c1.3.5 2.2 1.7 2.2 3.8"/></svg>',
+    lever: '<svg class="cx-lever" viewBox="0 0 126 44" aria-hidden="true" focusable="false"><g stroke="#FEC61E" stroke-width="3.2" stroke-linecap="round"><path d="M63 3v11M28 15l8 7M98 15l-8 7"/></g><path d="M47 40a16 16 0 0 1 32 0z" fill="#FEC61E"/><path d="M2 41h122" stroke="#0F5C8C" stroke-width="2.6" stroke-linecap="round"/></svg>',
     groupe: '<svg viewBox="0 0 16 16"><rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="2" width="5" height="5" rx="1"/><rect x="2" y="9" width="5" height="5" rx="1"/><rect x="9" y="9" width="5" height="5" rx="1"/></svg>',
     schema: '<svg class="cx-schema" viewBox="0 0 400 150" aria-hidden="true" focusable="false"><g fill="none" stroke-linecap="round"><path d="M200 8v26" stroke="#FEC61E" stroke-width="2.5"/><path d="M24 34h352" stroke="#2A324B" stroke-width="4"/><g stroke="#2A324B" stroke-width="2"><path d="M44 34v40M110 34v40M176 34v40M290 34v40M356 34v40"/></g><path d="M224 34v40" stroke="#3A4559" stroke-width="2" stroke-dasharray="4 4"/></g><g fill="#141C2B" stroke="#253046"><rect x="22" y="74" width="44" height="44" rx="9"/><rect x="88" y="74" width="44" height="44" rx="9"/><rect x="154" y="74" width="44" height="44" rx="9"/><rect x="202" y="74" width="44" height="44" rx="9" stroke-dasharray="4 3"/><rect x="268" y="74" width="44" height="44" rx="9"/><rect x="334" y="74" width="44" height="44" rx="9"/></g><g><circle cx="44" cy="96" r="6" fill="#CEF5CA"/><circle cx="110" cy="96" r="6" fill="#FCF8D8"/><circle cx="176" cy="96" r="6" fill="#CEF5CA"/><circle cx="224" cy="96" r="6" fill="#F8E4E4"/><circle cx="290" cy="96" r="6" fill="#FCF8D8"/><circle cx="356" cy="96" r="6" fill="#CEF5CA"/></g><circle cx="200" cy="8" r="5" fill="#FEC61E"/><text x="24" y="142" fill="#6F7A8F" font-size="11" font-family="Lexend,Segoe UI,system-ui,sans-serif" letter-spacing="1.4">GROUPE SUNLINK</text><text x="270" y="142" fill="#6F7A8F" font-size="11" font-family="Lexend,Segoe UI,system-ui,sans-serif" letter-spacing="1.4">GROUPE PRIME</text></svg>'
   };
   const ico = (nom, cls) => { const s = h('span', { class: (cls || 'ico'), 'aria-hidden': 'true' }); s.innerHTML = SVG[nom]; return s; };
   const soleil = () => { const s = h('span', { class: 'soleil', 'aria-hidden': 'true' }); s.innerHTML = window.SLOS_MARQUE ? window.SLOS_MARQUE.mono({ titre: '' }) : SVG.soleil; return s; };   /* v5.6 : monogramme officiel */
   const finIntro = () => { try { return window.SLOS_MARQUE ? window.SLOS_MARQUE.fin() : Promise.resolve(); } catch (e) { return Promise.resolve(); } };
-  const marque = () => h('div', { class: 'marque' }, soleil(), h('span', null, h('b', { text: 'SUNLINK OS' }), h('small', { text: 'Groupe SUNLINK · pilotage' })));
+  /* v5.7 : barre blanche des maquettes, logo officiel SUNLINK Energies (version fond clair) et pastille « OS » */
+  const marque = () => {
+    const logo = h('span', { class: 'marque-logo', role: 'img', 'aria-label': 'SUNLINK Energies' });
+    if (window.SLOS_MARQUE) logo.innerHTML = window.SLOS_MARQUE.logo({ fond: 'clair', titre: '' }); else logo.appendChild(soleil());
+    return h('div', { class: 'marque' }, logo, h('span', { class: 'marque-os', title: 'SUNLINK OS · pilotage du Groupe', text: 'OS' }));
+  };
+  const entete = (...droite) => h('header', { class: 'barre' }, h('div', { class: 'barre-in' }, marque(), droite.length ? h('div', { class: 'barre-droite' }, ...droite) : null));
   const dire = (el, texte, cls) => { el.textContent = texte ? typo(texte) : ''; el.className = 'msg' + (texte && cls ? ' ' + cls : ''); };
   const annoncer = (t) => { annonce.textContent = ''; setTimeout(() => { annonce.textContent = typo(t); }, 30); };
   const sansAccent = (s) => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
@@ -537,14 +750,12 @@ try { window.SLOS_MARQUE.lancer(); } catch (e) { /* la connexion reste utilisabl
   }
   const focaliser = (el) => { if (el) setTimeout(() => { try { el.focus({ preventScroll: true }); } catch (e) { /* ignoré */ } }, 40); };
 
-  /* gabarit des pages connectées : barre sombre (marque, adresse, « Se déconnecter ») */
+  /* gabarit des pages connectées : barre claire (logo, adresse, « Se déconnecter ») */
   function coquille(...enfants) {
     const email = (accueil && accueil.email) || (session && session.user && session.user.email) || '';
     return h('div', { class: 'page' },
-      h('header', { class: 'barre' }, h('div', { class: 'barre-in' }, marque(),
-        h('div', { class: 'barre-droite' },
-          email ? h('span', { class: 'qui', title: email, text: email }) : null,
-          h('button', { type: 'button', class: 'btn btn-nuit', 'data-action': 'deconnexion', onclick: deconnexion }, ico('sortir'), 'Se déconnecter')))),
+      entete(email ? h('span', { class: 'qui', title: email, text: email }) : null,
+        h('button', { type: 'button', class: 'btn btn-nuit', 'data-action': 'deconnexion', onclick: deconnexion }, ico('sortir'), 'Se déconnecter')),
       h('main', { id: 'contenu', class: 'contenu', tabindex: '-1' }, ...enfants));
   }
 
@@ -611,19 +822,41 @@ try { window.SLOS_MARQUE.lancer(); } catch (e) { /* la connexion reste utilisabl
   function ecranConnexion(info) {
     let adresse = '';
     const msg = h('div', { class: 'msg', id: 'cx-msg', 'aria-live': 'polite' });
-    const email = h('input', { class: 'input', id: 'cx-email', type: 'email', name: 'email', autocomplete: 'email', inputmode: 'email', autocapitalize: 'off', spellcheck: 'false', required: true, placeholder: 'prenom@sunlink-energies.fr', 'aria-describedby': 'cx-msg' });
-    const envoyer = h('button', { type: 'submit', class: 'btn btn-jaune btn-plein', id: 'cx-envoyer' }, ico('lettre'), 'Recevoir mon lien de connexion');
+    const email = h('input', { class: 'input', id: 'cx-email', type: 'email', name: 'email', autocomplete: 'email', inputmode: 'email', autocapitalize: 'off', spellcheck: 'false', required: true, placeholder: 'prenom.nom@exemple.fr', 'aria-describedby': 'cx-msg' });
+    const envoyer = h('button', { type: 'submit', class: 'btn btn-jaune btn-plein', id: 'cx-envoyer' }, 'Recevoir mon lien de connexion');
+    try { const memo = window.localStorage.getItem('slos.email'); if (memo) email.value = memo; } catch (e) { /* ignoré */ }
+    const caseRester = h('input', { type: 'checkbox', id: 'cx-rester', name: 'rester' });
+    try { caseRester.checked = window.localStorage.getItem('slos.rester') !== '0'; } catch (e) { caseRester.checked = true; }
+    caseRester.addEventListener('change', () => { try { window.localStorage.setItem('slos.rester', caseRester.checked ? '1' : '0'); if (!caseRester.checked) window.localStorage.removeItem('slos.email'); } catch (e) { /* ignoré */ } });
+    const ligneRester = h('label', { class: 'cx-rester', for: 'cx-rester' }, caseRester, h('span', null, 'Rester connecté sur cet appareil', h('small', { text: 'Votre adresse est retenue et la session reste ouverte. Décochez sur un ordinateur partagé.' })));
     const etapeEmail = h('form', { class: 'cx-etape', id: 'cx-form-email', novalidate: true },
-      h('div', { class: 'champ' }, h('label', { for: 'cx-email', text: 'Adresse e-mail' }), email), envoyer);
+      h('div', { class: 'champ' }, h('label', { for: 'cx-email', text: 'Adresse e-mail' }), email), ligneRester, envoyer);
     const envoyeA = h('b');
     const code = h('input', { class: 'input input-code', id: 'cx-code', name: 'code', inputmode: 'numeric', autocomplete: 'one-time-code', maxlength: '14', placeholder: '123456', 'aria-describedby': 'cx-code-aide cx-msg' });
-    const valider = h('button', { type: 'submit', class: 'btn btn-bleu btn-plein', id: 'cx-valider' }, 'Valider le code');
-    const renvoyer = h('button', { type: 'button', class: 'btn-lien', id: 'cx-renvoyer' }, 'Renvoyer le lien');
-    const changer = h('button', { type: 'button', class: 'btn-lien', id: 'cx-changer' }, 'Changer d\'adresse');
+    const valider = h('button', { type: 'submit', class: 'btn btn-bleu btn-plein', id: 'cx-valider' }, 'Ouvrir SUNLINK OS');
+    const renvoyer = h('button', { type: 'button', class: 'btn btn-sec', id: 'cx-renvoyer' }, 'Renvoyer un code');
+    const changer = h('button', { type: 'button', class: 'btn btn-sec', id: 'cx-changer' }, 'Changer d\'adresse');
     const etapeCode = h('form', { class: 'cx-etape', id: 'cx-form-code', novalidate: true, hidden: true },
-      h('div', { class: 'cx-envoye' }, ico('lettre'), h('span', null, 'Lien envoyé à ', envoyeA, '. Ouvre-le sur cet appareil, ou saisis le code reçu dans le même e-mail.')),
-      h('div', { class: 'champ' }, h('label', { for: 'cx-code', text: 'Code reçu par e-mail' }), code, h('span', { class: 'aide', id: 'cx-code-aide', text: '6 à 10 chiffres. Pas d\'e-mail ? Pense à regarder dans les indésirables.' })),
-      valider, h('div', { class: 'cx-liens' }, renvoyer, changer));
+      h('div', { class: 'cx-envoye' }, ico('lettre'), h('span', null, 'Un lien et un code viennent d\'être envoyés à ', envoyeA, '. Cliquez sur le lien, ou saisissez le code ici.')),
+      h('div', { class: 'champ' }, h('label', { for: 'cx-code', text: 'Code reçu (6 à 10 chiffres)' }), code),
+      valider, h('div', { class: 'cx-liens' }, renvoyer, changer),
+      h('p', { class: 'cx-note', id: 'cx-code-aide', text: 'Le lien et le code ne servent qu\'une fois. Rien n\'arrive ? Regardez dans les indésirables, ou demandez un accès s\'il s\'agit de votre première connexion.' }));
+    /* première fois : la demande d'accès se fait juste après la première connexion (rpc('slos_demander_acces')) */
+    const demander = h('button', { type: 'button', class: 'btn btn-sec btn-plein', id: 'cx-demander' }, 'Demander un accès');
+    const acces = h('div', { class: 'cx-acces' }, h('p', { class: 'cx-ou', text: 'première fois ?' }), demander,
+      h('p', { class: 'cx-note', text: 'L\'accès est ouvert par SUNLINK, projet par projet.' }));
+    demander.addEventListener('click', () => {
+      dire(msg, 'Saisissez votre adresse e-mail et recevez votre lien : à votre première connexion, un court formulaire vous permet de demander l\'accès aux projets qui vous concernent.', 'info');
+      focaliser(email);
+    });
+    const titre = h('h1', { id: 'cx-titre', text: 'Se connecter' });
+    const intro = h('p', { class: 'intro', text: 'Aucun mot de passe : vous recevez un lien ou un code par e-mail.' });
+    const etape = (codeVisible) => {
+      etapeEmail.hidden = codeVisible; etapeCode.hidden = !codeVisible; acces.hidden = codeVisible; intro.hidden = codeVisible;
+      titre.textContent = typo(codeVisible ? 'Consultez votre boîte mail' : 'Se connecter');
+      page.classList.toggle('cx-code', codeVisible);
+      document.title = (codeVisible ? 'Code de connexion' : 'Connexion') + ' · SUNLINK OS';
+    };
 
     async function demanderLien(v, renvoi) {
       envoyer.disabled = true; renvoyer.disabled = true;
@@ -634,20 +867,21 @@ try { window.SLOS_MARQUE.lancer(); } catch (e) { /* la connexion reste utilisabl
       envoyer.disabled = false; renvoyer.disabled = false;
       if (!r || r.error) { dire(msg, texteEnvoi(r && r.error), /trop de demandes/i.test(texteEnvoi(r && r.error)) ? 'att' : 'err'); return false; }
       adresse = v; envoyeA.textContent = v;
-      etapeEmail.hidden = true; etapeCode.hidden = false;
+      try { if (caseRester.checked) window.localStorage.setItem('slos.email', v); } catch (e) { /* ignoré */ }
+      etape(true);
       dire(msg, renvoi ? 'Nouveau lien envoyé à ' + v + '.' : '', 'ok');
-      annoncer('Lien envoyé à ' + v + '. Saisis le code reçu par e-mail, ou ouvre le lien. Pense aux indésirables.');
+      annoncer('Lien envoyé à ' + v + '. Saisissez le code reçu par e-mail, ou ouvrez le lien. Pensez aux indésirables.');
       focaliser(code);
       return true;
     }
     etapeEmail.addEventListener('submit', (e) => {
       e.preventDefault();
       const v = String(email.value || '').trim().toLowerCase();
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) { dire(msg, 'Entre une adresse e-mail valide, par exemple prenom@sunlink-energies.fr.', 'err'); email.focus(); return; }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) { dire(msg, 'Saisissez une adresse e-mail valide, par exemple prenom.nom@exemple.fr.', 'err'); email.focus(); return; }
       demanderLien(v);
     });
     renvoyer.addEventListener('click', () => { if (adresse) demanderLien(adresse, true); });
-    changer.addEventListener('click', () => { etapeCode.hidden = true; etapeEmail.hidden = false; code.value = ''; dire(msg, ''); email.value = adresse; focaliser(email); });
+    changer.addEventListener('click', () => { etape(false); code.value = ''; dire(msg, ''); email.value = adresse; focaliser(email); });
     etapeCode.addEventListener('submit', async (e) => {
       e.preventDefault();
       const brut = String(code.value || '').replace(/[\s.-]/g, '');
@@ -657,7 +891,7 @@ try { window.SLOS_MARQUE.lancer(); } catch (e) { /* la connexion reste utilisabl
       try { r = await client.auth.verifyOtp({ email: adresse, token: brut, type: 'email' }); } catch (err) { r = { error: err }; }
       valider.disabled = false;
       if (!r || r.error || !r.data || !r.data.session) {
-        dire(msg, r && r.error && estReseau(r.error) ? MSG_RESEAU : 'Code refusé : il est faux ou a expiré. Saisis le code du dernier e-mail reçu, ou demande un nouveau lien.', 'err');
+        dire(msg, r && r.error && estReseau(r.error) ? MSG_RESEAU : 'Code refusé : il est faux ou a expiré. Saisissez le code du dernier e-mail reçu, ou demandez un nouveau lien.', 'err');
         try { code.select(); } catch (x) { /* ignoré */ }
         return;
       }
@@ -666,22 +900,137 @@ try { window.SLOS_MARQUE.lancer(); } catch (e) { /* la connexion reste utilisabl
     });
     if (info) dire(msg, info, 'att');
 
-    const marquePanneau = h('section', { class: 'cx-marque', 'aria-label': 'SUNLINK OS' },
-      marque(),
-      h('div', { class: 'cx-accroche' },
-        h('h2', { text: 'Le Groupe SUNLINK, piloté depuis un seul écran.' }),
-        h('ul', { class: 'cx-points' },
-          h('li', { text: 'Chaque société, ce qui reste à traiter et son voyant, d\'un coup d\'œil.' }),
-          h('li', { text: 'Tes données sont enregistrées en continu : rien ne se perd.' }),
-          h('li', { text: 'Connexion par e-mail, sans mot de passe.' }))),
-      ico('schema', 'cx-schema-boite'),
-      h('p', { class: 'cx-sign', text: 'Groupe SUNLINK · Julien HUET, Président' }));
-    const carte = h('section', { class: 'carte cx-carte', 'aria-labelledby': 'cx-titre' },
-      h('div', null, h('h1', { id: 'cx-titre', text: 'Connexion' }),
-        h('p', { class: 'intro', text: 'Entre ton adresse e-mail : tu reçois un lien de connexion, et un code à saisir ici si tu préfères.' })),
-      etapeEmail, etapeCode, msg);
-    const page = h('div', { class: 'cx' }, marquePanneau,
-      h('main', { class: 'cx-form', id: 'contenu' }, carte, h('p', { class: 'cx-pied' }, ico('cadenas'), 'Données hébergées à Paris · aucun mot de passe')));
+    /* page d'accueil publique (v5.9) : présente SUNLINK OS à tous ceux qui font des affaires avec SUNLINK, montre comment on
+       pilote (aperçu illustratif, sans aucune donnée réelle), puis la carte de connexion. Rien d'autre n'est lu ni affiché ici. */
+    const M = window.SLOS_MARQUE;
+    const logoClair = M ? M.logo({ fond: 'clair', titre: 'SUNLINK Energies' }) : '';
+    const monoSvg = M ? M.mono({ titre: '' }) : '';
+    const PUBLICS = [['#1F9D6B', 'Clients'], ['#F08C2E', 'Apporteurs d\'affaires'], ['#0E9AA7', 'Partenaires'], ['#7A5AF8', 'Associés'], ['#4FA3D9', 'Collectivités']];
+    const hero = h('section', { class: 'lx-hero', 'aria-labelledby': 'cx-accroche-titre' });
+    hero.innerHTML =
+      '<div class="lx-soleil" aria-hidden="true"></div><div class="lx-horizon" aria-hidden="true"></div>' +
+      '<div class="lx-hero-in"><div class="lx-texte cx-accroche">' +
+        '<p class="lx-sur"><span class="lx-point"></span>SUNLINK OS · plateforme de pilotage</p>' +
+        '<h2 id="cx-accroche-titre">Vos projets solaires, <span>pilotés en temps réel.</span></h2>' +
+        '<p class="lx-lead">Une seule plateforme pour suivre chaque projet, du terrain à la mise en service, avec les documents, la trésorerie et les décisions au même endroit. Chaque client, apporteur, partenaire, associé ou collectivité ouvre son propre espace, et ne voit que ce qui le concerne.</p>' +
+        '<ul class="lx-publics" aria-label="Pour qui">' + PUBLICS.map(([c, n]) => '<li><i style="background:' + c + '"></i>' + n + '</li>').join('') + '</ul>' +
+        '<div class="lx-cta"><button type="button" class="btn lx-btn-or" data-lx="demander">Demander un accès</button><button type="button" class="btn lx-btn-verre" data-lx="voir">Voir comment on pilote</button></div>' +
+        '<ul class="lx-preuves">' + ['Hébergé à Paris', 'Sans mot de passe', 'Accès sur invitation'].map((t) => '<li><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7"/></svg>' + t + '</li>').join('') + '</ul>' +
+      '</div><div class="lx-slot"></div></div>';
+    hero.querySelector('.lx-slot').appendChild(h('section', { class: 'carte cx-carte', 'aria-labelledby': 'cx-titre' }, h('div', null, titre, intro), etapeEmail, etapeCode, msg, acces));
+
+    /* aperçu illustratif de la console (v6) : formes, libellés et types de projets seulement, aucun nom réel ni aucun chiffre */
+    const SOC = [['SUNLINK', '#FEC61E'], ['SUNLINK PV', '#1F9D6B'], ['SUNLICÉO', '#F08C2E']];
+    const COLS = [['1', 'Opportunités', [['Toiture', 1, 30], ['Ombrière', 2, 18], ['Batterie', 2, 10]]], ['2', 'Développement', [['Centrale au sol', 1, 55], ['Toiture', 2, 42]]],
+      ['3', 'Financement', [['Batterie', 2, 70], ['Toiture', 1, 62]]], ['4', 'Construction', [['Ombrière', 1, 84]]], ['5', 'Exploitation', [['Toiture', 1, 100], ['ACC', 2, 100]]]];
+    const SITES = [[60, 40], [118, 70], [168, 34], [214, 82], [252, 50], [96, 92]];
+    const apercu = h('section', { class: 'lx-apercu', 'aria-label': 'Aperçu de l\'application (illustration)' });
+    apercu.innerHTML =
+      '<div class="lx-scene" aria-hidden="true"><div class="lx-fenetre">' +
+        '<div class="lx-fen-barre"><i></i><i></i><i></i><span class="lx-fen-titre">SUNLINK OS · Vue d\'ensemble</span>' +
+          '<span class="lx-fen-cherche"><svg viewBox="0 0 16 16"><circle cx="7" cy="7" r="4.5"/><path d="M10.5 10.5L14 14"/></svg>Rechercher un projet, un document…</span><span class="lx-direct">En direct</span></div>' +
+        '<div class="lx-fen-corps">' +
+          '<div class="lx-fen-menu"><p class="lx-fen-mono"><span>' + monoSvg + '</span>SUNLINK OS</p>' +
+            '<h4>Sociétés</h4>' + SOC.map(([n, c]) => '<p><i style="background:' + c + '"></i>' + n + '</p>').join('') +
+            '<h4>Pilotage</h4>' + ['Vue d\'ensemble', 'Projets', 'Trésorerie', 'Documents', 'Décisions'].map((t, k) => '<p' + (k === 0 ? ' class="on"' : '') + '>' + t + '</p>').join('') +
+          '</div>' +
+          '<div class="lx-fen-main">' +
+            '<div class="lx-bloc lx-pipeline"><p class="lx-bloc-t">Cycle des projets<small>du foncier à l\'exploitation</small></p><div class="lx-cols">' +
+              COLS.map(([n, t, cartes], ci) => '<div class="lx-col"><p class="lx-col-t"><b>' + n + '</b>' + t + '</p>' +
+                cartes.map(([lib, soc, w], k) => '<p class="lx-carte-p" style="--c:' + SOC[soc][1] + ';--w:' + w + '%;animation-delay:' + (0.15 + ci * 0.12 + k * 0.08) + 's">' + lib + '<u></u></p>').join('') + '</div>').join('') +
+            '</div></div>' +
+            '<div class="lx-bloc lx-courbe"><p class="lx-bloc-t">Trésorerie prévisionnelle<small>réalisé et prévu</small></p>' +
+              '<svg viewBox="0 0 300 118" preserveAspectRatio="none"><defs><linearGradient id="lx-g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FEC61E" stop-opacity=".35"/><stop offset="1" stop-color="#FEC61E" stop-opacity="0"/></linearGradient><filter id="lx-lueur"><feGaussianBlur stdDeviation="3"/></filter></defs>' +
+              [30, 60, 90].map((y) => '<path d="M0 ' + y + 'H300" stroke="rgba(255,255,255,.06)"/>').join('') +
+              '<path d="M0 90 C40 86 60 66 95 70 S150 44 185 50 S240 26 300 20 L300 118 L0 118Z" fill="url(#lx-g)"/>' +
+              '<path d="M0 90 C40 86 60 66 95 70 S150 44 185 50" fill="none" stroke="#FEC61E" stroke-width="5" opacity=".35" filter="url(#lx-lueur)"/>' +
+              '<path class="lx-trait" d="M0 90 C40 86 60 66 95 70 S150 44 185 50" fill="none" stroke="#FEC61E" stroke-width="2.5" stroke-linecap="round"/>' +
+              '<path d="M185 50 S240 30 300 24" fill="none" stroke="#4FA3D9" stroke-width="2" stroke-dasharray="5 5"/><circle cx="185" cy="50" r="4" fill="#FEC61E" stroke="#0A1523" stroke-width="2"/></svg>' +
+              '<p class="lx-legende"><span class="j"></span>réalisé <span class="b"></span>prévu</p>' +
+            '</div>' +
+            '<div class="lx-bloc lx-alertes"><p class="lx-bloc-t">À traiter aujourd\'hui</p>' +
+              [['j', 'Décision à valider', 'sources jointes'], ['b', 'Document à déposer', 'rattaché au projet'], ['v', 'Étape franchie', 'automatique']].map(([c, t, d]) => '<p class="lx-al"><span class="' + c + '"></span>' + t + '<em>' + d + '</em></p>').join('') +
+            '</div>' +
+            '<div class="lx-bloc lx-carte-sites"><p class="lx-bloc-t">Sites suivis<small>illustration</small></p>' +
+              '<svg viewBox="0 0 300 118"><defs><pattern id="lx-pts" width="12" height="12" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" fill="rgba(255,255,255,.08)"/></pattern></defs><rect width="300" height="118" fill="url(#lx-pts)"/>' +
+              SITES.map(([x, y], k) => { const c = SOC[k % 3][1]; return '<circle class="lx-site" cx="' + x + '" cy="' + y + '" r="4" fill="' + c + '" style="animation-delay:' + (k * 0.4) + 's"/><circle cx="' + x + '" cy="' + y + '" r="4" fill="' + c + '"/>'; }).join('') +
+              '</svg></div>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="lx-flotte f1"><i style="background:#0F5C8C">✓</i><div><b>Décision prête</b><span>chiffres et sources joints</span></div></div>' +
+      '<div class="lx-flotte f2"><i style="background:#1F9D6B">↥</i><div><b>Document déposé</b><span>rangé dans le bon projet</span></div></div>' +
+      '<div class="lx-flotte f3"><i style="background:#F08C2E">!</i><div><b>Échéance anticipée</b><span>alerte avant le problème</span></div></div>' +
+      '</div>' +
+      '<p class="lx-illu">Aperçu illustratif : dans l\'application, chaque chiffre vient de nos dossiers, avec sa source.</p>';
+
+    /* le Groupe : logo officiel de SUNLINK, marques des sociétés à leur couleur */
+    const groupe = h('section', { class: 'lx-groupe', 'aria-label': 'Le Groupe SUNLINK' });
+    groupe.innerHTML = '<p class="lx-kicker">Une plateforme du Groupe SUNLINK</p><ul class="lx-logos">' +
+      '<li class="lx-logo-off">' + logoClair + '</li>' +
+      [['SUNLINK', 'PV', '#1F9D6B'], ['SUNLICÉO', '', '#F08C2E']].map(([a, b, c]) =>
+        '<li class="lx-marque" style="--c:' + c + '"><span class="lx-marque-mono">' + monoSvg + '</span><span class="lx-marque-nom">' + a + (b ? ' <b>' + b + '</b>' : '') + '</span></li>').join('') +
+      '</ul>';
+
+    /* comment on pilote : quatre gestes */
+    const GESTES = [
+      ['01', 'Centraliser', 'Documents, mails, devis et contrats sont rattachés au bon projet, dans une base unique. Fini la double saisie.', '<path d="M4 7h16M4 12h16M4 17h10"/>'],
+      ['02', 'Suivre', 'Chaque projet avance d\'étape en étape, des opportunités à l\'exploitation, avec sa prochaine action et son responsable.', '<path d="M4 18l5-6 4 3 7-9"/><path d="M16 6h4v4"/>'],
+      ['03', 'Anticiper', 'Trésorerie, financements et échéances sont projetés à l\'avance : les alertes arrivent avant les problèmes.', '<circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/>'],
+      ['04', 'Décider', 'Les arbitrages à rendre remontent tout seuls, préparés avec leurs chiffres et leurs sources, validés en un clic.', '<path d="M5 12l4 4 10-10"/>']];
+    const pilote = h('section', { class: 'lx-pilote', id: 'lx-pilote', 'aria-labelledby': 'lx-pilote-t' });
+    const EXEMPLES = ['Un mail d\'Enedis arrive : il rejoint le dossier de la centrale.', 'Le Consuel est reçu : le projet passe en mise en service.', 'Une échéance d\'emprunt approche : l\'alerte part un mois avant.', 'Un devis attend : il arrive avec son plan de financement.'];
+    pilote.innerHTML = '<p class="lx-kicker">Comment on pilote</p><h2 id="lx-pilote-t" class="lx-h2">Quatre gestes, une seule source de vérité.</h2><ol class="lx-gestes"><span class="lx-chaine" aria-hidden="true"></span>' +
+      GESTES.map(([n, t, d, ic], k) => '<li><span class="lx-geste-ic"><svg viewBox="0 0 24 24" aria-hidden="true">' + ic + '</svg></span><small>' + n + '</small><h3>' + t + '</h3><p>' + d + '</p><p class="lx-ex">Par exemple : ' + EXEMPLES[k] + '</p></li>').join('') + '</ol>';
+
+    /* un espace pour chacun */
+    const ESPACES = [
+      ['#1F9D6B', 'Clients', 'Propriétaires de toiture ou de terrain, participants à l\'autoconsommation : l\'avancement de votre projet, vos contrats, votre production et vos factures.'],
+      ['#F08C2E', 'Apporteurs d\'affaires', 'Les affaires que vous avez apportées, l\'étape de chacune et vos rémunérations, à jour au fil de l\'eau.'],
+      ['#0E9AA7', 'Partenaires et prestataires', 'Bureaux d\'études, constructeurs, mainteneurs : projets confiés, planning, devis, factures et documents à déposer.'],
+      ['#7A5AF8', 'Associés et investisseurs', 'Vos participations, la trésorerie qui vous concerne et les décisions à prendre, en lecture.'],
+      ['#4FA3D9', 'Collectivités', 'Mairies et intercommunalités : les projets de votre territoire et les opérations de partage d\'énergie locales.']];
+    const espaces = h('section', { class: 'lx-espaces', 'aria-labelledby': 'lx-espaces-t' });
+    espaces.innerHTML = '<p class="lx-kicker">Un espace pour chacun</p><h2 id="lx-espaces-t" class="lx-h2">Chacun voit ses affaires. Jamais celles des autres.</h2><ul class="lx-cartes">' +
+      ESPACES.map(([c, t, d]) => '<li style="--c:' + c + '"><h3>' + t + '</h3><p>' + d + '</p></li>').join('') + '</ul>';
+
+    /* modules retenus le 06/10/2026 ; « en préparation » tant qu'ils ne sont pas livrés */
+    const MODULES = [
+      ['Pilotage des projets', 'Du foncier à la mise en service : études, urbanisme, raccordement.', true],
+      ['Trésorerie et financement', 'Soldes, flux prévus, plans de financement et emprunts.', true],
+      ['Documents et échanges', 'Pièces, contrats et devis rangés par projet.', true],
+      ['Partage d\'énergie', 'Relier producteurs et consommateurs proches en autoconsommation collective.', false],
+      ['Facturation et exploitation', 'Facturation de l\'énergie, production des centrales, maintenance.', false]];
+    const modules = h('section', { class: 'lx-modules-s', 'aria-labelledby': 'lx-modules-t' });
+    modules.innerHTML = '<p class="lx-kicker">La plateforme</p><h2 id="lx-modules-t" class="lx-h2">Cinq modules, une seule base.</h2><ul class="lx-modules">' +
+      MODULES.map(([t, d, ok]) => '<li><h3>' + t + '</h3><p>' + d + '</p><em class="' + (ok ? 'dispo' : 'prep') + '">' + (ok ? 'disponible' : 'en préparation') + '</em></li>').join('') + '</ul>';
+
+    const GARANTIES = [
+      ['Hébergé en France', 'Données hébergées à Paris. Cette page publique n\'en contient aucune.'],
+      ['Accès sur invitation', 'Chaque accès est ouvert par SUNLINK, personne par personne.'],
+      ['Sans mot de passe', 'Connexion par lien ou code envoyé par e-mail.'],
+      ['Rien ne se perd', 'Chaque document modifié est gardé en fin de journée.']];
+    const garanties = h('section', { class: 'lx-confiance', 'aria-label': 'Garanties' });
+    garanties.innerHTML = '<ul>' + GARANTIES.map(([t, d]) => '<li><b>' + t + '</b><span>' + d + '</span></li>').join('') + '</ul>';
+
+    /* appel final (v6) */
+    const final = h('section', { class: 'lx-final', 'aria-labelledby': 'lx-final-t' });
+    final.innerHTML = '<div class="lx-final-in"><div><h2 id="lx-final-t">Vos affaires avec SUNLINK méritent mieux qu\'un fil de mails.</h2>' +
+      '<p>Demandez votre accès : votre espace est ouvert par SUNLINK, avec seulement ce qui vous concerne.</p></div>' +
+      '<div class="lx-cta"><button type="button" class="btn lx-btn-or" data-lx="demander">Demander un accès</button><button type="button" class="btn lx-btn-verre" data-lx="connexion">J\'ai déjà un accès</button></div></div>';
+
+    const page = h('div', { class: 'cx lx' }, entete(),
+      h('main', { class: 'cx-main lx-main', id: 'contenu' }, hero, apercu, groupe, pilote, espaces, modules, final, garanties),
+      h('p', { class: 'cx-pied' }, ico('cadenas'), 'SUNLINK énergies · Charleville-Mézières · SUNLINK OS, accès réservé aux personnes invitées'));
+    /* boutons d'appel : remonter à la carte de connexion, ou descendre à « Comment on pilote » */
+    const versCarte = () => { try { email.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) { /* ignoré */ } focaliser(email); };
+    page.addEventListener('click', (e) => {
+      const b = e.target.closest && e.target.closest('[data-lx]'); if (!b) return;
+      const quoi = b.getAttribute('data-lx');
+      if (quoi === 'voir') { try { pilote.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (x) { /* ignoré */ } return; }
+      if (quoi === 'demander') { versCarte(); demander.click(); return; }
+      versCarte();
+    });
     monter('connexion', 'Connexion', page);
     focaliser(email);
   }
@@ -792,7 +1141,7 @@ try { window.SLOS_MARQUE.lancer(); } catch (e) { /* la connexion reste utilisabl
     const etat = voyant(s.compteurs);
     const idc = 'cpt-' + s.id;
     const sous = [s.forme, s.role].filter(Boolean).join(' · ');
-    return h('button', { type: 'button', class: 'soc' + (estDernier ? ' dernier' : ''), 'data-choix': s.id, 'aria-label': 'Ouvrir ' + s.nom + ' · ' + etat.lib, 'aria-describedby': idc, onclick: () => choisir(s.id, s.nom) },
+    const carte = h('button', { type: 'button', class: 'soc' + (estDernier ? ' dernier' : ''), 'data-choix': s.id, 'aria-label': 'Ouvrir ' + s.nom + ' · ' + etat.lib, 'aria-describedby': idc, onclick: () => choisir(s.id, s.nom) },
       h('span', { class: 'soc-haut' }, pastille(s.couleur),
         h('span', { class: 'soc-id' }, h('span', { class: 'soc-nom', text: s.nom }), sous ? h('span', { class: 'soc-role', text: sous }) : null)),
       h('span', { class: 'soc-etat' },
@@ -802,6 +1151,8 @@ try { window.SLOS_MARQUE.lancer(); } catch (e) { /* la connexion reste utilisabl
         accueil.niveau < 3 && ROLE_LIB[s.acces] ? h('span', { class: 'etiquette neutre', text: 'Ton accès : ' + ROLE_LIB[s.acces] }) : null),
       blocCompteurs(s.compteurs, idc),
       h('span', { class: 'soc-pied' }, h('span', { class: 'soc-src', text: s.compteurs.source ? String(s.compteurs.source) : 'Source des compteurs non précisée' })));
+    if (s.couleur) carte.style.setProperty('--c', s.couleur);   /* v5.7 : liseré à la couleur de la société */
+    return carte;
   }
 
   function carteGroupe(conso, estDernier) {
@@ -1245,7 +1596,10 @@ try { window.SLOS_MARQUE.lancer(); } catch (e) { /* la connexion reste utilisabl
   /* =====================================================================================
      Ouverture de l'application (niveau ≥ 3) : données relues, puis direction.html sans cache
      ===================================================================================== */
+  /* test local uniquement (localhost) : l'app est lue dans ../app/ à côté de la page, pour essayer une branche avant de la publier */
+  const LOCAL = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
   async function telecharger(fichier) {
+    if (LOCAL) { const r = await fetch('../app/' + (fichier || FICHIER), { cache: 'no-store' }); if (r.ok) return { ok: true, status: 200, html: await r.text() }; }
     let tok = session.access_token;
     try { const r = await client.auth.getSession(); if (r && r.data && r.data.session) { session = r.data.session; tok = session.access_token; } } catch (e) { /* ignoré */ }
     const res = await fetch(String(ENV.SUPABASE_URL).replace(/\/$/, '') + '/storage/v1/object/authenticated/' + BUCKET + '/' + (fichier || FICHIER), { headers: { Authorization: 'Bearer ' + tok, apikey: ENV.SUPABASE_ANON_KEY }, cache: 'no-store' });
@@ -1396,7 +1750,16 @@ try { window.SLOS_MARQUE.lancer(); } catch (e) { /* la connexion reste utilisabl
     return;
   }
   const erreurLien = lireErreurLien();
-  client = window.supabase.createClient(ENV.SUPABASE_URL, ENV.SUPABASE_ANON_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
+  /* « Rester connecté sur cet appareil » (coché par défaut) : session dans localStorage, renouvelée toute seule tant que le
+     navigateur s'ouvre ; décoché : session dans sessionStorage, fermée avec le navigateur. Le choix est lu à chaque accès. */
+  const rester = () => { try { return window.localStorage.getItem('slos.rester') !== '0'; } catch (e) { return true; } };
+  const zoneSession = () => { try { return rester() ? window.localStorage : window.sessionStorage; } catch (e) { return null; } };
+  const STOCKAGE_SESSION = {
+    getItem: (k) => { try { const z = zoneSession(); return z ? z.getItem(k) : null; } catch (e) { return null; } },
+    setItem: (k, v) => { try { const z = zoneSession(); if (z) z.setItem(k, v); } catch (e) { /* stockage indisponible */ } },
+    removeItem: (k) => { try { window.localStorage.removeItem(k); } catch (e) { /* ignoré */ } try { window.sessionStorage.removeItem(k); } catch (e) { /* ignoré */ } }
+  };
+  client = window.supabase.createClient(ENV.SUPABASE_URL, ENV.SUPABASE_ANON_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true, storage: STOCKAGE_SESSION } });
   abonnement = client.auth.onAuthStateChange((ev, s) => {
     if (ferme) return;
     if (ev === 'SIGNED_OUT') { if (session && !ouverture) { session = null; accueil = null; demarre = null; ecranConnexion('Tu as été déconnecté·e.'); } return; }

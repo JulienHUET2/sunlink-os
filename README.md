@@ -13,6 +13,9 @@ assurée par les règles d'accès côté base de données.
 0. **Animation d'entrée** (avant le formulaire) : le soleil du logo officiel SUNLINK Energies se lève, puis le logo complet
    et « SUNLINK OS · Pilotage du Groupe » (2,8 s au plus ; fixe puis fondu si le système demande moins de mouvement).
    « Passer », un clic, Échap, Entrée ou Espace l'arrêtent ; la page se charge dessous. Une fois par onglet.
+Apparence (5.7) : thème « Ciel d'été » des maquettes validées (slides 1 à 4) : barre blanche avec le logo officiel, page d'accueil
+avec accroche, carte « Se connecter », espaces de l'application et garanties ; cartes société à leur couleur.
+
 1. **Connexion** : adresse e-mail, puis lien ou code (6 à 10 chiffres) reçu par e-mail. Aucun mot de passe.
 2. **Un seul appel** après connexion : `rpc('slos_accueil')` (niveau, sociétés autorisées, demande d'accès).
 3. **Membres** : le sélecteur de société est la première page. La vue Groupe (sociétés consolidées) est proposée
